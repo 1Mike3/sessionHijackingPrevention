@@ -1,0 +1,118 @@
+
+/* defs */
+:root {
+    --bgColorLvl1: rgba(28, 33, 39, 0.946);
+    --bgColorLvl2: rgba(49, 45, 41, 0.945);
+    --websiteTitleTextColor: rgba(239, 233, 228, 0.945);
+    --paragraphTextColor:  rgba(239, 233, 228, 0.945);
+    --subitem1TextColor: rgb(233, 151, 63);
+    --subitem2TextColor: rgb(202, 100, 234);
+    --subitem2bgColor:   rgba(47, 41, 49, 0.945);
+  }
+
+/* body */
+body { /* reminder do not use this */
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+  }
+  body.loaded {
+    opacity: 1;
+    background-color: var(--bgColorLvl1);
+  }
+
+
+
+    /* Navigation Bar */
+    #NavigationMenuDiv {
+        border: 2px;
+        border-style: solid;
+        border-radius: 5px;
+        border-color: black;
+        background-color: var(--bgColorLvl2) ;
+        padding: 5px;  
+    }
+
+
+  /* header */
+    #headerDiv {
+        border: 2px;
+        border-style: solid;
+        border-radius: 5px;
+        border-color: black;
+        background-color: var(--bgColorLvl2) ;
+        padding: 5px;
+    }
+
+    /* general */
+
+/* subitem*/
+  /*div decoration*/
+    .subitemDiv{
+    border: 2px;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: rgba(58, 52, 52, 0.94);
+    background-color: var(--bgColorLvl2) ;
+    padding: 10px;
+    margin: 10px;
+    }
+       /*text decoration*/
+        .subitemTitleIcon{
+            text-shadow: 5%;
+            color: var(--subitem1TextColor);
+            font-size: 40px;
+            padding-right: 5px ;
+            margin: 0px;
+        }
+        .subitemTitleText{
+            color: var(--subitem1TextColor);
+            font-size: 35px;
+            height: auto;
+            width: auto;
+            padding-top: 0px;
+            padding-bottom: 10px;
+            margin-top: 13px;
+        }
+
+/* subitem2 (Content)*/
+    .subitem2Div{
+        border: 2px;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: rgba(58, 52, 52, 0.94);
+        background-color: var(--subitem2bgColor) ;
+        padding: 10px;
+        margin: 10px;
+        }
+            /*text decoration*/
+            .subitem2TitleIcon{
+                text-shadow: 5%;
+                color: var(--subitem2TextColor);
+                font-size: 40px;
+                padding-right: 5px ;
+                margin: 0px;
+            }
+            .subitem2TitleText{
+                color: var(--subitem2TextColor);
+                font-size: 35px;
+                height: auto;
+                width: auto;
+                padding-top: 0px;
+                padding-bottom: 10px;
+                margin-top: 13px;
+            }
+/* general */
+  .centered{
+    align-items: center;
+    text-align: center;
+}
+.container{ /*Horizontal Allignment */
+    display: flex;
+}
+
+h1 {
+    color: var(--websiteTitleTextColor);
+}
+p {
+   color: var(--paragraphTextColor);
+}
