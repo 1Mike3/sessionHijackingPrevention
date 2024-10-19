@@ -47,7 +47,41 @@ body { /* reminder do not use this */
     background-color: #333; 
     height: 60px;
     padding: 0 20px; 
+    margin-bottom: 70px;
 }
+    #icn_user {
+        font-size: 24px; 
+        color: black; 
+        font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif; 
+        border: 2px;
+        border-style: solid;
+        border-color: gray;
+        border-radius: 7px;
+        background-color: lightgrey;
+    }
+    #icn_user:hover{
+        border-style: double;
+        background-color:white;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #737373;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    .dropdown:hover .dropdown-content {
+        display: flex;
+    }
+    #txt_loggedInUser {
+        color: rgb(7, 205, 7);
+        font-weight: 700;
+    }
+
     .navContent {
         display: flex;
         width: 100%;

@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
  <link rel="stylesheet" href="style-index.css" >
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Session Hijacking Prevention</title>
 
 </head>
-<body>
 
+
+<!-- About 
+This is a test-website not intended for any regular use, only for the testing of security 
+concepts for a specific project.
+-->
+
+<!-- Mentions -->
+ <!--
+The website https://www.w3schools.com was used to help develop this Website.
+The icons/symbols used where searched on https://www.compart.com.
+Grammar checking for some elements was done using https://languagetool.org/.
+The style of the colored sections was inspired by the look of the tool https://obsidian.md/.
+The tool https://chatgpt.com was used (in a limited reasonable capacity, error-checking etc.).
+ -->
+
+
+
+<body>
 
 <!-- Header  -->
 <header id="headerDiv">
@@ -19,16 +38,39 @@
 <!-- Navigation Menu -->
 <nav id="NavigationMenuDiv">
 
+    <div class="dropdown">
+        <b id="icn_user">&#x1F464;</b>
+        <div class="dropdown-content">
+            <p>Logged-In User:&nbsp; </p><p id="txt_loggedInUser"> </p> 
+        </div>
+    </div>
+
     <div class="navContent">
         <h2 class="navTitle">Main Page</h2>
     </div>
 
     <div class="navButtons">
-        <button class="navButtonsButton">Login</button>
-        <button class="navButtonsButton">Account&nbsp;Management</button>
+        <button id="btn_login" class="navButtonsButton">Login</button>
+        <button id="btn_logout" class="navButtonsButton">Logout</button>
+        <button id="btn_userPage" class="navButtonsButton">Account&nbsp;Management&nbsp;&nbsp;<b style="font-size: larger;">&#11166;</b></button>
     </div>
     
 </nav>
+
+<!-- Login Popup-->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <form>
+            <label for="fname">First name:</label><br>
+            <input type="text" id="fname" name="fname"><br>
+            <label for="lname">Last name:</label><br>
+            <input type="text" id="lname" name="lname">
+            <input type="submit" value="submit">
+          </form> 
+    </div>
+  </div>
 
 
 <main>
@@ -63,3 +105,4 @@
 <script src="ui.js" defer></script> 
 </body>
 </html> 
+
