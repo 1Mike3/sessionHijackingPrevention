@@ -3,11 +3,15 @@
 :root {
     --bgColorLvl1: rgba(28, 33, 39, 0.946);
     --bgColorLvl2: rgba(49, 45, 41, 0.945);
-    --websiteTitleTextColor: rgba(239, 233, 228, 0.945);
+    --websiteTitleTextColor: rgba(214, 204, 195, 0.945);
     --paragraphTextColor:  rgba(239, 233, 228, 0.945);
+    --paragraphFooterTextColor:  rgba(135, 135, 135, 0.945);
     --subitem1TextColor: rgb(233, 151, 63);
     --subitem2TextColor: rgb(202, 100, 234);
     --subitem2bgColor:   rgba(47, 41, 49, 0.945);
+    --bgColorFooter:  rgba(49, 55, 63, 0.946); 
+    --bgColorHeader:  rgba(48, 48, 48, 0.946); 
+    --bgColorNavigationBar:  rgba(62, 62, 62, 0.946); 
   }
 
 /* body */
@@ -18,30 +22,69 @@ body { /* reminder do not use this */
   body.loaded {
     opacity: 1;
     background-color: var(--bgColorLvl1);
+    margin: 0px;
+    padding: 0px;
   }
-
-
-
-    /* Navigation Bar */
-    #NavigationMenuDiv {
-        border: 2px;
-        border-style: solid;
-        border-radius: 5px;
-        border-color: black;
-        background-color: var(--bgColorLvl2) ;
-        padding: 5px;  
-    }
 
 
   /* header */
     #headerDiv {
         border: 2px;
         border-style: solid;
-        border-radius: 5px;
-        border-color: black;
-        background-color: var(--bgColorLvl2) ;
-        padding: 5px;
+        border-color: rgba(58, 52, 52, 0.94);
+        background-color: var(--bgColorHeader) ;
+        padding: 0px;
+        margin: 0px;
     }
+
+
+
+  /* Navigation Bar */
+  #NavigationMenuDiv {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    background-color: #333; 
+    height: 60px;
+    padding: 0 20px; 
+}
+    .navContent {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .navTitle {
+        position: absolute; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        color: white;
+        font-size: 24px; 
+        border: solid;
+        border-width: 1px;
+        padding: 5px;
+        border-radius: 5px;
+    }
+    .navButtons {
+        display: flex;
+        gap: 10px; 
+    }
+    .navButtonsButton {
+        background-color: #555;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin: 5px;
+        border-radius: 5px;
+    }
+    .navButtonsButton:hover {
+        background-color: #777; 
+    }
+
+
+
+
 
     /* general */
 
@@ -54,7 +97,7 @@ body { /* reminder do not use this */
     border-color: rgba(58, 52, 52, 0.94);
     background-color: var(--bgColorLvl2) ;
     padding: 10px;
-    margin: 10px;
+    margin: 32px;
     }
        /*text decoration*/
         .subitemTitleIcon{
@@ -74,6 +117,7 @@ body { /* reminder do not use this */
             margin-top: 13px;
         }
 
+
 /* subitem2 (Content)*/
     .subitem2Div{
         border: 2px;
@@ -82,7 +126,7 @@ body { /* reminder do not use this */
         border-color: rgba(58, 52, 52, 0.94);
         background-color: var(--subitem2bgColor) ;
         padding: 10px;
-        margin: 10px;
+        margin: 32px;
         }
             /*text decoration*/
             .subitem2TitleIcon{
@@ -101,6 +145,29 @@ body { /* reminder do not use this */
                 padding-bottom: 10px;
                 margin-top: 13px;
             }
+
+
+
+        /* footer div */
+        #footerDiv {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .pFooter a {
+            color: #f1c40f; /* To make the email stand out */
+            text-decoration: none;
+        }
+        .pFooter a:hover {
+            text-decoration: underline;
+        }
+
+
+
 /* general */
   .centered{
     align-items: center;
@@ -115,4 +182,11 @@ h1 {
 }
 p {
    color: var(--paragraphTextColor);
+}
+.pFooter {
+    color: var(--paragraphFooterTextColor); 
+}
+
+button {
+
 }
