@@ -165,7 +165,7 @@ body { /* reminder do not use this */
             width: 100%;
         }
         .pFooter a {
-            color: #f1c40f; /* To make the email stand out */
+            color: #f1c40f; 
             text-decoration: none;
         }
         .pFooter a:hover {
@@ -191,8 +191,4 @@ p {
 }
 .pFooter {
     color: var(--paragraphFooterTextColor); 
-}
-
-button {
-
 }

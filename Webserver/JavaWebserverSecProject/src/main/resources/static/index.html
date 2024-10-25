@@ -29,6 +29,8 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
 
 <body>
 
+<div class="content"> <!-- Used to blurr out background for login form  -->
+
 <!-- Header  -->
 <header id="headerDiv">
     <!-- Title -->   
@@ -39,7 +41,9 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
 <nav id="NavigationMenuDiv">
 
     <div class="dropdown">
+        <div>
         <b id="icn_user">&#x1F464;</b>
+        </div>
         <div class="dropdown-content">
             <p>Logged-In User:&nbsp; </p><p id="txt_loggedInUser"> </p> 
         </div>
@@ -57,22 +61,36 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
     
 </nav>
 
-<!-- Login Popup-->
-<div id="myModal" class="modal">
+</div> <!-- Used to blurr out background for login form  -->
 
-    <!-- Modal content -->
-    <div class="modal-content">
-        <form>
-            <label for="fname">First name:</label><br>
-            <input type="text" id="fname" name="fname"><br>
-            <label for="lname">Last name:</label><br>
-            <input type="text" id="lname" name="lname">
-            <input type="submit" value="submit">
+<div class="modal-backdrop" id="modalBackdrop"></div> <!-- Also for blurr effect  -->
+
+<!-- #### Login Popup #### -->
+    <modal class="myLoginModal" id="loginModal">
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="navButtonsButton" id="btn_closeLoginForm">&#9746;</button>
+        </div>
+        <hr>
+        <div class="modalHeader">
+            <b>Login Form</b>
+        </div>
+        <hr>
+        <form id="loginForm">
+            <label class="inputNameForm" for="userName">User Name:</label><br>
+            <input class="inputField" type="text" id="userName" name="fname"><br>
+            <label class="inputNameForm" for="password">Password:</label><br>
+            <input class="inputField" type="text" id="password" name="lname"><br>
+            <input class="navButtonsButton" id="btn_submitLoginForm" type="submit" value="submit"><br><br>
           </form> 
-    </div>
-  </div>
+        <hr>
+        <div>
+            <samp class="loginFormOutput" id="loginFormOutput">This is example output</samp>
+        </div>
+    </modal>
 
 
+
+<div class="content"> <!-- Used to blurr out background for login form  -->
 <main>
 <!-- About -->
 <div class="subitemDiv" > 
@@ -101,8 +119,11 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
 <p class="pFooter">Contact: <a href="mailto:ic22b015@technikum-wien.at">ic22b015@technikum-wien.at</a></p> 
 </div>
 
+</div> <!-- Used to blurr out background for login form  -->
 
-<script src="ui.js" defer></script> 
+
+<script src="ui.js" defer></script>
+<script src="com.js" defer></script>
 </body>
 </html> 
 
