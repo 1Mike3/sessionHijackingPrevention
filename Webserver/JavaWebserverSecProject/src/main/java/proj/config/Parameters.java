@@ -1,17 +1,19 @@
-package proj;
+package proj.config;
 
-public enum NetworkParameters {
+public enum Parameters {
 
     //TODO !! Do NOT forget to change in JS aswell !!
 
-    //PARAM server address and port
+    //server address and port
     ADDRESS("localhost"),
     PORT(3000),
-    //PARAM file dir
-    FILE_DIR("/static");
+    //file dir
+    FILE_DIR("/static"),
+    USER_DB_PATH("/persistence/userDB.json");
+
 
     private final Object value;
-    NetworkParameters(Object value) {
+    Parameters(Object value) {
         this.value = value;
     }
     public Object getValue() {

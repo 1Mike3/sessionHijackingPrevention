@@ -27,7 +27,18 @@
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.16</version>
         </dependency>
+
+        <!-- JSON parsing, no known vulnerabilities -->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.0</version>
+        </dependency>
+
     </dependencies>
+
+
 
 
 </project>
