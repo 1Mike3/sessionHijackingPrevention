@@ -20,6 +20,7 @@ public class ManualUserManagement {
         //ums.loadUsers();
 
         LinkedList<User> users = ums.getUsers();
+        //This is obviously for testing and would be done differently if handling real user data
         users.add(new User("michi", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));
         users.add(new User("admin", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));
         users.add(new User("test", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));

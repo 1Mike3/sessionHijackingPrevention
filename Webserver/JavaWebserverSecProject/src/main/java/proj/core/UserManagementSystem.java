@@ -129,7 +129,7 @@ public class UserManagementSystem {
     public String getUserTokenByName(String username) {
         User user = getUserByName(username);
         if (user != null) {
-            return user.getLoginToken();
+            return user.getSessionToken();
         } else {
             logger.atInfo().log("getUserTokenByName--User not found");
             return null;

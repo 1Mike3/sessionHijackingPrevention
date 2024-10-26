@@ -34,10 +34,10 @@ public class Main {
         logger.atInfo().log("#Startup Javalin app started#");
 
         //Setup RequestHandler
-        RequestHandler requestHandler = new RequestHandler(app, logger);
+        RequestHandler requestHandler = new RequestHandler(app);
         requestHandler.handleRequests();
         logger.atInfo().log("#Startup RequestHandler initialized#");
-
+        logger.info("---------########## Application Running ##########---------");
 
     }
 }

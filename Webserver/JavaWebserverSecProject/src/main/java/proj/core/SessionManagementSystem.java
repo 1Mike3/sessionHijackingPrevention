@@ -30,11 +30,18 @@ public class SessionManagementSystem {
 
 
 
-    //generates a random token
+    //does what it says on the tin :)
     public String generateUniqueToken() {
         String token = UUID.randomUUID().toString();
+        //Do not see a high risk for collisions with three test users ... but still
         LinkedList<User> users = ums.getUsers();
-        return UUID.randomUUID().toString();
+        for (User user : users) {
+            if (user.getSessionToken().equals(token)) {
+                logger.atWarn().log("Token already exists, generating new one");
+                return generateUniqueToken();
+            }
+        }
+        return token;
     }
 
 

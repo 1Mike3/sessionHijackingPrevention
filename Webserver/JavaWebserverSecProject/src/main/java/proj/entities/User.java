@@ -12,7 +12,7 @@ public class User {
     //Attributes
     private String username;
     private String passwordHashed;
-    private String loginToken;
+    private String sessionToken;
 
     //Constructor
     @JsonCreator
@@ -21,7 +21,7 @@ public class User {
                 @JsonProperty("loginToken") String loginToken) {
         this.username = username;
         this.passwordHashed = passwordHashed;
-        this.loginToken = loginToken;
+        this.sessionToken = loginToken;
     }
 
     //Getters
@@ -31,14 +31,14 @@ public class User {
     public String getPasswordHashed() {
         return passwordHashed;
     }
-    public String getLoginToken() {
-        return loginToken;
+    public String getSessionToken() {
+        return sessionToken;
     }
 
     //Setters
     //Only added the setter for loginToken as the other attributes should remain constant after creation
     public void setLoginToken(String loginToken) {
-        this.loginToken = loginToken;
+        this.sessionToken = loginToken;
     }
 
 }

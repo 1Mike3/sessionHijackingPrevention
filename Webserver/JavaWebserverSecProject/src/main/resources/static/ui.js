@@ -8,7 +8,7 @@ window.addEventListener('load', function () {
  const buttonTogglePage = this.document.getElementById("btn_userPage");
  const buttonCloseLoginForm = this.document.getElementById("btn_closeLoginForm")
     /* output */
-  loginModal = this.document.getElementById("loginModal") ;
+  const loginModal = this.document.getElementById("loginModal") ;
   const modalBackdrop = document.getElementById("modalBackdrop");
   const body = document.body;
 

@@ -4,7 +4,7 @@ package proj.dev;
  * to generate a hash of the password which will be compared with the user input on login attempt.
  * Class and Method not used during runtime.
  */
-public class generatePwHash {
+public class generatePasswordHash {
     public static void main(String[] args){
         //hash the password
         try {
