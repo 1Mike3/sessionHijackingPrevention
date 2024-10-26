@@ -2,12 +2,12 @@ package proj.util;
 import java.security.MessageDigest;
 
 /**
- * This class contains functions for cryptographic operations.
+ * Contains cryptographic functions.
  */
 public class CryptoFunc {
 
   public static String hashSHA256(String input) throws Exception {
-      //Digests the input string using SHA-256
+    //Digests the input string using SHA-256
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
     //Obtains the hash of the input string
     byte[] hash = digest.digest(input.getBytes("UTF-8"));

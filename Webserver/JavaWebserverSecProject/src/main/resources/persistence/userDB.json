@@ -1,4 +1,3 @@
-
-{
-
-}
+[{"username":"michi","passwordHashed":"x","loginToken":"x"},
+  {"username":"admin","passwordHashed":"x","loginToken":"x"},
+  {"username":"test","passwordHashed":"x","loginToken":"x"}]

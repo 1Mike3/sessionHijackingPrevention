@@ -16,4 +16,3 @@ public class JSON_Serialize {
         return objectMapper.writeValueAsString(obj);
     }
 }
-/*Class generated using Generative AI*/

@@ -8,8 +8,8 @@ public enum Parameters {
     ADDRESS("localhost"),
     PORT(3000),
     //file dir
-    FILE_DIR("/static"),
-    USER_DB_PATH("/persistence/userDB.json");
+    PATH_WS_STATIC("/static"),
+    PATH_RELATIVE_USER_DB("./src/main/resources/persistence/userDB.json");
 
 
     private final Object value;
