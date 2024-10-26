@@ -1,23 +1,28 @@
 package proj.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
+import proj.config.Parameters;
 import proj.entities.User;
 
 import java.io.File;
-import java.io.FileReader;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import proj.util.JSON_Deserialize;
 import proj.util.JSON_Serialize;
 
+
+/**
+ * UserManagementSystem class
+ * This class is used to manage the users which can access the website.
+ * It contains the methods to load and save the users from and to a JSON file,
+ * as well as methods to check if a username is valid, get a user by username,
+ * Singleton Pattern
+ */
 public class UserManagementSystem {
     /*
     List containing all users.
@@ -26,12 +31,26 @@ public class UserManagementSystem {
     The content of the JSON is loaded into this list on startup.
      */
     private LinkedList<User> users = new LinkedList<User>();
-    private Logger logger;
 
-    public UserManagementSystem(Logger logger) {
-        this.logger = logger;
+
+    private final Logger logger;
+
+    private static UserManagementSystem instance = null;
+
+    //instance management
+    private UserManagementSystem() {
+        this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
         //loadUsers();
     }
+
+    //synchronized for thread safety
+    public static synchronized UserManagementSystem getInstance() {
+        if (instance == null) {
+            return new UserManagementSystem();
+        }
+        return instance;
+    }
+
 
     //Getts and Setters
     public LinkedList<User> getUsers() {
@@ -49,14 +68,15 @@ public class UserManagementSystem {
                 logger.atDebug().log("User Database found!");
                 // Read the file content as a string
                 String fileContent = Files.readString(Paths.get(file.getPath()));
-                    // Check if the file is empty
+                // Check if the file is empty
                 if (fileContent.isEmpty() || fileContent.length() < 2) {
                     logger.error("User Database is empty on load!");
                     return;
                 }
 
                 // Deserialize the JSON content into a LinkedList<User>
-                users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {});
+                users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {
+                });
                 logger.atDebug().log("User Database loaded successfully!");
             } else {
                 logger.error("User Database not found!");
@@ -72,7 +92,7 @@ public class UserManagementSystem {
             String jsonContent = JSON_Serialize.serialize(users);
 
             // Define the path to the user database file
-            File file = new File("./src/main/resources/persistence/userDB.json");
+            File file = new File(Parameters.PATH_RELATIVE_USER_DB.getValue().toString());
 
             // Write JSON string to the file (overwrite existing content)
             Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -83,6 +103,66 @@ public class UserManagementSystem {
         }
     }
 
+    //Checks if a username exists
+    //Returns TRUE if the username exists in the list
+    public boolean isUsernameValid(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Returns a user object by username from the list
+    public User getUserByName(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        logger.atInfo().log("getUserByName--User not found");
+        return null;
+    }
+
+    //Returns a user object by token from the list if the user Name matches with an entry in the list
+    public String getUserTokenByName(String username) {
+        User user = getUserByName(username);
+        if (user != null) {
+            return user.getLoginToken();
+        } else {
+            logger.atInfo().log("getUserTokenByName--User not found");
+            return null;
+        }
+    }
+
+    //Sets the token of a user by username
+    //Returns TRUE if the token was set successfully
+    public boolean setUserTokenByName(String username, String token) {
+        User user = getUserByName(username);
+        if (user != null) {
+            user.setLoginToken(token);
+            saveUsers(); //After every change in the user list the list is saved to the JSON file again
+            return true;
+        } else {
+            logger.atInfo().log("setUserTokenByName--User not found");
+            return false;
+        }
+    }
+
+    public String getUserPasswordByName(String username) {
+        User user = getUserByName(username);
+        if (user != null) {
+            return user.getPasswordHashed();
+        } else {
+            logger.atInfo().log("getUserPasswordByName--User not found");
+            return null;
+        }
+    }
 
 
-}
+
+
+
+}//end of class
+

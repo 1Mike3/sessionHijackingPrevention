@@ -13,16 +13,18 @@ public class ManualUserManagement {
     public static void main(String[] args) {
         //print out working directory
         System.out.println(System.getProperty("user.dir"));
-        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-        UserManagementSystem ums = new UserManagementSystem(loggerFactory.getLogger(UserManagementSystem.class.getName()));
+
+        UserManagementSystem ums = UserManagementSystem.getInstance();
+
         //comment out to overwrite users list, uncomment to append users
         //ums.loadUsers();
-        LinkedList<User> users = ums.getUsers();
-        users.add(new User("michi", "x", "x"));
-        users.add(new User("admin", "x", "x"));
-        users.add(new User("test", "x", "x"));
-        ums.saveUsers();
 
+        LinkedList<User> users = ums.getUsers();
+        users.add(new User("michi", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));
+        users.add(new User("admin", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));
+        users.add(new User("test", "edacb633b0cdf2af598c4b90c3a7941a0015dcea1e8acb292107649e846cd405", "x"));
+        ums.saveUsers();
+        //Validation
         System.out.println(users.get(0).getUsername());
     }
 
