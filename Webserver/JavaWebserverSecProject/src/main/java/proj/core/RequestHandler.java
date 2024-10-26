@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import org.slf4j.LoggerFactory;
+import proj.util.CryptoFunc;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -76,9 +77,48 @@ public class RequestHandler {
                 logger.atWarn().log("Empty input");
                 ctx.result("{ \"Success\":false}").status(HttpStatus.NO_CONTENT.getCode()); //204
             }else {
-                ctx.result("{ \"Success\":true}").status(HttpStatus.OK.getCode()); //200
-            }
 
+                //Check if user exists
+                if ( ! ums.isUsernameValid(username)) {
+                    logger.atWarn().log("Nonexistent User");
+                    ctx.result("{\"Success\":false}").status(HttpStatus.UNAUTHORIZED.getCode()); //561
+                }else {
+
+                    //Check if Password Matches Username
+                    //not differentiating status code on purpose (best practice)
+                    logger.debug(CryptoFunc.hashSHA256(password));
+                    logger.debug(ums.getUserByName(username).getPasswordHashed());
+                    if(! CryptoFunc.hashSHA256(password).equals(ums.getUserByName(username).getPasswordHashed())){
+                        logger.atWarn().log("Password Hash did not match");
+                        ctx.result("{\"Success\":false}").status(HttpStatus.UNAUTHORIZED.getCode()); //561
+                    }else{
+
+
+                        logger.atInfo().log("login credentials matched");
+                        //Generate a Session Token Associated with this sesstion of the user
+                        String token = sms.generateUniqueToken();
+
+                            //save token, if saving fails abort
+                            if ( ! ums.setUserTokenByName(username,token)){
+                                logger.atError().log("Error saving JSON to server");
+                                ctx.result("{\"Success\":false}").status(HttpStatus.UNAUTHORIZED.getCode()); //561
+                                return;
+                            }
+
+                        //craft login respone message to the frontend
+                        //ctx.result()
+                        ctx.result("{\"Success\":true}").status(HttpStatus.OK.getCode()); //200
+                        //TODO upgrade JDK to 21/15 to use block literal string
+                        //TODO finsih crafting login response to frontend
+                    }
+
+
+                }
+
+
+
+
+            }
 
         });//login handler
     }//meth

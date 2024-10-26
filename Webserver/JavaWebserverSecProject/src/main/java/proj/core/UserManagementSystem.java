@@ -86,7 +86,9 @@ public class UserManagementSystem {
         }
     }
 
-    public void saveUsers() {
+    //saves users to db (JSON)
+    //returns true on success and false on fail
+    public boolean saveUsers() {
         try {
             // Convert users LinkedList to JSON string
             String jsonContent = JSON_Serialize.serialize(users);
@@ -98,8 +100,10 @@ public class UserManagementSystem {
             Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
             logger.atDebug().log("User Database saved successfully!");
+            return true;
         } catch (Exception e) {
             logger.error("Error saving User Database: " + e.getMessage(), e);
+            return false;
         }
     }
 
@@ -142,8 +146,7 @@ public class UserManagementSystem {
         User user = getUserByName(username);
         if (user != null) {
             user.setLoginToken(token);
-            saveUsers(); //After every change in the user list the list is saved to the JSON file again
-            return true;
+         return saveUsers();
         } else {
             logger.atInfo().log("setUserTokenByName--User not found");
             return false;
