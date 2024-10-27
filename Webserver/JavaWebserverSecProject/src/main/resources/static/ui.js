@@ -1,3 +1,9 @@
+/*
+ABOUT
+managing ui interactions an visualization
+ */
+
+
 //Wait for load because css loading problem
 window.addEventListener('load', function () {
     document.body.classList.add('loaded'); 
@@ -15,7 +21,8 @@ window.addEventListener('load', function () {
   /* Initally deactivate the modalBackdrop on Startup */
   modalBackdrop.style.display = "none";
 
-   /* button funcs */
+
+  //************************************* button functions **************************************************
 buttonLogin.onclick = function(){
     /* Visibility Login Form */
     loginModal.style.display = "block"; 
@@ -43,11 +50,15 @@ buttonTogglePage.onclick = function(){
 buttonLogout.onclick = function(){
 
 }
-/* Login Invisible when click outside of form */
+
+}); //end load on startup
+
+//***************************** Login UI ****************************************************
+function uiOnLogin(username){
+
+}
 
 
 
 
 
-
-});

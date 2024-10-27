@@ -1,7 +1,17 @@
+/*
+ABOUT
+- managing communication with the backend
+ */
+
+
+//saved instance of an session after login
+let session = null;
+
 
 //Prevent js before page loaded
 window.addEventListener('load', function () {
     document.body.classList.add('loaded');
+
 
 
     const loginFormText = document.getElementById("loginFormOutput");
@@ -21,7 +31,7 @@ window.addEventListener('load', function () {
         }); // End event listender
 
 
-// handels the communication when
+//function to handle the communication for the login process with the bckend
         async function loginRequestHandler(username,password) {
 
             // send login data to server
@@ -38,13 +48,19 @@ window.addEventListener('load', function () {
 
                 switch (response.status) {
                     case 200: //OK
+                            //fetching json
                         console.log(response.body.toString());
                         const data = await response.json();
                         console.log("Login successful:", data);
-                        // Deactivating login form display
+                            // Deactivating login form display
                         loginModal.style.display = "none";
                         modalBackdrop.style.display = "none";
                         body.classList.remove('loginForm-active');
+                            //obtaining needed data from resp
+                        const username = data.username;
+                        const token = data.token;
+                        console.log("recived:: usn: "+ username +",token: " + token);
+                        session = new Session(username,token);
                         break;
                     case 204: //Missing Credentials
                         console.log("Login Missing credentials");
