@@ -31,7 +31,12 @@ window.addEventListener('load', function () {
         }); // End event listender
 
 
-//function to handle the communication for the login process with the bckend
+//function to handle communication for logging out to the backend
+    async function logoutRequestHandler(){
+
+    }
+
+//function to handle the process of logging in
         async function loginRequestHandler(username,password) {
 
             // send login data to server
@@ -60,7 +65,8 @@ window.addEventListener('load', function () {
                         const username = data.username;
                         const token = data.token;
                         console.log("recived:: usn: "+ username +",token: " + token);
-                        session = new Session(username,token);
+                        session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_LOGIN_REQUEST,username,token);
+                        uiOnLogin(username);
                         break;
                     case 204: //Missing Credentials
                         console.log("Login Missing credentials");

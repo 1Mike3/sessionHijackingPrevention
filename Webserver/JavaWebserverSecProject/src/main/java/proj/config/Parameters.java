@@ -2,7 +2,7 @@ package proj.config;
 
 public enum Parameters {
 
-    //TODO !! Do NOT forget to change in JS aswell !!
+
 
     //server address and port
     ADDRESS("localhost"),

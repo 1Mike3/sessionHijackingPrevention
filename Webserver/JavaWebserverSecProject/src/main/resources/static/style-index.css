@@ -64,6 +64,7 @@ body { /* reminder do not use this */
     #icn_user:hover{
         border-style: double;
         background-color:white;
+        border-color: lightblue;
     }
     .dropdown-content {
         display: none;
@@ -80,7 +81,7 @@ body { /* reminder do not use this */
         display: flex;
     }
     #txt_loggedInUser {
-        color: rgb(7, 205, 7);
+        color: darkgrey;
         font-weight: 700;
     }
 

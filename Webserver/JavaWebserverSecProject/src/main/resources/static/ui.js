@@ -55,7 +55,14 @@ buttonLogout.onclick = function(){
 
 //***************************** Login UI ****************************************************
 function uiOnLogin(username){
+    const buttonLogin = document.getElementById("btn_login")
+    const userLoginText = document.getElementById("txt_loggedInUser");
+    const userIcon = document.getElementById("icn_user");
 
+    buttonLogin.disabled = true;
+    userLoginText.textContent = username;
+    userLoginText.style.color = "lightgreen";
+    userIcon.style.background = "lightgreen";
 }
 
 
