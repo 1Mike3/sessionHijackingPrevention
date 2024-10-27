@@ -2,6 +2,7 @@ package proj.core;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
 import proj.config.Parameters;
+import proj.core.web.RequestHandler;
 
 
 /**
@@ -15,10 +16,10 @@ public class Main {
         Logger logger = loggerFactory.getLogger(Main.class.getName());
         logger.atInfo().log("#Startup Logger initialized#");
 
+            //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
         logger.atInfo().log("#Startup UserManagementSystem initialized#");
-
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
         logger.atInfo().log("#Startup SessionManagementSystem initialized#");

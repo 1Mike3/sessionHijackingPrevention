@@ -30,17 +30,17 @@ public class UserManagementSystem {
     users are created manually, and stored in the "userDB.json" file.
     The content of the JSON is loaded into this list on startup.
      */
-    private LinkedList<User> users = new LinkedList<User>();
+    private LinkedList<User> users = new LinkedList<>();
 
 
     private final Logger logger;
 
-    private static UserManagementSystem instance = null;
+    private static UserManagementSystem instance;
 
     //instance management
     private UserManagementSystem() {
         this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
-        //loadUsers();
+        loadUsers();
     }
 
     //synchronized for thread safety
@@ -75,7 +75,7 @@ public class UserManagementSystem {
                 }
 
                 // Deserialize the JSON content into a LinkedList<User>
-                users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {
+                this.users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {
                 });
                 logger.atDebug().log("User Database loaded successfully!");
             } else {
