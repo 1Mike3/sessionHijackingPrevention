@@ -2,7 +2,7 @@
 ABOUT
 - managing user login sessions
 - contains static and non-static methods for interacting with cookies
-- because cookies are only used by this class general functions are also grouped in with this class
+- because cookies are only used by this class, general functions are also grouped in with this class
 IMPORTANT NOTE
 The cookie mechanism could be implemented through the backend for better security, but as
 stated in my expose i am implementing it in the frontend for testing purposes.
@@ -16,6 +16,13 @@ const SESSION_CONSTRUCTOR_MODI = Object.freeze({
     CREATE_FROM_LOGIN_REQUEST: 1,
     CREATE_FROM_STORED_TOKEN: 2,
 });
+//for changing the code for testing during development
+const DEBUG = Object.freeze({
+ACTIVE: false
+});
+
+// Perform the function for logging a user in on startup
+Session.onStartup();
 
 class Session {
 
@@ -65,7 +72,16 @@ class Session {
         const expires = `expires=${date.toUTCString()}`;
 
         // Store the JSON data as a cookie
-        document.cookie = `session=${encodeURIComponent(jsonData)}; ${expires}; path=/`;
+        //encodeURIComponent is used to escape special characters, samesite
+        //Different version used for testing on localhost
+        if(DEBUG.ACTIVE){
+            //Debug version
+            document.cookie = `session=${encodeURIComponent(jsonData)}; ${expires}; path=/;SameSite=Lax`;
+        }else{
+            //Production version
+            document.cookie = `session=${encodeURIComponent(jsonData)}; ${expires}; path=/;SameSite=Strict`;
+        }
+
     }
 
 
@@ -89,6 +105,7 @@ class Session {
     }
 
 //********************** Static cookie functions ***********************************************
+
     //checks if a cookie is stored for the website
     static cookieExists(){
         return document.cookie.split("; ").some(cookie => cookie.startsWith("session="));
@@ -121,8 +138,8 @@ class Session {
 
 
     static onStartup() {
-        //TODO check if cookie token present if so load and make request to backend
-        //TODO if so create new session object with response from backend
+
+
     }
 
 

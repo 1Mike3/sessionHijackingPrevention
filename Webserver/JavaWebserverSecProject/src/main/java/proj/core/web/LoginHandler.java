@@ -19,9 +19,9 @@ public class LoginHandler {
             logger.atInfo().log("Login attempt from: " + ctx.ip());
             logger.atInfo().log(ctx.body());
 
-            String username = "";
-            String password = "";
-            //Obtain Information from Form
+            String username;
+            String password;
+            //parse data to obtain information which cookie to destroy
             try{
                 HashMap loginData = ctx.bodyAsClass(HashMap.class);
                 username = loginData.get("username").toString();
@@ -29,29 +29,32 @@ public class LoginHandler {
             }catch (Exception e){
                 logger.atError().log("Error parsing login data");
                 ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
+                return;
             }
 
             //React to empty input
             if(username.isEmpty() || password.isEmpty()){
                 logger.atWarn().log("Empty input");
                 ctx.result("").status(HttpStatus.NO_CONTENT.getCode()); //204
+                return;
             }else {
 
                 //Check if user exists
                 if ( ! ums.isUsernameValid(username)) {
                     logger.atWarn().log("Nonexistent User");
                     ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
+                    return;
                 }else {
 
                     //Check if Password Matches Username
-                    //not differentiating status code on purpose (best practice)
+                    //not differentiating status code on purpose (best practice) so no guessing usernames
                     logger.debug(CryptoFunc.hashSHA256(password));
                     logger.debug(ums.getUserByName(username).getPasswordHashed());
                     if(! CryptoFunc.hashSHA256(password).equals(ums.getUserByName(username).getPasswordHashed())){
                         logger.atWarn().log("Password Hash did not match");
                         ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
+                        return;
                     }else{
-
 
                         logger.atInfo().log("login credentials matched");
                         //Generate a Session Token Associated with this sesstion of the user
@@ -65,7 +68,7 @@ public class LoginHandler {
                         }
 
                         //craft login respone message to the frontend
-                        //usually i would build the json programmatically, but for the limited number of responses this will do
+                        //usually I would build the json programmatically, but for the limited number of responses this will do
                         //ctx.result()
                         ctx.result(String.format("""
                         {

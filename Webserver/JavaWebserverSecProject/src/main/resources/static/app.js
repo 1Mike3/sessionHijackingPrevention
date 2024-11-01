@@ -9,12 +9,12 @@ managing ui interactions an visualization
  //   document.body.classList.add('loaded');
 
     /* input */
- const buttonLogin = this.document.getElementById("btn_login");
- const buttonLogout = this.document.getElementById("btn_logout");
- const buttonTogglePage = this.document.getElementById("btn_userPage");
- const buttonCloseLoginForm = this.document.getElementById("btn_closeLoginForm")
+ const buttonLogin = document.getElementById("btn_login");
+ const buttonLogout = document.getElementById("btn_logout");
+ const buttonTogglePage = document.getElementById("btn_userPage");
+ const buttonCloseLoginForm = document.getElementById("btn_closeLoginForm")
     /* output */
-  const loginModal = this.document.getElementById("loginModal") ;
+  const loginModal = document.getElementById("loginModal") ;
   const modalBackdrop = document.getElementById("modalBackdrop");
   const body = document.body;
 
@@ -41,7 +41,7 @@ function uiOnLogin(username){
 //************************************* button functions **************************************************
 function buttonLoginWhenNotLoggedIn(){
     uiTurnLoginFormOn()
-    //uiOnLogin function only after successful login
+    //uiOnLogin function only after successful login in com.js
 }
 function buttonLoginWhenAlreadyLoggedIn(){
     /* Visibility Login Form */
@@ -53,6 +53,9 @@ function buttonLogoutWhenLoggedIn(){
     Session.cookieKillall();
     //reset the function again to the default
     buttonLogout.onclick = buttonLogoutWhenNotLoggedIn;
+    //send logout request to server
+    logoutRequestHandler().then(r =>
+         alert("You have been logged out!"));
 }
 function buttonLogoutWhenNotLoggedIn(){
     alert("You are not logged in!")

@@ -30,6 +30,8 @@ window.addEventListener('load', function () {
         await loginRequestHandler(username,password)
         }); // End event listender
 
+//setting up event listener for the logout button
+    //Added to the Logout button "onckick" function in app.js
 
 //function to handle the process of logging in
         async function loginRequestHandler(username,password) {
@@ -58,6 +60,8 @@ window.addEventListener('load', function () {
                         console.log("recived:: usn: "+ username +",token: " + token);
                             //creating new session object from login data
                         session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_LOGIN_REQUEST,username,token);
+                        //cookie which stores the session data is created
+                        session.storeSessionAsCookie(30);
                             //change ui after login
                         uiOnLogin(username);
                         buttonLogout.onclick = buttonLogoutWhenLoggedIn;
@@ -83,38 +87,30 @@ window.addEventListener('load', function () {
                 alert("Login Error: " + error);
             }
         }
+
+}); //event listener loaded
+
 //function to handle communication for logging out to the backend
-    async function logoutRequestHandler(){
-        const response = await fetch("http://localhost:3000/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token:session.getToken() ,username:session.getUsername()})
-        });
-        switch (response.status) {
-            case 200:
-                console.log("Logout successful");
-                session = null;
-                uiOnLogout();
-                break;
-            case 500:
-                console.log("Logout Server Error")
-                break;
-            default:
-                console.log("Logout unknown Response:", response.status);
-        }
+async function logoutRequestHandler(){
+    const response = await fetch("http://localhost:3000/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token:session.getToken() ,username:session.getUsername()})
+    });
+    switch (response.status) {
+        case 200:
+            console.log("Logout successful");
+            session = null;
+            uiOnLogout();
+            break;
+        case 500:
+            console.log("Logout Server Error")
+            alert("Logout Server Error");
+            break;
+        default:
+            console.log("Logout unknown Response:", response.status);
+            alert("Logout unknown Response");
     }
-
-
-
-
-
-    /* Login Invisible when click outside of form */
-
-
-
-
-
-
-});
+}
