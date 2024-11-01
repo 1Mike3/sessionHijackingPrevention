@@ -4,8 +4,6 @@ ABOUT
  */
 
 
-//saved instance of an session after login
-let session = null;
 
 
 //Prevent js before page loaded

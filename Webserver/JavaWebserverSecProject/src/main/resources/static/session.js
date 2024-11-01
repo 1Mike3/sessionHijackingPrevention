@@ -7,7 +7,8 @@ IMPORTANT NOTE
 The cookie mechanism could be implemented through the backend for better security, but as
 stated in my expose i am implementing it in the frontend for testing purposes.
 The focus of this project is the detection of the cookie theft not it's prevention.
-For security purposes in other projects an implementation in the backend with appropriate mechanisms should be preferred.
+For security purposes in other projects an implementation in the backend with appropriate mechanisms should be preferred, this
+setup is vulnerable (on purpose) to XSS attacks.
  */
 
 //constants
@@ -21,8 +22,8 @@ const DEBUG = Object.freeze({
 ACTIVE: false
 });
 
-// Perform the function for logging a user in on startup
-Session.onStartup();
+//saved instance of a session after login used throughout the application
+let session = null;
 
 class Session {
 
@@ -138,11 +139,21 @@ class Session {
 
 
     static onStartup() {
-
+        //called once on startup in the same file
+        //check if a session cookie exists
+        if (Session.cookieExists()) {
+            //create a new session from the stored cookie
+            session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_STORED_TOKEN);
+            console.log("Session.onStartup: Session created from stored token");
+        } else {
+            console.log("Session.onStartup: No session cookie found");
+        }
 
     }
 
-
 }
+
+// Perform the function for logging a user in on startup
+Session.onStartup();
 
 
