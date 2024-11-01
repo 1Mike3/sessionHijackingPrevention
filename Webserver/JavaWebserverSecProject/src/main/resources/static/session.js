@@ -22,8 +22,6 @@ const DEBUG = Object.freeze({
 ACTIVE: false
 });
 
-//saved instance of a session after login used throughout the application
-let session = null;
 
 class Session {
 
@@ -133,7 +131,7 @@ class Session {
         // Split all cookies and delete each one individually (by setting its expiration date in the past)
         document.cookie.split(";").forEach(cookie => {
             const [name] = cookie.split("=");
-            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+            document.cookie = `${name}=; path=/;SameSite=Strict;expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
         });
     }
 
@@ -145,6 +143,8 @@ class Session {
             //create a new session from the stored cookie
             session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_STORED_TOKEN);
             console.log("Session.onStartup: Session created from stored token");
+            uiOnLogin(session.username);
+            buttonLogout.onclick = buttonLogoutWhenLoggedIn;
         } else {
             console.log("Session.onStartup: No session cookie found");
         }

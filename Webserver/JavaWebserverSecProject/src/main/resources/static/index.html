@@ -75,8 +75,8 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
             <b>Login Form</b>
         </div>
         <hr>
-        <form id="loginForm">
-            <label class="inputNameForm" for="userName">User Name:</label><br>
+        <form id="loginForm" action="/login" method="POST">
+            <label class="inputNameForm" for="userName">User Name: </label><br>
             <input class="inputField" type="text" id="userName" name="fname"><br>
             <label class="inputNameForm" for="password">Password:</label><br>
             <input class="inputField" type="text" id="password" name="lname"><br>
@@ -122,9 +122,10 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
 
 </div> <!-- Used to blur out background for login form  -->
 
-<script src="session.js"></script>
 <script src="app.js" defer></script>
+<script src="session.js" defer> </script>
 <script src="com.js" defer></script>
+
 </body>
 </html> 
 

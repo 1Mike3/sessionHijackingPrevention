@@ -1,5 +1,6 @@
 package proj.core;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import org.slf4j.Logger;
 import proj.config.Parameters;
 import proj.core.web.RequestHandler;
@@ -30,9 +31,9 @@ public class Main {
 
         //Start Javalin app
         Javalin app = Javalin.create(config -> {
-            config.staticFiles.add("/static"); //PARAM file dir
+            config.staticFiles.add("/static", Location.CLASSPATH); // Serve from the 'static' directory within resources
         }).start(address, port);
-        logger.atInfo().log("#Startup Javalin app started#");
+
 
         //Setup RequestHandler
         RequestHandler requestHandler = new RequestHandler(app);

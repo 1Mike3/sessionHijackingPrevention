@@ -9,8 +9,8 @@ public enum Parameters {
     PORT(3000),
     //file dir
     PATH_WS_STATIC("/static"),
-    PATH_RELATIVE_USER_DB("./src/main/resources/persistence/userDB.json");
-
+    PATH_RELATIVE_USER_DB("./src/main/resources/persistence/userDB.json"),
+    PATH_FAVICON("./src/main/resources/static/favicon.ico");
 
     private final Object value;
     Parameters(Object value) {

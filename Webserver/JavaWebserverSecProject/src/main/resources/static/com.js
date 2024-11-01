@@ -22,10 +22,10 @@ window.addEventListener('load', function () {
 
 //setting up event listener for the login form submisstion
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
-        const username = document.getElementById("userName").value;
-        const password = document.getElementById("password").value;
-        event.preventDefault();
-        await loginRequestHandler(username,password)
+            event.preventDefault();
+            const username = document.getElementById("userName").value;
+            const password = document.getElementById("password").value;
+            await loginRequestHandler(username,password)
         }); // End event listender
 
 //setting up event listener for the logout button

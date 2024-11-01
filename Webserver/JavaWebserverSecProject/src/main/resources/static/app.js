@@ -8,6 +8,10 @@ managing ui interactions an visualization
 //window.addEventListener('load', function () {
  //   document.body.classList.add('loaded');
 
+//saved instance of a session after login used throughout the application
+let session = null;
+
+
     /* input */
  const buttonLogin = document.getElementById("btn_login");
  const buttonLogout = document.getElementById("btn_logout");
