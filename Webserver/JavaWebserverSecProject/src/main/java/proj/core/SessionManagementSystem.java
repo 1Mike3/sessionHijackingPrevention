@@ -20,7 +20,7 @@ public class SessionManagementSystem {
       this.logger =  LoggerFactory.getLogger(SessionManagementSystem.class.getName());
       this.ums = UserManagementSystem.getInstance();
     }
-
+    //Get Instance for Singleton Pattern
     public static synchronized SessionManagementSystem getInstance() {
         if (instance == null) {
             return new SessionManagementSystem();
@@ -28,6 +28,16 @@ public class SessionManagementSystem {
         return instance;
     }
 
+    //Checks if a provided username-token pair is valid and returns a boolean
+    public boolean authenticator(String username, String token) {
+        LinkedList<User> users = ums.getUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.getSessionToken().equals(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     //does what it says on the tin :)
@@ -43,6 +53,8 @@ public class SessionManagementSystem {
         }
         return token;
     }
+
+
 
 
 

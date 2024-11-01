@@ -11,7 +11,8 @@ import java.util.HashMap;
 /**
  * separated from the RequestHandler because it is one of the complex handler
  */
-public class LogoutHandler {
+public class HandlerLogout {
+    //Method which is called once to setup the handler of an endpoint
     public static void setHandler(Javalin app, Logger logger, UserManagementSystem ums, SessionManagementSystem sms){
         //react to recieved login form
         app.post("/logout", ctx -> {

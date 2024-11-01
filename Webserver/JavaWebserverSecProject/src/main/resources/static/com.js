@@ -85,8 +85,8 @@ window.addEventListener('load', function () {
                 alert("Login Error: " + error);
             }
         }
-
 }); //event listener loaded
+
 
 //function to handle communication for logging out to the backend
 async function logoutRequestHandler(){
@@ -110,5 +110,32 @@ async function logoutRequestHandler(){
         default:
             console.log("Logout unknown Response:", response.status);
             alert("Logout unknown Response");
+    }
+}
+
+//function to make a request to the server to load the Account-Management page (if valid login)
+async function loadUserPageRequestHandler(){
+    const response = await fetch("http://localhost:3000/restricted/userSpace.html", {
+        method: "GET",
+        headers: {
+            "Authorization-Token": "" + session.getToken(),
+            "Authorization-Username": "" + session.getUsername(),
+            "Content-Type": "application/json",
+        },
+    });
+    switch (response.status) {
+        case 200:
+            console.log("Authorization successful");
+            const htmlContent = await response.text(); // Read the response as text
+            document.body.innerHTML = htmlContent; // Inject the HTML content into the page
+            break;
+        case 401:
+            console.log("UserPage access unauthorized");
+            break;
+        case 500:
+            console.log("UserPage Server Error");
+            break;
+        default:
+            console.log("UserPage unknown Response:", response.status);
     }
 }

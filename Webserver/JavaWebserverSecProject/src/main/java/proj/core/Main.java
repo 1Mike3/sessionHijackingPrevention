@@ -3,7 +3,6 @@ import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import org.slf4j.Logger;
 import proj.config.Parameters;
-import proj.core.web.RequestHandler;
 
 
 /**

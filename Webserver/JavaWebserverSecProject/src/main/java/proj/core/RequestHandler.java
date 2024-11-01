@@ -1,18 +1,14 @@
-package proj.core.web;
+package proj.core;
 import io.javalin.Javalin;
-import io.javalin.http.HttpStatus;
 import org.slf4j.LoggerFactory;
-import proj.config.Parameters;
-import proj.core.SessionManagementSystem;
-import proj.core.UserManagementSystem;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import proj.core.web.HandlerAccessSensitiveContent;
+import proj.core.web.HandlerLogin;
+import proj.core.web.HandlerLogout;
 
 
 /**
  * Class to handle requests
- * Some of the larger handlers are outsorced to other classes and called here
+ * Some of the larger handlers are outsorced to other classes in the web package and called here
  + * @param app instance of Javalin "app" to handle requests
  + * @param logger instance of Logger to log custom messages inherited from Main
  */
@@ -52,10 +48,11 @@ public class RequestHandler {
         });
 
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
-    LoginHandler.setHandler(app,logger,ums,sms);
+    HandlerLogin.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ LOGOT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
-    LogoutHandler.setHandler(app,logger,ums,sms);
-
+    HandlerLogout.setHandler(app,logger,ums,sms);
+//++++++++++++++++++++++++++++++++ ACCESS SENSITIVE CONTENT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
+    HandlerAccessSensitiveContent.setHandler(app,logger,ums,sms);
     }//M
 } //C
 

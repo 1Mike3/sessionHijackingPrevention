@@ -75,8 +75,8 @@ modalBackdrop.onclick = function () {
 buttonCloseLoginForm.onclick = function (){
     uiTurnLoginFormOff()
 }
-buttonTogglePage.onclick = function(){
-
+buttonTogglePage.onclick = async function(){
+    await loadUserPageRequestHandler()
 }
 //************************************* MISC UI Functions **************************************************
 function uiTurnLoginFormOff(){
