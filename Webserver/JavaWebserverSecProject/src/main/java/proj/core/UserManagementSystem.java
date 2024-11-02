@@ -65,7 +65,7 @@ public class UserManagementSystem {
 
             // Check if the file exists
             if (file.exists()) {
-                logger.atDebug().log("User Database found!");
+                logger.debug("User Database found!");
                 // Read the file content as a string
                 String fileContent = Files.readString(Paths.get(file.getPath()));
                 // Check if the file is empty
@@ -77,7 +77,7 @@ public class UserManagementSystem {
                 // Deserialize the JSON content into a LinkedList<User>
                 this.users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {
                 });
-                logger.atDebug().log("User Database loaded successfully!");
+                logger.debug("User Database loaded successfully!");
             } else {
                 logger.error("User Database not found!");
             }
@@ -99,7 +99,7 @@ public class UserManagementSystem {
             // Write JSON string to the file (overwrite existing content)
             Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-            logger.atDebug().log("User Database saved successfully!");
+            logger.debug("User Database saved successfully!");
             return true;
         } catch (Exception e) {
             logger.error("Error saving User Database: " + e.getMessage(), e);
@@ -125,7 +125,7 @@ public class UserManagementSystem {
                 return user;
             }
         }
-        logger.atInfo().log("getUserByName--User not found");
+        logger.info("getUserByName--User not found");
         return null;
     }
 
@@ -135,7 +135,7 @@ public class UserManagementSystem {
         if (user != null) {
             return user.getSessionToken();
         } else {
-            logger.atInfo().log("getUserTokenByName--User not found");
+            logger.info("getUserTokenByName--User not found");
             return null;
         }
     }
@@ -148,7 +148,7 @@ public class UserManagementSystem {
             user.setLoginToken(token);
          return saveUsers();
         } else {
-            logger.atInfo().log("setUserTokenByName--User not found");
+            logger.info("setUserTokenByName--User not found");
             return false;
         }
     }
@@ -158,7 +158,7 @@ public class UserManagementSystem {
         if (user != null) {
             return user.getPasswordHashed();
         } else {
-            logger.atInfo().log("getUserPasswordByName--User not found");
+            logger.info("getUserPasswordByName--User not found");
             return null;
         }
     }

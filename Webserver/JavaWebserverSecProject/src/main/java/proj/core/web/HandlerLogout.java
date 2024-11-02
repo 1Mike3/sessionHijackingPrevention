@@ -17,8 +17,8 @@ public class HandlerLogout {
         //react to recieved login form
         app.post("/logout", ctx -> {
             // some code
-            logger.atInfo().log("Logout attempt from: " + ctx.ip());
-            logger.atInfo().log(ctx.body());
+            logger.info("Logout attempt from: " + ctx.ip());
+            logger.info(ctx.body());
 
             String token = "";
             String username = "";
@@ -28,9 +28,9 @@ public class HandlerLogout {
                 HashMap loginData = ctx.bodyAsClass(HashMap.class);
                 token = loginData.get("token").toString();
                 username = loginData.get("username").toString();
-                logger.atInfo().log("Logout req. Recieved :: Token: " + token + " Username: " + username);
+                logger.info("Logout req. Recieved :: Token: " + token + " Username: " + username);
             }catch (Exception e){
-                logger.atError().log("Error parsing login data");
+                logger.error("Error parsing login data");
                 ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
                 return;
             }
@@ -43,17 +43,17 @@ public class HandlerLogout {
                     u.setLoginToken(""); //delete token
                     //save updated user data to the list
                     if (ums.saveUsers()) {
-                        logger.atInfo().log("Token deleted successfully");
+                        logger.info("Token deleted successfully");
                         ctx.result("").status(HttpStatus.OK.getCode()); //200
                         return;
                     } else {
-                        logger.atWarn().log("Error saving User To Database");
+                        logger.warn("Error saving User To Database");
                         ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
                         return;
                     }
 
                 }
-                    logger.atWarn().log("Token does not exist");
+                    logger.warn("Token does not exist");
                     ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
             }
 

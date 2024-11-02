@@ -47,7 +47,7 @@ public class SessionManagementSystem {
         LinkedList<User> users = ums.getUsers();
         for (User user : users) {
             if (user.getSessionToken().equals(token)) {
-                logger.atWarn().log("Token already exists, generating new one");
+                logger.warn("Token already exists, generating new one");
                 return generateUniqueToken();
             }
         }

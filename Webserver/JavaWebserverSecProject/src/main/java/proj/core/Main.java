@@ -1,7 +1,9 @@
 package proj.core;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proj.config.Parameters;
 
 
@@ -12,17 +14,17 @@ public class Main {
     public static void main(String[] args) {
 
         //Setup Logger
-        org.slf4j.ILoggerFactory loggerFactory = org.slf4j.LoggerFactory.getILoggerFactory();
+        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
-        logger.atInfo().log("#Startup Logger initialized#");
+        logger.info("\n\n\n\n###Startup### -- Logger initialized#");
 
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
-        logger.atInfo().log("#Startup UserManagementSystem initialized#");
+        //logger.info().log("#Startup UserManagementSystem initialized#");
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
-        logger.atInfo().log("#Startup SessionManagementSystem initialized#");
+       // logger.info().log("#Startup SessionManagementSystem initialized#");
 
         //PARAM server address and port
         String address = Parameters.ADDRESS.getValue().toString();
@@ -37,7 +39,7 @@ public class Main {
         //Setup RequestHandler
         RequestHandler requestHandler = new RequestHandler(app);
         requestHandler.handleRequests();
-        logger.atInfo().log("#Startup RequestHandler initialized#");
+       // logger.info().log("#Startup RequestHandler initialized#");
         logger.info("---------########## Application Running ##########---------");
 
     }

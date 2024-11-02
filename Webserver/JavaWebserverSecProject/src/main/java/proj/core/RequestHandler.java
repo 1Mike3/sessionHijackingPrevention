@@ -44,7 +44,7 @@ public class RequestHandler {
         //app.after("/path/*", ctx -> {
         app.after( ctx -> {
             // runs after request to /path/*
-            logger.atDebug().log("Request to: " + ctx.path());
+            logger.debug("Request to: " + ctx.path());
         });
 
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++

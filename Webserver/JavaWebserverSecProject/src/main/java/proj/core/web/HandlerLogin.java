@@ -17,8 +17,8 @@ public class HandlerLogin {
         //react to recieved login form
         app.post("/login", ctx -> {
             // some code
-            logger.atInfo().log("Login attempt from: " + ctx.ip());
-            logger.atInfo().log(ctx.body());
+            logger.info("Login attempt from: " + ctx.ip());
+            logger.info(ctx.body());
 
             String username;
             String password;
@@ -28,21 +28,21 @@ public class HandlerLogin {
                 username = loginData.get("username").toString();
                 password = loginData.get("password").toString();
             }catch (Exception e){
-                logger.atError().log("Error parsing login data");
+                logger.error("Error parsing login data");
                 ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
                 return;
             }
 
             //React to empty input
             if(username.isEmpty() || password.isEmpty()){
-                logger.atWarn().log("Empty input");
+                logger.warn("Empty input");
                 ctx.result("").status(HttpStatus.NO_CONTENT.getCode()); //204
                 return;
             }else {
 
                 //Check if user exists
                 if ( ! ums.isUsernameValid(username)) {
-                    logger.atWarn().log("Nonexistent User");
+                    logger.warn("Nonexistent User");
                     ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
                     return;
                 }else {
@@ -52,18 +52,18 @@ public class HandlerLogin {
                     logger.debug(CryptoFunc.hashSHA256(password));
                     logger.debug(ums.getUserByName(username).getPasswordHashed());
                     if(! CryptoFunc.hashSHA256(password).equals(ums.getUserByName(username).getPasswordHashed())){
-                        logger.atWarn().log("Password Hash did not match");
+                        logger.warn("Password Hash did not match");
                         ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
                         return;
                     }else{
 
-                        logger.atInfo().log("login credentials matched");
+                        logger.info("login credentials matched");
                         //Generate a Session Token Associated with this sesstion of the user
                         String token = sms.generateUniqueToken();
 
                         //save token, if saving fails abort
                         if ( ! ums.setUserTokenByName(username,token)){
-                            logger.atError().log("Error saving JSON to server");
+                            logger.error("Error saving JSON to server");
                             ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
                             return;
                         }
