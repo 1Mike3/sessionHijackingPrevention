@@ -13,7 +13,7 @@ public class SessionManagementSystem {
     private final Logger logger;
     private final UserManagementSystem ums;
 
-    private static SessionManagementSystem instance = null;
+    private static SessionManagementSystem instance;
 
     //Constructor
     private SessionManagementSystem() {
@@ -23,7 +23,8 @@ public class SessionManagementSystem {
     //Get Instance for Singleton Pattern
     public static synchronized SessionManagementSystem getInstance() {
         if (instance == null) {
-            return new SessionManagementSystem();
+            instance = new SessionManagementSystem();
+            return instance;
         }
         return instance;
     }
@@ -35,6 +36,11 @@ public class SessionManagementSystem {
             if (user.getUsername().equals(username) && user.getSessionToken().equals(token)) {
                 return true;
             }
+        }
+        logger.error("Username and String did not Match, stored Data for debugging:");
+        for(User u : ums.getUsers()){
+            logger.info(u.getUsername());
+            logger.info(u.getSessionToken());
         }
         return false;
     }

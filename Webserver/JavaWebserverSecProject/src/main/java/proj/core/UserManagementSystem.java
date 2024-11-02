@@ -43,10 +43,10 @@ public class UserManagementSystem {
         loadUsers();
     }
 
-    //synchronized for thread safety
     public static synchronized UserManagementSystem getInstance() {
         if (instance == null) {
-            return new UserManagementSystem();
+            instance = new UserManagementSystem();
+            return instance;
         }
         return instance;
     }
@@ -129,16 +129,7 @@ public class UserManagementSystem {
         return null;
     }
 
-    //Returns a user object by token from the list if the user Name matches with an entry in the list
-    public String getUserTokenByName(String username) {
-        User user = getUserByName(username);
-        if (user != null) {
-            return user.getSessionToken();
-        } else {
-            logger.info("getUserTokenByName--User not found");
-            return null;
-        }
-    }
+
 
     //Sets the token of a user by username
     //Returns TRUE if the token was set successfully
