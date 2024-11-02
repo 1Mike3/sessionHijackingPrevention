@@ -29,7 +29,7 @@ window.addEventListener('load', function () {
         }); // End event listender
 
 //setting up event listener for the logout button
-    //Added to the Logout button "onckick" function in app.js
+    //Added to the Logout button "onckick" function in appMain.js
 
 //function to handle the process of logging in
         async function loginRequestHandler(username,password) {
@@ -61,8 +61,8 @@ window.addEventListener('load', function () {
                         //cookie which stores the session data is created
                         session.storeSessionAsCookie(30);
                             //change ui after login
-                        uiOnLogin(username);
-                        buttonLogout.onclick = buttonLogoutWhenLoggedIn;
+                        uiOnLoginMainPage(username);
+                        buttonLogout.onclick = buttonLogoutWhenLoggedInMainPage;
                         break;
                     case 204: //Missing Credentials
                         console.log("Login Missing credentials");
@@ -101,7 +101,9 @@ async function logoutRequestHandler(){
         case 200:
             console.log("Logout successful");
             session = null;
-            uiOnLogout();
+            //only do if on main page and function exists
+            if(uiOnLogout != null)
+                uiOnLogout();
             break;
         case 500:
             console.log("Logout Server Error")
@@ -128,6 +130,9 @@ async function loadUserPageRequestHandler(){
             console.log("Authorization successful");
             const htmlContent = await response.text(); // Read the response as text
             document.body.innerHTML = htmlContent; // Inject the HTML content into the page
+            //setup the User Page after switching to it
+            (session != null) ? uiOnLoginUserPage(session.getUsername()) : console.log("load Account Management session == null");
+            setupUserSpace();
             break;
         case 401:
             console.log("UserPage access unauthorized");

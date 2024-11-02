@@ -20,9 +20,11 @@
 <nav id="NavigationMenuDiv">
 
     <div class="dropdown">
-        <b id="icn_user">&#x1F464;</b>
+        <div>
+            <b id="icn_user">&#x1F464;</b>
+        </div>
         <div class="dropdown-content">
-            <p>Logged-In User:&nbsp; </p><p id="txt_loggedInUser"> </p> 
+            <p>Logged-In User:&nbsp;&nbsp;</p><p id="txt_loggedInUser"> none </p>
         </div>
     </div>
 
@@ -33,7 +35,7 @@
     <div class="navButtons">
        <!-- <button id="btn_login" class="navButtonsButton">Login</button> --> 
         <button id="btn_logout" class="navButtonsButton">Logout</button>
-        <button id="btn_userPage" class="navButtonsButton"><b style="font-size: larger;">&#11164;</b>&nbsp;&nbsp;Main&nbsp;Page</button>
+        <button id="btn_togglePage" class="navButtonsButton"><b style="font-size: larger;">&#11164;</b>&nbsp;&nbsp;Main&nbsp;Page</button>
     </div>
     
 </nav>
@@ -71,8 +73,9 @@
 <p class="pFooter">Contact: <a href="mailto:ic22b015@technikum-wien.at">ic22b015@technikum-wien.at</a></p> 
 </div>
 
-<script src="../session.js"></script>
-<script src="../app.js" defer></script>
+<script src="../data.js" defer></script>
+<script src="../appUserSpace.js" defer></script>
+<script src="../session.js" defer> </script>
 <script src="../com.js" defer></script>
 </body>
 </html> 

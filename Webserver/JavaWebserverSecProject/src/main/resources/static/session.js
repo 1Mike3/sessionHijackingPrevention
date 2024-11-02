@@ -143,8 +143,8 @@ class Session {
             //create a new session from the stored cookie
             session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_STORED_TOKEN);
             console.log("Session.onStartup: Session created from stored token");
-            uiOnLogin(session.username);
-            buttonLogout.onclick = buttonLogoutWhenLoggedIn;
+            uiOnLoginMainPage(session.username);
+            buttonLogout.onclick = buttonLogoutWhenLoggedInMainPage;
         } else {
             console.log("Session.onStartup: No session cookie found");
         }
