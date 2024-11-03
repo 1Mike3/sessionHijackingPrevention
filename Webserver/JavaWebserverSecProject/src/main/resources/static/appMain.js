@@ -1,6 +1,6 @@
 /*
 ABOUT
-managing ui interactions an visualization
+managing ui interactions an visualization on the main Page
  */
 
 
@@ -42,12 +42,22 @@ function uiOnLoginMainPage(username){
     const userLoginText = document.getElementById("txt_loggedInUser");
     const userIcon = document.getElementById("icn_user");
 
-    buttonLogin.onclick = buttonLoginWhenAlreadyLoggedIn;
     userLoginText.textContent = username;
     userLoginText.style.color = "lightgreen";
     userIcon.style.background = "lightgreen";
 }
+//***************************** Logout UI ****************************************************
+// Function for changing the ui after login on the main page to visualize the logged in user
+function uiOnLogout(){
+    const buttonLogin = document.getElementById("btn_login")
+    const userLoginText = document.getElementById("txt_loggedInUser");
+    const userIcon = document.getElementById("icn_user");
+    userLoginText.textContent = "none";
+    userLoginText.style.color = "darkgrey";
+    userIcon.style.background = "white";
+}
 //Modified version for user page with removed login button because it does not exist there
+
 function uiOnLoginUserPage(username){
     const userLoginText = document.getElementById("txt_loggedInUser");
     const userIcon = document.getElementById("icn_user");
@@ -57,31 +67,31 @@ function uiOnLoginUserPage(username){
 }
 
 //************************************* button functions **************************************************
-function buttonLoginWhenNotLoggedIn(){
-    uiTurnLoginFormOn()
-    //uiOnLogin function only after successful login in com.js
-}
-function buttonLoginWhenAlreadyLoggedIn(){
-    /* Visibility Login Form */
-    alert("You are allready Logged in!")
+function buttonLoginFunction(){
+    if(session == null) {
+        uiTurnLoginFormOn();
+        //uiOnLogin function only after successful login in com.js
+    }else{
+        alert("You are allready Logged in!")
+    }
+
 }
 
-function buttonLogoutWhenLoggedInMainPage(){
+function buttonLogoutFunction(){
     uiOnLogout();
     Session.cookieKillall();
-    //reset the function again to the default
-    buttonLogout.onclick = buttonLogoutWhenNotLoggedIn;
-    //send logout request to server
-    logoutRequestHandler().then(r =>
-         alert("You have been logged out!"));
+    if(session != null){
+        //send logout request to server
+        logoutRequestHandler().then(r =>
+            alert("You have been logged out!"));
+    }else{
+        alert("You are not logged in!")
+    }
 }
 
-function buttonLogoutWhenNotLoggedIn(){
-    alert("You are not logged in!")
-}
 //set default button functions for login and logout on startup
-buttonLogout.onclick = buttonLogoutWhenLoggedInMainPage;
-buttonLogin.onclick = buttonLoginWhenNotLoggedIn;
+buttonLogout.onclick = buttonLogoutFunction;
+buttonLogin.onclick = buttonLoginFunction;
 
 // Special, for deactivating login form when click outside of form
 modalBackdrop.onclick = function () {
@@ -91,7 +101,12 @@ buttonCloseLoginForm.onclick = function (){
     uiTurnLoginFormOff()
 }
 buttonTogglePage.onclick = async function(){
-    await loadUserPageRequestHandler()
+    if(session != null){
+        await loadUserPageRequestHandler()
+    }else{
+        alert("You have to be logged in to access the user Section")
+    }
+
 }
 //************************************* MISC UI Functions **************************************************
 function uiTurnLoginFormOff(){
@@ -103,16 +118,6 @@ function uiTurnLoginFormOn(){
     loginModal.style.display = "block";
     modalBackdrop.style.display = "block";
     body.classList.add('loginForm-active');
-}
-//***************************** Logout UI ****************************************************
-function uiOnLogout(){
-    const buttonLogin = document.getElementById("btn_login")
-    const userLoginText = document.getElementById("txt_loggedInUser");
-    const userIcon = document.getElementById("icn_user");
-    buttonLogin.onclick = buttonLoginWhenNotLoggedIn;
-    userLoginText.textContent = "none";
-    userLoginText.style.color = "darkgrey";
-    userIcon.style.background = "white";
 }
 
 

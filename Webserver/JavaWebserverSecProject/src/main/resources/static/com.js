@@ -35,7 +35,7 @@ window.addEventListener('load', function () {
         async function loginRequestHandler(username,password) {
             // send login data to server
             try {
-                const response = await fetch("http://localhost:3000/login", {
+                const response = await fetch(CON_PARAM.PROTOCOL_TYPE + "://"+CON_PARAM.DNS_NAME+"/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ window.addEventListener('load', function () {
                         session.storeSessionAsCookie(30);
                             //change ui after login
                         uiOnLoginMainPage(username);
-                        buttonLogout.onclick = buttonLogoutWhenLoggedInMainPage;
+                        buttonLogout.onclick = buttonLogoutFunction;
                         break;
                     case 204: //Missing Credentials
                         console.log("Login Missing credentials");
@@ -90,7 +90,7 @@ window.addEventListener('load', function () {
 
 //function to handle communication for logging out to the backend
 async function logoutRequestHandler(){
-    const response = await fetch("http://localhost:3000/logout", {
+    const response = await fetch(CON_PARAM.PROTOCOL_TYPE + "://"+CON_PARAM.DNS_NAME+"/logout", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -102,12 +102,11 @@ async function logoutRequestHandler(){
             console.log("Logout successful");
             session = null;
             //only do if on main page and function exists
-            if(uiOnLogout != null)
-                uiOnLogout();
+            //if(uiOnLogout != null)
+            //    uiOnLogout();
             break;
         case 500:
-            console.log("Logout Server Error")
-            alert("Logout Server Error");
+            console.log("Server could not perform logout, (resubmission)")
             break;
         default:
             console.log("Logout unknown Response:", response.status);
@@ -117,7 +116,7 @@ async function logoutRequestHandler(){
 
 //function to make a request to the server to load the Account-Management page (if valid login)
 async function loadUserPageRequestHandler(){
-    const response = await fetch("http://localhost:3000/restricted/userSpace.html", {
+    const response = await fetch(CON_PARAM.PROTOCOL_TYPE+"://"+CON_PARAM.DNS_NAME+"/restricted/userSpace.html", {
         method: "GET",
         headers: {
             "Authorization-Token": "" + session.getToken(),
@@ -131,7 +130,9 @@ async function loadUserPageRequestHandler(){
             const htmlContent = await response.text(); // Read the response as text
             document.body.innerHTML = htmlContent; // Inject the HTML content into the page
             //setup the User Page after switching to it
-            (session != null) ? uiOnLoginUserPage(session.getUsername()) : console.log("load Account Management session == null");
+            (session != null)
+                ? uiOnLoginUserPage(session.getUsername())
+                :console.log("load Account Management session == null");
             setupUserSpace();
             break;
         case 401:

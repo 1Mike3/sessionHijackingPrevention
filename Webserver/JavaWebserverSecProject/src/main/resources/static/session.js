@@ -11,17 +11,6 @@ For security purposes in other projects an implementation in the backend with ap
 setup is vulnerable (on purpose) to XSS attacks.
  */
 
-//constants
-// ... poor man's enum
-const SESSION_CONSTRUCTOR_MODI = Object.freeze({
-    CREATE_FROM_LOGIN_REQUEST: 1,
-    CREATE_FROM_STORED_TOKEN: 2,
-});
-//for changing the code for testing during development
-const DEBUG = Object.freeze({
-ACTIVE: false
-});
-
 
 class Session {
 
@@ -144,7 +133,7 @@ class Session {
             session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_STORED_TOKEN);
             console.log("Session.onStartup: Session created from stored token");
             uiOnLoginMainPage(session.username);
-            buttonLogout.onclick = buttonLogoutWhenLoggedInMainPage;
+            buttonLogout.onclick = buttonLogoutFunction;
         } else {
             console.log("Session.onStartup: No session cookie found");
         }

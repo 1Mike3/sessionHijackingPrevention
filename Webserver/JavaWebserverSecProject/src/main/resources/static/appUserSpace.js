@@ -1,6 +1,7 @@
 /*
 ABOUT
-managing ui interactions an visualization
+- managing ui interactions an visualization on the user page
+- the "setupUserSpace" function is called once the access was authorized and overwrites event handlers on this page
  */
 
 
