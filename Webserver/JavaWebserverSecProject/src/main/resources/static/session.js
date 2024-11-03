@@ -11,6 +11,13 @@ For security purposes in other projects an implementation in the backend with ap
 setup is vulnerable (on purpose) to XSS attacks.
  */
 
+const SESSION_CONSTRUCTOR_MODI = Object.freeze({
+    CREATE_FROM_LOGIN_REQUEST: 1,
+    CREATE_FROM_STORED_TOKEN: 2,
+});
+const DEBUG = Object.freeze({
+    ACTIVE: false
+});
 
 class Session {
 

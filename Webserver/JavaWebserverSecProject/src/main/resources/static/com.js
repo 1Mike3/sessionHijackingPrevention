@@ -3,22 +3,21 @@ ABOUT
 - managing communication with the backend
  */
 
-
+//connection parameters used to easiely reconfigure the application
+const CON_PARAM = Object.freeze({
+    PROTOCOL_TYPE: "http",  // ["http" | "https"]
+    DNS_NAME: "localhost:3000"
+});
 
 
 //Prevent js before page loaded
+// only covers login function
 window.addEventListener('load', function () {
     document.body.classList.add('loaded');
 
 
-
     const loginFormText = document.getElementById("loginFormOutput");
-    const loginModal = document.getElementById("loginModal") ;
-    const modalBackdrop = document.getElementById("modalBackdrop");
-    const buttonLogin = this.document.getElementById("btn_login");
     const buttonLogout = this.document.getElementById("btn_logout");
-    const body = document.body;
-
 
 //setting up event listener for the login form submisstion
         document.getElementById("loginForm").addEventListener("submit", async function (event) {
@@ -34,8 +33,10 @@ window.addEventListener('load', function () {
 //function to handle the process of logging in
         async function loginRequestHandler(username,password) {
             // send login data to server
+            console.log(CON_PARAM);
+            console.log(session);
             try {
-                const response = await fetch(CON_PARAM.PROTOCOL_TYPE + "://"+CON_PARAM.DNS_NAME+"/login", {
+                const response = await fetch(CON_PARAM.PROTOCOL_TYPE.valueOf() + "://"+CON_PARAM.DNS_NAME.valueOf()+"/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

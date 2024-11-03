@@ -1,9 +1,11 @@
+
 /*
 ABOUT
 managing ui interactions an visualization on the main Page
  */
 
-
+//saved instance of a session after login used throughout the application
+var session = null;
 
  const buttonLogin = document.getElementById("btn_login");
  const buttonLogout = document.getElementById("btn_logout");
