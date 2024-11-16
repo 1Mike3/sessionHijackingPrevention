@@ -1,0 +1,4 @@
+! A misconfiguration of config.json may cause the program to crash !
+--HTTPS
+set to true for HTTPS and false for HTTP
+The _SECURE versions are used when switching to https

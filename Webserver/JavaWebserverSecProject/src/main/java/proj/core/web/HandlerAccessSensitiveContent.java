@@ -3,7 +3,7 @@ package proj.core.web;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
-import proj.config.Parameters;
+import proj.config.ConfigManager;
 import proj.core.SessionManagementSystem;
 import proj.core.UserManagementSystem;
 
@@ -35,7 +35,7 @@ public class HandlerAccessSensitiveContent {
 
                 try {
                     // Define the path to your HTML file
-                    String filePath = Parameters.PATH_RELATIVE_USERSPACE_HTML.getValue().toString();
+                    String filePath = ConfigManager.getInstance().getPATH_RELATIVE_USERSPACE_HTML();
                     // Read the HTML file content as a string
                     String htmlContent = Files.readString(Paths.get(filePath));
                     // Return the HTML content as the response

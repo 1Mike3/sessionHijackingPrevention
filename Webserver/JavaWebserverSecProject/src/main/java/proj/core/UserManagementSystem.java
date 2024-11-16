@@ -2,7 +2,7 @@ package proj.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.LoggerFactory;
-import proj.config.Parameters;
+import proj.config.ConfigManager;
 import proj.entities.User;
 
 import java.io.File;
@@ -93,9 +93,17 @@ public class UserManagementSystem {
             // Convert users LinkedList to JSON string
             String jsonContent = JSON_Serialize.serialize(users);
 
-            // Define the path to the user database file
-            File file = new File(Parameters.PATH_RELATIVE_USER_DB.getValue().toString());
-
+            // Trying to open file with regular development path
+            //
+            File file = new File(ConfigManager.getInstance().getPATH_RELATIVE_USER_DB());
+            // If the file does not exist, try again with a different path if executed from a JAR
+            if(!file.exists()){
+                file = new File(ConfigManager.getInstance().getPATH_RELATIVE_USER_DB_ON_DEVICE());
+                    if(!file.exists()){
+                        logger.error("User Database could not be opened! Shutting Down");
+                        System.exit(1);
+                    }
+            }
             // Write JSON string to the file (overwrite existing content)
             Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 

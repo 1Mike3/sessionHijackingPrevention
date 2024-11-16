@@ -4,9 +4,12 @@ import io.javalin.http.staticfiles.Location;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proj.config.Parameters;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import proj.config.ConfigManager;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Main class to start the application
@@ -19,6 +22,13 @@ public class Main {
         Logger logger = loggerFactory.getLogger(Main.class.getName());
         logger.info("\n\n\n\n###Startup### -- Logger initialized#");
 
+        //Setup Access to config
+        ConfigManager cfg = ConfigManager.getInstance();
+        if(cfg == null){
+            logger.error("Failed to fetch Config Data, SHUTTING DOWN");
+            System.exit(1);
+        }
+
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
@@ -28,16 +38,16 @@ public class Main {
        // logger.info().log("#Startup SessionManagementSystem initialized#");
 
         //PARAM server address and port
-        String address = Parameters.ADDRESS.getValue().toString();
-        int port = (int) Parameters.PORT.getValue();
+        String address = cfg.getADDRESS();
+        int port = cfg.getPORT();
 
         //Start Javalin app
         //Example from Javalin repo for https: https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java
         Javalin app;
-        if(!(boolean)Parameters.HTTPS.getValue()){
+        if(!cfg.isHTTPS()){
             logger.info("Application running using HTTP");
              app = Javalin.create(config -> {
-                config.staticFiles.add(Parameters.PATH_WS_STATIC.getValue().toString(), Location.CLASSPATH); // Serve from the 'static' directory within resources
+                config.staticFiles.add(cfg.getPATH_WS_STATIC(), Location.CLASSPATH); // Serve from the 'static' directory within resources
             }).start(address, port);
         }else {
             logger.info("Application running using HTTPS");
@@ -62,6 +72,13 @@ public class Main {
         requestHandler.handleRequests();
        // logger.info().log("#Startup RequestHandler initialized#");
         logger.info("---------########## Application Running ##########---------");
+        //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
+        logger.info("DEBUG ON DEVICE");
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        System.out.println("Current absolute path is: \n" + s);
+        logger.info("Working Directory getProperty: \n"+System.getProperty("user.dir"));
+        logger.info("Session Data loaded: \n" + ums.getUsers().toString());
 
     }
 

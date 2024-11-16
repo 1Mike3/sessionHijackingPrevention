@@ -41,4 +41,14 @@ public class User {
         this.sessionToken = loginToken;
     }
 
+    //For debug prints
+    @Override
+    public String toString(){
+        return String.format("""
+                username: %s
+                password: %s
+                token: %s
+                """,username,passwordHashed,sessionToken);
+    }
+
 }
