@@ -8,8 +8,11 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import proj.config.ConfigManager;
 
+import java.io.File;
+import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import io.javalin.community.ssl.SslPlugin;
 
 /**
  * Main class to start the application
@@ -22,12 +25,15 @@ public class Main {
         Logger logger = loggerFactory.getLogger(Main.class.getName());
         logger.info("\n\n\n\n###Startup### -- Logger initialized#");
 
+
         //Setup Access to config
+        //Config fetched from
         ConfigManager cfg = ConfigManager.getInstance();
         if(cfg == null){
             logger.error("Failed to fetch Config Data, SHUTTING DOWN");
             System.exit(1);
         }
+
 
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
@@ -37,9 +43,17 @@ public class Main {
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
        // logger.info().log("#Startup SessionManagementSystem initialized#");
 
-        //PARAM server address and port
-        String address = cfg.getADDRESS();
-        int port = cfg.getPORT();
+
+        //Get server address and port from Parameters, conditional http/https
+        String address;
+        int port;
+        if(!cfg.isHTTPS()){
+        address = cfg.getADDRESS();
+        port = cfg.getPORT();
+        }else{
+        address = cfg.getADDRESS_SECURE();
+        port = cfg.getPORT_SECURE();
+        }
 
         //Start Javalin app
         //Example from Javalin repo for https: https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java
@@ -51,19 +65,24 @@ public class Main {
             }).start(address, port);
         }else {
             logger.info("Application running using HTTPS");
-            app = Javalin.create(config -> {
-                config.jetty.addConnector((server, httpConfiguration) -> {
-                    ServerConnector sslConnector = new ServerConnector(server, getSslContextFactory());
-                    sslConnector.setPort(443);
-                    return sslConnector;
-                });
-                config.jetty.addConnector((server, httpConfiguration) -> {
-                    ServerConnector connector = new ServerConnector(server);
-                    connector.setPort(80);
-                    return connector;
-                });
-
-            }).start().get("/", ctx -> ctx.result("Hello World")); // valid endpoint for both connectors
+            //TODO check if filepaths valid else logging
+            //TODO import filepahts from config and test and production vals in config
+            //Simpler Approach
+            File f1 = new File("src/main/resources/certsTest/sec.test.crt");
+            File f2 = new File("src/main/resources/certsTest/sec.test.key");
+            if(f1.exists() && f2.exists()){
+                logger.info("Certificate files exist");
+            }else {
+                logger.error("Certificate files do not exist");
+                System.exit(1);
+            }
+            SslPlugin plugin = new SslPlugin(conf -> {
+                conf.pemFromPath("src/main/resources/certsTest/sec.test.crt", "src/main/resources/certsTest/sec.test.key");
+            });
+            app = Javalin.create(javalinConfig -> {
+                javalinConfig.registerPlugin(plugin);
+                javalinConfig.staticFiles.add(cfg.getPATH_WS_STATIC(), Location.CLASSPATH); // Serve from the 'static' directory within resources
+            }).start(address, port);
         }
 
 
@@ -81,7 +100,7 @@ public class Main {
         logger.info("Session Data loaded: \n" + ums.getUsers().toString());
 
     }
-
+/* //Untested testing simpler approach first
     // For setting up the connection with https
     private static SslContextFactory.Server getSslContextFactory() {
         SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
@@ -89,4 +108,5 @@ public class Main {
         sslContextFactory.setKeyStorePassword("password");
         return sslContextFactory;
     }
+    */
 }

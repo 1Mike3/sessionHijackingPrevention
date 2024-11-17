@@ -35,7 +35,7 @@ public class RequestHandler {
        // app.get("/", ctx -> {
           //  ctx.redirect("/index.html");
        // });
-
+/*
         //Check before or after  request (rem. path for every request)
         app.before("/path/*", ctx -> {
             // runs before request to /path/*
@@ -46,7 +46,7 @@ public class RequestHandler {
             // runs after request to /path/*
             logger.debug("Request to: " + ctx.path());
         });
-
+*/
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerLogin.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ LOGOT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,4 +1,24 @@
 ! A misconfiguration of config.json may cause the program to crash !
---HTTPS
+
+
+"HTTPS":
 set to true for HTTPS and false for HTTP
+
+"ADDRESS":
+
+"ADDRESS_SECURE":
 The _SECURE versions are used when switching to https
+
+"PORT":
+The Port to listen on
+
+"PORT_SECURE":
+The _SECURE versions are used when switching to https
+
+"PATH_WS_STATIC":
+
+"PATH_RELATIVE_USER_DB":
+
+"PATH_RELATIVE_USER_DB_ON_DEVICE":
+
+"PATH_RELATIVE_USERSPACE_HTML":

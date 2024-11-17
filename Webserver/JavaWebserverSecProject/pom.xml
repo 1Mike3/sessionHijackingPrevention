@@ -17,6 +17,7 @@
     <!--  Dependencies  -->
     <dependencies>
     <!-- Webserver Framework-->
+        <!-- known vulnerability not relevant for Project -->
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
@@ -55,6 +56,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- To use HTTPS -->
+        <dependency>
+            <groupId>io.javalin.community.ssl</groupId>
+            <artifactId>ssl-plugin</artifactId>
+            <version>6.3.0</version>
         </dependency>
     </dependencies>
 
