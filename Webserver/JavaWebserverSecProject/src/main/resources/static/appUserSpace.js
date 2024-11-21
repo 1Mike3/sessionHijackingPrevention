@@ -22,7 +22,13 @@ function setupUserSpace() {
             await logoutRequestHandler();
             Session.cookieKillall();
             // Redirect to the main page
-            window.location.href = "http://localhost:3000/";
+            window.location.href =
+            (
+                CON_PARAM.PROTOCOL_TYPE.valueOf()
+                +"//"
+                +CON_PARAM.DNS_NAME.valueOf()
+                +CON_PARAM.PORT.valueOf()
+            );
         } catch (error) {
             console.error("Logout failed:", error);
             alert("Failed to log out. Please try again.");
@@ -34,10 +40,14 @@ function setupUserSpace() {
 
 
     buttonToggleUserSpace.onclick = function () {
-        window.location.href = "http://localhost:3000";
-
+        window.location.href =
+            (
+                CON_PARAM.PROTOCOL_TYPE.valueOf()
+            +"//"
+            +CON_PARAM.DNS_NAME.valueOf()
+            +CON_PARAM.PORT.valueOf()
+            );
     }
-
 }
 
 

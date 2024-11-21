@@ -7,6 +7,15 @@ managing ui interactions an visualization on the main Page
 //saved instance of a session after login used throughout the application
 var session = null;
 
+//connection parameters used to easily reconfigure the application
+const CON_PARAM = Object.freeze({
+    //get information on if http or https communication should be used
+    PROTOCOL_TYPE: location.protocol,  // ["http:" | "https:"]
+    DNS_NAME: "localhost",
+    PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
+});
+
+
  const buttonLogin = document.getElementById("btn_login");
  const buttonLogout = document.getElementById("btn_logout");
  const buttonTogglePage = document.getElementById("btn_togglePage");

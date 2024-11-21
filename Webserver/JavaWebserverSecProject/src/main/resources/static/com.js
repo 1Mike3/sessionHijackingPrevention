@@ -3,11 +3,6 @@ ABOUT
 - managing communication with the backend
  */
 
-//connection parameters used to easiely reconfigure the application
-const CON_PARAM = Object.freeze({
-    PROTOCOL_TYPE: "http",  // ["http" | "https"]
-    DNS_NAME: "localhost:3000"
-});
 
 
 //Prevent js before page loaded
@@ -36,7 +31,13 @@ window.addEventListener('load', function () {
             console.log(CON_PARAM);
             console.log(session);
             try {
-                const response = await fetch(CON_PARAM.PROTOCOL_TYPE.valueOf() + "://"+CON_PARAM.DNS_NAME.valueOf()+"/login", {
+                const response = await fetch(
+                CON_PARAM.PROTOCOL_TYPE.valueOf()
+                    +"//"
+                    +CON_PARAM.DNS_NAME.valueOf()
+                    +CON_PARAM.PORT.valueOf()
+                    +"/login",
+                    {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -91,7 +92,12 @@ window.addEventListener('load', function () {
 
 //function to handle communication for logging out to the backend
 async function logoutRequestHandler(){
-    const response = await fetch(CON_PARAM.PROTOCOL_TYPE + "://"+CON_PARAM.DNS_NAME+"/logout", {
+    const response = await fetch(
+    CON_PARAM.PROTOCOL_TYPE.valueOf()
+        +"//"
+        +CON_PARAM.DNS_NAME.valueOf()
+        +CON_PARAM.PORT.valueOf()
+        +"/logout",{
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -117,7 +123,13 @@ async function logoutRequestHandler(){
 
 //function to make a request to the server to load the Account-Management page (if valid login)
 async function loadUserPageRequestHandler(){
-    const response = await fetch(CON_PARAM.PROTOCOL_TYPE+"://"+CON_PARAM.DNS_NAME+"/restricted/userSpace.html", {
+    const response = await fetch(
+        CON_PARAM.PROTOCOL_TYPE.valueOf()
+        +"//"
+        +CON_PARAM.DNS_NAME.valueOf()
+        +CON_PARAM.PORT.valueOf()
+        +"/restricted/userSpace.html",
+        {
         method: "GET",
         headers: {
             "Authorization-Token": "" + session.getToken(),

@@ -65,14 +65,21 @@ public class Main {
             }).start(address, port);
         }else {
             logger.info("Application running using HTTPS");
-            //TODO check if filepaths valid else logging
-            //TODO import filepahts from config and test and production vals in config
             //Simpler Approach
-            File f1 = new File("src/main/resources/certsTest/sec.test.crt");
-            File f2 = new File("src/main/resources/certsTest/sec.test.key");
+            File f1 = new File(cfg.getPATH_RELATIVE_CERTIFICATE());
+            File f2 = new File(cfg.getPATH_RELATIVE_PRIVATE_KEY());
+            //Check if files exist
             if(f1.exists() && f2.exists()){
-                logger.info("Certificate files exist");
+                logger.info("Certificate files regular path exist");
             }else {
+                f1 = new File(cfg.getPATH_RELATIVE_CERTIFICATE_ON_DEVICE());
+                f2 = new File(cfg.getPATH_RELATIVE_PRIVATE_KEY_ON_DEVICE());
+                if(f1.exists() && f2.exists()){
+                    logger.info("Certificate files on device path exist");
+                }else{
+                    logger.error("Error no valid certificate files found");
+                    System.exit(1);
+                }
                 logger.error("Certificate files do not exist");
                 System.exit(1);
             }

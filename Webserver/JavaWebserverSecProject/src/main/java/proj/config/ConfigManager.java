@@ -33,6 +33,10 @@ public class ConfigManager {
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
     private String PATH_RELATIVE_USERSPACE_HTML;
+    private String PATH_RELATIVE_CERTIFICATE;
+    private String PATH_RELATIVE_CERTIFICATE_ON_DEVICE;
+    private String PATH_RELATIVE_PRIVATE_KEY;
+    private String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
     private static ConfigManager instance;
 
     //Fasterxml constructor
@@ -44,6 +48,10 @@ public class ConfigManager {
                          @JsonProperty("PATH_WS_STATIC") String PATH_WS_STATIC,
                          @JsonProperty("PATH_RELATIVE_USER_DB") String PATH_RELATIVE_USER_DB,
                          @JsonProperty("PATH_RELATIVE_USER_DB_ON_DEVICE") String PATH_RELATIVE_USER_DB_ON_DEVICE,
+                         @JsonProperty("PATH_RELATIVE_CERTIFICATE") String PATH_RELATIVE_CERTIFICATE,
+                         @JsonProperty("PATH_RELATIVE_CERTIFICATE_ON_DEVICE") String PATH_RELATIVE_CERTIFICATE_ON_DEVICE,
+                         @JsonProperty("PATH_RELATIVE_PRIVATE_KEY") String PATH_RELATIVE_PRIVATE_KEY,
+                         @JsonProperty("PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE") String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_USERSPACE_HTML") String PATH_RELATIVE_USERSPACE_HTML) {
         this.HTTPS = HTTPS;
         this.ADDRESS = ADDRESS;
@@ -53,6 +61,10 @@ public class ConfigManager {
         this.PATH_WS_STATIC = PATH_WS_STATIC;
         this.PATH_RELATIVE_USER_DB = PATH_RELATIVE_USER_DB;
         this.PATH_RELATIVE_USER_DB_ON_DEVICE = PATH_RELATIVE_USER_DB_ON_DEVICE;
+        this.PATH_RELATIVE_CERTIFICATE = PATH_RELATIVE_CERTIFICATE;
+        this.PATH_RELATIVE_CERTIFICATE_ON_DEVICE = PATH_RELATIVE_CERTIFICATE_ON_DEVICE;
+        this.PATH_RELATIVE_PRIVATE_KEY = PATH_RELATIVE_PRIVATE_KEY;
+        this.PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE = PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
         this.PATH_RELATIVE_USERSPACE_HTML = PATH_RELATIVE_USERSPACE_HTML;
     }
 

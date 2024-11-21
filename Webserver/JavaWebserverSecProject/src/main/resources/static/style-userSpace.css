@@ -160,23 +160,24 @@ body { /* reminder do not use this */
 
 
 
-        /* footer div */
-        #footerDiv {
-            text-align: center;
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-        .pFooter a {
-            color: #f1c40f; 
-            text-decoration: none;
-        }
-        .pFooter a:hover {
-            text-decoration: underline;
-        }
+#footerDiv {
+    text-align: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    position: fixed; /* Fix it to the viewport */
+    bottom: 0;       /* Align to the bottom */
+    left: 0;         /* Align to the left edge */
+    width: 100%;     /* Full width across the viewport */
+    z-index: 1000;   /* Ensure it stays on top of other elements */
+}
+.pFooter a {
+    color: #f1c40f;
+    text-decoration: none;
+}
+.pFooter a:hover {
+    text-decoration: underline;
+}
 
 
 

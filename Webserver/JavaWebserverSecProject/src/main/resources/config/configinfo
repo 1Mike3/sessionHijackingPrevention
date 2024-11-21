@@ -5,20 +5,39 @@
 set to true for HTTPS and false for HTTP
 
 "ADDRESS":
+--Adress on which the application will run
 
 "ADDRESS_SECURE":
-The _SECURE versions are used when switching to https
+--The _SECURE versions are used when switching to https
 
 "PORT":
-The Port to listen on
+--The Port to listen on
 
 "PORT_SECURE":
-The _SECURE versions are used when switching to https
+--The _SECURE versions are used when switching to https
 
 "PATH_WS_STATIC":
+--Path of the static files for the webserver
+
+##(The "ON_DEVICE" paths are used for running the application from a jar file)
 
 "PATH_RELATIVE_USER_DB":
+--
 
 "PATH_RELATIVE_USER_DB_ON_DEVICE":
 
+
+"PATH_RELATIVE_CERTIFICATE":
+--
+
+"PATH_RELATIVE_CERTIFICATE_ON_DEVICE":
+--
+
+"PATH_RELATIVE_PRIVATE_KEY":
+--
+
+"PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE":
+--
+
 "PATH_RELATIVE_USERSPACE_HTML":
+--
