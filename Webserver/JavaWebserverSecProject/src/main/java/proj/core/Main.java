@@ -31,7 +31,10 @@ public class Main {
         ConfigManager cfg = ConfigManager.getInstance();
         if(cfg == null){
             logger.error("Failed to fetch Config Data, SHUTTING DOWN");
+            printDebugOnDevice(logger, null);
             System.exit(1);
+        }else {
+            cfg.printActiveConfiguration();
         }
 
 
@@ -56,35 +59,27 @@ public class Main {
         }
 
         //Start Javalin app
-        //Example from Javalin repo for https: https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java
+        //Orientation https://github.com/javalin/javalin/blob/master/javalin/src/test/java/io/javalin/examples/HelloWorldSecure.java
         Javalin app;
         if(!cfg.isHTTPS()){
+            //HTTP only setup
             logger.info("Application running using HTTP");
              app = Javalin.create(config -> {
                 config.staticFiles.add(cfg.getPATH_WS_STATIC(), Location.CLASSPATH); // Serve from the 'static' directory within resources
             }).start(address, port);
         }else {
+            //HTTPS setup
             logger.info("Application running using HTTPS");
-            //Simpler Approach
-            File f1 = new File(cfg.getPATH_RELATIVE_CERTIFICATE());
-            File f2 = new File(cfg.getPATH_RELATIVE_PRIVATE_KEY());
-            //Check if files exist
-            if(f1.exists() && f2.exists()){
-                logger.info("Certificate files regular path exist");
+            String f1,f2;
+            if (!cfg.isON_DEVICE()){
+                f1 = cfg.getPATH_RELATIVE_CERTIFICATE();
+                f2 = cfg.getPATH_RELATIVE_PRIVATE_KEY();
             }else {
-                f1 = new File(cfg.getPATH_RELATIVE_CERTIFICATE_ON_DEVICE());
-                f2 = new File(cfg.getPATH_RELATIVE_PRIVATE_KEY_ON_DEVICE());
-                if(f1.exists() && f2.exists()){
-                    logger.info("Certificate files on device path exist");
-                }else{
-                    logger.error("Error no valid certificate files found");
-                    System.exit(1);
-                }
-                logger.error("Certificate files do not exist");
-                System.exit(1);
+                f1 = cfg.getPATH_RELATIVE_CERTIFICATE_ON_DEVICE();
+                f2 = cfg.getPATH_RELATIVE_PRIVATE_KEY_ON_DEVICE();
             }
             SslPlugin plugin = new SslPlugin(conf -> {
-                conf.pemFromPath("src/main/resources/certsTest/sec.test.crt", "src/main/resources/certsTest/sec.test.key");
+                conf.pemFromPath(f1, f2);
             });
             app = Javalin.create(javalinConfig -> {
                 javalinConfig.registerPlugin(plugin);
@@ -98,22 +93,21 @@ public class Main {
         requestHandler.handleRequests();
        // logger.info().log("#Startup RequestHandler initialized#");
         logger.info("---------########## Application Running ##########---------");
-        //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
-        logger.info("DEBUG ON DEVICE");
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Current absolute path is: \n" + s);
-        logger.info("Working Directory getProperty: \n"+System.getProperty("user.dir"));
-        logger.info("Session Data loaded: \n" + ums.getUsers().toString());
+        printDebugOnDevice(logger, ums);
 
     }
-/* //Untested testing simpler approach first
-    // For setting up the connection with https
-    private static SslContextFactory.Server getSslContextFactory() {
-        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(Main.class.getResource("/keystore.jks").toExternalForm());
-        sslContextFactory.setKeyStorePassword("password");
-        return sslContextFactory;
-    }
-    */
+
+public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
+    //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
+    logger.info("DEBUG ON DEVICE");
+    Path currentRelativePath = Paths.get("");
+    String s = currentRelativePath.toAbsolutePath().toString();
+    System.out.println("Current absolute path is: \n" + s);
+    logger.info("Working Directory getProperty: \n"+System.getProperty("user.dir"));
+    if (ums != null)
+        logger.info("Session Data loaded: \n" + ums.getUsers().toString());
+    else
+        logger.info("Session Data not loaded so not showing users list \n");
 }
+}
+

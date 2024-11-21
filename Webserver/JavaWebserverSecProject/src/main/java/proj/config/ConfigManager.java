@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 @Setter
 public class ConfigManager {
 
+    private boolean ON_DEVICE;
     private boolean HTTPS;
     private String ADDRESS;
     private String ADDRESS_SECURE;
@@ -32,15 +33,18 @@ public class ConfigManager {
     private String PATH_WS_STATIC;
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
-    private String PATH_RELATIVE_USERSPACE_HTML;
     private String PATH_RELATIVE_CERTIFICATE;
     private String PATH_RELATIVE_CERTIFICATE_ON_DEVICE;
     private String PATH_RELATIVE_PRIVATE_KEY;
     private String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
+    private String PATH_RELATIVE_USERSPACE_HTML;
+    private String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE;
     private static ConfigManager instance;
 
     //Fasterxml constructor
-    public ConfigManager(@JsonProperty("HTTPS") boolean HTTPS,
+    public ConfigManager(
+                        @JsonProperty("ON_DEVICE") boolean ON_DEVICE,
+                        @JsonProperty("HTTPS") boolean HTTPS,
                          @JsonProperty("ADDRESS") String ADDRESS,
                          @JsonProperty("ADDRESS_SECURE") String ADDRESS_SECURE,
                          @JsonProperty("PORT") int PORT,
@@ -52,7 +56,10 @@ public class ConfigManager {
                          @JsonProperty("PATH_RELATIVE_CERTIFICATE_ON_DEVICE") String PATH_RELATIVE_CERTIFICATE_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_PRIVATE_KEY") String PATH_RELATIVE_PRIVATE_KEY,
                          @JsonProperty("PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE") String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE,
-                         @JsonProperty("PATH_RELATIVE_USERSPACE_HTML") String PATH_RELATIVE_USERSPACE_HTML) {
+                         @JsonProperty("PATH_RELATIVE_USERSPACE_HTML") String PATH_RELATIVE_USERSPACE_HTML,
+                         @JsonProperty("PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE") String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE)
+    {
+        this.ON_DEVICE = ON_DEVICE;
         this.HTTPS = HTTPS;
         this.ADDRESS = ADDRESS;
         this.ADDRESS_SECURE = ADDRESS_SECURE;
@@ -66,6 +73,7 @@ public class ConfigManager {
         this.PATH_RELATIVE_PRIVATE_KEY = PATH_RELATIVE_PRIVATE_KEY;
         this.PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE = PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
         this.PATH_RELATIVE_USERSPACE_HTML = PATH_RELATIVE_USERSPACE_HTML;
+        this.PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE = PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE;
     }
 
 
@@ -74,7 +82,21 @@ public class ConfigManager {
         if (instance == null) {
             try {
                 //... Path could be passed as parameter to jar ... lets just leave it like that for now
-                String json = new String(Files.readAllBytes(Paths.get("./src/main/resources/config/config.json")));
+                //CONFIGURABLE
+                    //Used during Testing
+                final String pathConfigFileTestPARAM = "./src/main/resources/config/config.json";
+                    //Used on Device on which the application will be run
+                final String pathConfigFileDevicePARAM = "./target/classes/config/config.json";
+
+                String json;
+                if(Files.exists(Paths.get(pathConfigFileTestPARAM))){
+                    json = new String(Files.readAllBytes(Paths.get(pathConfigFileTestPARAM)));
+                    System.out.println("Test Path exists and is used");
+                    //Check if prod path exists
+                } else {
+                    json = new String(Files.readAllBytes(Paths.get(pathConfigFileDevicePARAM)));
+                }
+
                 instance = JSON_Deserialize.deserialize(json, new TypeReference<ConfigManager>() {
                 });
                 return instance;
@@ -109,4 +131,23 @@ public class ConfigManager {
            e.printStackTrace();
        }
    }
+
+   public void printActiveConfiguration(){
+         System.out.println("###Active Configuration###");
+         System.out.println("ON_DEVICE: "+this.isON_DEVICE());
+         System.out.println("HTTPS: "+this.isHTTPS());
+         System.out.println("ADDRESS: " + this.getADDRESS());
+         System.out.println("PORT: " + this.getPORT());
+         System.out.println("PATH_WS_STATIC: " + this.getPATH_WS_STATIC());
+         System.out.println("PATH_RELATIVE_USER_DB: " + this.getPATH_RELATIVE_USER_DB());
+         System.out.println("PATH_RELATIVE_USER_DB_ON_DEVICE: " + this.getPATH_RELATIVE_USER_DB_ON_DEVICE());
+         System.out.println("PATH_RELATIVE_CERTIFICATE: " + this.getPATH_RELATIVE_CERTIFICATE());
+         System.out.println("PATH_RELATIVE_CERTIFICATE_ON_DEVICE: " + this.getPATH_RELATIVE_CERTIFICATE_ON_DEVICE());
+         System.out.println("PATH_RELATIVE_PRIVATE_KEY: " + this.getPATH_RELATIVE_PRIVATE_KEY());
+         System.out.println("PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE: " + this.getPATH_RELATIVE_PRIVATE_KEY_ON_DEVICE());
+         System.out.println("PATH_RELATIVE_USERSPACE_HTML: " + this.getPATH_RELATIVE_USERSPACE_HTML());
+         System.out.println("PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE: " + this.getPATH_RELATIVE_USERSPACE_HTML_ON_DEVICE());
+         System.out.println("\n");
+    }
+
 }

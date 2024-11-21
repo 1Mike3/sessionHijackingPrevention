@@ -1,6 +1,7 @@
 package proj.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.Getter;
 import org.slf4j.LoggerFactory;
 import proj.config.ConfigManager;
 import proj.entities.User;
@@ -30,16 +31,20 @@ public class UserManagementSystem {
     users are created manually, and stored in the "userDB.json" file.
     The content of the JSON is loaded into this list on startup.
      */
+    @Getter
     private LinkedList<User> users = new LinkedList<>();
 
 
     private final Logger logger;
+    private final ConfigManager cfg;
 
     private static UserManagementSystem instance;
+
 
     //instance management
     private UserManagementSystem() {
         this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
+        this.cfg = ConfigManager.getInstance();
         loadUsers();
     }
 
@@ -52,16 +57,16 @@ public class UserManagementSystem {
     }
 
 
-    //Getts and Setters
-    public LinkedList<User> getUsers() {
-        return users;
-    }
-
     //Loads the users from the JSON file into memory
     public void loadUsers() {
         try {
             // Define the path to the user database file
-            File file = new File("./src/main/resources/persistence/userDB.json");
+            File file;
+            if(cfg.isON_DEVICE())
+                file = new File(cfg.getPATH_RELATIVE_USER_DB_ON_DEVICE());
+            else
+                file = new File(cfg.getPATH_RELATIVE_USER_DB());
+
 
             // Check if the file exists
             if (file.exists()) {
@@ -93,17 +98,14 @@ public class UserManagementSystem {
             // Convert users LinkedList to JSON string
             String jsonContent = JSON_Serialize.serialize(users);
 
-            // Trying to open file with regular development path
-            //
-            File file = new File(ConfigManager.getInstance().getPATH_RELATIVE_USER_DB());
-            // If the file does not exist, try again with a different path if executed from a JAR
-            if(!file.exists()){
-                file = new File(ConfigManager.getInstance().getPATH_RELATIVE_USER_DB_ON_DEVICE());
-                    if(!file.exists()){
-                        logger.error("User Database could not be opened! Shutting Down");
-                        System.exit(1);
-                    }
-            }
+            // Define the path to the user database file
+            File file;
+            if(cfg.isON_DEVICE())
+                file = new File(cfg.getPATH_RELATIVE_USER_DB_ON_DEVICE());
+            else
+                file = new File(cfg.getPATH_RELATIVE_USER_DB());
+
+
             // Write JSON string to the file (overwrite existing content)
             Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 

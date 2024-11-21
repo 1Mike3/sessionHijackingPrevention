@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 public class HandlerAccessSensitiveContent {
     //Method which is called once to setup the handler of an endpoint
     public static void setHandler(Javalin app, Logger logger, UserManagementSystem ums, SessionManagementSystem sms){
+
+        ConfigManager cfg = ConfigManager.getInstance();
+
         app.get("/restricted/userSpace.html", ctx -> {
             logger.info("User Page Request from: " + ctx.ip());
 
@@ -35,7 +38,12 @@ public class HandlerAccessSensitiveContent {
 
                 try {
                     // Define the path to your HTML file
-                    String filePath = ConfigManager.getInstance().getPATH_RELATIVE_USERSPACE_HTML();
+
+                    String filePath;
+                    if(cfg.isON_DEVICE())
+                        filePath = ConfigManager.getInstance().getPATH_RELATIVE_USERSPACE_HTML_ON_DEVICE();
+                    else
+                        filePath = ConfigManager.getInstance().getPATH_RELATIVE_USERSPACE_HTML();
                     // Read the HTML file content as a string
                     String htmlContent = Files.readString(Paths.get(filePath));
                     // Return the HTML content as the response
