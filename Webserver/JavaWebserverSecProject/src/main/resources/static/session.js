@@ -125,10 +125,24 @@ class Session {
     //Destroys the stored cookie
     static cookieKillall(){
         // Split all cookies and delete each one individually (by setting its expiration date in the past)
+        /*
         document.cookie.split(";").forEach(cookie => {
             const [name] = cookie.split("=");
             document.cookie = `${name}=; path=/;SameSite=Strict;expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
         });
+        */
+        // New Delete only the session cookie
+        document.cookie.split(";").forEach(cookie => {
+            // Extract the cookie name and trim any leading spaces
+            const [name] = cookie.split("=").map(part => part.trim());
+
+            // Check if the cookie is the session cookie
+            if (name === "session") {
+                // Invalidate the session cookie by setting its expiration date in the past
+                document.cookie = `${name}=; path=/; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+            }
+        });
+
     }
 
 
