@@ -2,7 +2,10 @@
 
 
 "HTTPS":
-set to true for HTTPS and false for HTTP
+--set to true for HTTPS and false for HTTP
+--IMPORTANT
+--HTTPS is now handled by a reverse proxy, so this should always be set to false
+--all other HTTPS related settings are no longer considered and can be ignored
 
 "ADDRESS":
 --Adress on which the application will run
@@ -19,13 +22,15 @@ set to true for HTTPS and false for HTTP
 "PATH_WS_STATIC":
 --Path of the static files for the webserver
 
-##(The "ON_DEVICE" paths are used for running the application from a jar file)
+###
+--(The "ON_DEVICE" paths are used for running the application from a jar file)
+###
 
 "PATH_RELATIVE_USER_DB":
 --
 
 "PATH_RELATIVE_USER_DB_ON_DEVICE":
-
+--
 
 "PATH_RELATIVE_CERTIFICATE":
 --

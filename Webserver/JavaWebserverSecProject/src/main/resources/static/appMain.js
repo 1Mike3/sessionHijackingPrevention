@@ -9,8 +9,10 @@ const CON_PARAM = Object.freeze({
     //get information on if http or https communication should be used
     PROTOCOL_TYPE: location.protocol,  // ["http:" | "https:"]
     //CONFIGURABLE
-    DNS_NAME: "localhost",
+    DNS_NAME: "securitytest-sh.at",
+    //DNS_NAME: "localhost",
     PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
+    //PORT: ":"+ (location.protocol === "http:" ? "3000" : "443"),
 });
 
 //saved instance of a session after login used throughout the application
@@ -25,8 +27,6 @@ var session = null;
   const modalBackdrop = document.getElementById("modalBackdrop");
   const body = document.body;
 
-  /* Initally deactivate the modalBackdrop on Startup */
-  modalBackdrop.style.display = "none";
 
   /*
   Setup event listener for the loaded condition of the window when a specific flag is set.
@@ -36,6 +36,35 @@ var session = null;
 window.addEventListener("load", () => {
     //check if on the main page
     const isMainPage = window.location.pathname === "/" || window.location.pathname === "/index.html";
+    //if on main page prpare for cookie banner depending if allready accepted or not
+    if (isMainPage) {
+        const cookies = document.cookie.split("; ");
+        let flag = false;
+        for (let cookie of cookies) {
+            const [name, value] = cookie.split("=");
+            if (name === "cookiesAccepted") {
+                if(value === "true"){
+                    //if cookies are accepted activate all buttons
+                    activateAllButtons();
+                    flag = true;
+                    modalBackdrop.style.display = "none";
+                }else {
+                    //if cookies are not accepted deactivate all buttons
+                    deactivateAllButtons();
+                    //prep Site for cookie banner
+                    modalBackdrop.style.display = "block";
+                    document.getElementById('cookie-banner').style.display = 'block';
+                }
+            }
+        }
+        if (!flag) {
+            //if no flag is set deactivate all buttons
+            deactivateAllButtons();
+            //prep Site for cookie banner
+            modalBackdrop.style.display = "block";
+            document.getElementById('cookie-banner').style.display = 'block';
+        }
+    }
     //if on main page and logged out flag present (set in buttonLogoutWhenLoggedInUserPage) finish logout
     if (isMainPage && localStorage.getItem("loggedOut") === "true") {
         // Only run this on the main page
@@ -119,6 +148,19 @@ buttonTogglePage.onclick = async function(){
     }
 
 }
+
+//functions to activate or deactivate all buttons
+function deactivateAllButtons(){
+    buttonLogin.disabled = true;
+    buttonLogout.disabled = true;
+    buttonTogglePage.disabled = true;
+}
+function activateAllButtons(){
+    buttonLogin.disabled = false;
+    buttonLogout.disabled = false;
+    buttonTogglePage.disabled = false;
+}
+
 //************************************* MISC UI Functions **************************************************
 function uiTurnLoginFormOff(){
     loginModal.style.display = "none";

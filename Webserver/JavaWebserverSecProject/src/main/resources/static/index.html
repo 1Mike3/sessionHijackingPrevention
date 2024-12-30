@@ -90,9 +90,21 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
     </modal>
 
 
-
 <div class="content"> <!-- Used to blurr out background for login form  -->
 <main>
+
+<!-- Cookie Banner  -->
+<div id="cookie-banner" style="display: none;position: fixed; bottom: 50vh; width: 100%; background: #333; color: #fff; padding: 15px; text-align: center; z-index: 1000;">
+    <p>This site is used solely to test security mechanisms. </p>
+    <p>Telemetry data will be collected automatically and stored on your device and the Webserver </p>
+    <p>If you are not involved in the testing process there is no need to continue.</p>
+    <p>   <a href="/cookie-policy.html" style="color: #4CAF50;">Learn More</a></p>
+
+    <div style="margin-top: 10px;">
+        <button id="accept-all" style="margin-right: 10px; padding: 10px 20px; background: #4CAF50; color: #fff; border: none; cursor: pointer;">Accept All</button>
+    </div>
+</div>
+
 <!-- About -->
 <div class="subitemDiv" > 
     <div class="container">
@@ -101,7 +113,6 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
     </div>
     <p>This website is being used for testing purposes.</p>
 </div>
-
 
 <!-- Main Page "Content"-->
 <div class="subitem2Div" > 
@@ -128,7 +139,7 @@ The tool https://chatgpt.com was used (in a limited reasonable capacity, error-c
 <script src="appUserSpace.js" defer></script>
 <script src="session.js" defer> </script>
 <script src="com.js" defer ></script>
-
+<script src="cookie-policy.js" defer ></script>
 </body>
 </html> 
 
