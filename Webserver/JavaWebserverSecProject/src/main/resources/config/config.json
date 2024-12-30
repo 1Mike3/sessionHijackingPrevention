@@ -1,11 +1,17 @@
 {
+"ON_DEVICE": true,
 "HTTPS":false,
-"ADDRESS":"localhost",
-"ADDRESS_SECURE":"X",
-"PORT":3000,
+"ADDRESS":"0.0.0.0",
+"ADDRESS_SECURE":"localhost",
+"PORT":8080,
 "PORT_SECURE":443,
 "PATH_WS_STATIC":"/static",
 "PATH_RELATIVE_USER_DB":"./src/main/resources/persistence/userDB.json",
-"PATH_RELATIVE_USER_DB_ON_DEVICE":"./classes/persistence/userDB.json",
-"PATH_RELATIVE_USERSPACE_HTML":"./src/main/resources/static/restricted/userSpace.html"
+"PATH_RELATIVE_USER_DB_ON_DEVICE":"./target/classes/persistence/userDB.json",
+"PATH_RELATIVE_CERTIFICATE": "src/main/resources/certsTest/sec.test.crt",
+"PATH_RELATIVE_CERTIFICATE_ON_DEVICE": "./target/classes/certsTest/sec.test.crt",
+"PATH_RELATIVE_PRIVATE_KEY": "src/main/resources/certsTest/sec.test.key",
+"PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE": "./target/classes/certsTest/sec.test.key",
+"PATH_RELATIVE_USERSPACE_HTML":"./src/main/resources/static/restricted/userSpace.html",
+"PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE":"./target/classes/restricted/userSpace.html"
 }

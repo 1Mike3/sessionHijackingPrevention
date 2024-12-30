@@ -50,6 +50,8 @@ public class Main {
         //Get server address and port from Parameters, conditional http/https
         String address;
         int port;
+        //NOTE
+        //HTTPS was added previously for testing but is for now handled by nginx
         if(!cfg.isHTTPS()){
         address = cfg.getADDRESS();
         port = cfg.getPORT();
