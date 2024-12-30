@@ -22,12 +22,15 @@
 "PATH_WS_STATIC":
 --Path of the static files for the webserver
 
+"DB_WEBSERVER_ENABLED":
+--Changes if a webserver is started to interact with the db from the browser, turn off for production
+
 ###
 --(The "ON_DEVICE" paths are used for running the application from a jar file)
 ###
 
 "PATH_RELATIVE_USER_DB":
---
+--Deprecated, embeded database is now used, this path is for the old database
 
 "PATH_RELATIVE_USER_DB_ON_DEVICE":
 --

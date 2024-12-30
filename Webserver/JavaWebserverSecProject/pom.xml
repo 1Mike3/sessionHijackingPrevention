@@ -57,13 +57,21 @@
             <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
-        <!-- To use HTTPS -->
+        <!-- To use HTTPS obsolete -->
         <dependency>
             <groupId>io.javalin.community.ssl</groupId>
             <artifactId>ssl-plugin</artifactId>
             <version>6.3.0</version>
         </dependency>
+        <!-- Embeded Database for User Managment -->
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+        </dependency>
     </dependencies>
+
 
 
 

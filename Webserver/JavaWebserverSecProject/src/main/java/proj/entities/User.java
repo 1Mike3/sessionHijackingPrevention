@@ -17,7 +17,6 @@ public class User {
     private String sessionToken;
 
     // Fingerprinting Criteria
-
     private String IP;
 
     //Constructor

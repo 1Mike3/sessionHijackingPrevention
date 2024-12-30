@@ -31,6 +31,7 @@ public class ConfigManager {
     private int PORT;
     private int PORT_SECURE;
     private String PATH_WS_STATIC;
+    private boolean DB_WEBSERVER_ENABLED;
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
     private String PATH_RELATIVE_CERTIFICATE;
@@ -50,6 +51,7 @@ public class ConfigManager {
                          @JsonProperty("PORT") int PORT,
                          @JsonProperty("PORT_SECURE") int PORT_SECURE,
                          @JsonProperty("PATH_WS_STATIC") String PATH_WS_STATIC,
+                         @JsonProperty("DB_WEBSERVER_ENABLED") boolean DB_WEBSERVER_ENABLED,
                          @JsonProperty("PATH_RELATIVE_USER_DB") String PATH_RELATIVE_USER_DB,
                          @JsonProperty("PATH_RELATIVE_USER_DB_ON_DEVICE") String PATH_RELATIVE_USER_DB_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_CERTIFICATE") String PATH_RELATIVE_CERTIFICATE,
@@ -66,6 +68,7 @@ public class ConfigManager {
         this.PORT = PORT;
         this.PORT_SECURE = PORT_SECURE;
         this.PATH_WS_STATIC = PATH_WS_STATIC;
+        this.DB_WEBSERVER_ENABLED = DB_WEBSERVER_ENABLED;
         this.PATH_RELATIVE_USER_DB = PATH_RELATIVE_USER_DB;
         this.PATH_RELATIVE_USER_DB_ON_DEVICE = PATH_RELATIVE_USER_DB_ON_DEVICE;
         this.PATH_RELATIVE_CERTIFICATE = PATH_RELATIVE_CERTIFICATE;

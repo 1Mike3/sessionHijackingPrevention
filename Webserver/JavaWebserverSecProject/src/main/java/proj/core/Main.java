@@ -42,6 +42,7 @@ public class Main {
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
         //logger.info().log("#Startup UserManagementSystem initialized#");
+
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
        // logger.info().log("#Startup SessionManagementSystem initialized#");

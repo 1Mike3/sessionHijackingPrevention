@@ -10,9 +10,11 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
 import java.util.LinkedList;
 
 import org.slf4j.Logger;
+import proj.util.DatabaseUtil;
 import proj.util.JSON_Deserialize;
 import proj.util.JSON_Serialize;
 
@@ -45,6 +47,7 @@ public class UserManagementSystem {
     private UserManagementSystem() {
         this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
         this.cfg = ConfigManager.getInstance();
+        initializeDatabase();
         loadUsers();
     }
 
@@ -56,66 +59,74 @@ public class UserManagementSystem {
         return instance;
     }
 
-
-    //Loads the users from the JSON file into memory
-    public void loadUsers() {
-        try {
-            // Define the path to the user database file
-            File file;
-            if(cfg.isON_DEVICE())
-                file = new File(cfg.getPATH_RELATIVE_USER_DB_ON_DEVICE());
-            else
-                file = new File(cfg.getPATH_RELATIVE_USER_DB());
-
-
-            // Check if the file exists
-            if (file.exists()) {
-                logger.debug("User Database found!");
-                // Read the file content as a string
-                String fileContent = Files.readString(Paths.get(file.getPath()));
-                // Check if the file is empty
-                if (fileContent.isEmpty() || fileContent.length() < 2) {
-                    logger.error("User Database is empty on load!");
-                    return;
-                }
-
-                // Deserialize the JSON content into a LinkedList<User>
-                this.users = JSON_Deserialize.deserialize(fileContent, new TypeReference<LinkedList<User>>() {
-                });
-                logger.debug("User Database loaded successfully!");
-            } else {
-                logger.error("User Database not found!");
+    public void initializeDatabase() {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String createTableSQL = """
+            CREATE TABLE IF NOT EXISTS users (
+                username VARCHAR(255) PRIMARY KEY,
+                passwordHashed VARCHAR(255),
+                sessionToken VARCHAR(255),
+                IP VARCHAR(255)
+            )
+        """;
+            try (var statement = connection.createStatement()) {
+                statement.execute(createTableSQL);
             }
         } catch (Exception e) {
-            logger.error("Error loading User Database: " + e.getMessage(), e);
+            logger.error("Error initializing H2 Database: " + e.getMessage(), e);
         }
     }
 
-    //saves users to db (JSON)
-    //returns true on success and false on fail
+
+    //Rewritten to use H2 database
+    public void loadUsers() {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT * FROM users";
+            try (var statement = connection.createStatement();
+                 var resultSet = statement.executeQuery(query)) {
+                users.clear();
+                while (resultSet.next()) {
+                    users.add(new User(
+                            resultSet.getString("username"),
+                            resultSet.getString("passwordHashed"),
+                            resultSet.getString("sessionToken"),
+                            resultSet.getString("IP")
+                    ));
+                }
+                logger.debug("User Database loaded successfully from H2!");
+            }
+        } catch (Exception e) {
+            logger.error("Error loading User Database from H2: " + e.getMessage(), e);
+        }
+    }
+
+
+    // Rewritten to use H2 database
     public boolean saveUsers() {
-        try {
-            // Convert users LinkedList to JSON string
-            String jsonContent = JSON_Serialize.serialize(users);
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String deleteQuery = "DELETE FROM users";
+            try (var deleteStatement = connection.createStatement()) {
+                deleteStatement.executeUpdate(deleteQuery);
+            }
 
-            // Define the path to the user database file
-            File file;
-            if(cfg.isON_DEVICE())
-                file = new File(cfg.getPATH_RELATIVE_USER_DB_ON_DEVICE());
-            else
-                file = new File(cfg.getPATH_RELATIVE_USER_DB());
-
-
-            // Write JSON string to the file (overwrite existing content)
-            Files.write(Paths.get(file.getPath()), jsonContent.getBytes("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-            logger.debug("User Database saved successfully!");
+            String insertQuery = "INSERT INTO users (username, passwordHashed, sessionToken, IP) VALUES (?, ?, ?, ?)";
+            try (var preparedStatement = connection.prepareStatement(insertQuery)) {
+                for (User user : users) {
+                    preparedStatement.setString(1, user.getUsername());
+                    preparedStatement.setString(2, user.getPasswordHashed());
+                    preparedStatement.setString(3, user.getSessionToken());
+                    preparedStatement.setString(4, user.getIP());
+                    preparedStatement.executeUpdate();
+                }
+            }
+            logger.debug("User Database saved successfully to H2!");
             return true;
         } catch (Exception e) {
-            logger.error("Error saving User Database: " + e.getMessage(), e);
+            logger.error("Error saving User Database to H2: " + e.getMessage(), e);
             return false;
         }
     }
+
 
     //Checks if a username exists
     //Returns TRUE if the username exists in the list
@@ -130,10 +141,23 @@ public class UserManagementSystem {
 
     //Returns a user object by username from the list
     public User getUserByName(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT * FROM users WHERE username = ?";
+            try (var preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                try (var resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return new User(
+                                resultSet.getString("username"),
+                                resultSet.getString("passwordHashed"),
+                                resultSet.getString("sessionToken"),
+                                resultSet.getString("IP")
+                        );
+                    }
+                }
             }
+        } catch (Exception e) {
+            logger.error("Error fetching user by name from H2: " + e.getMessage(), e);
         }
         logger.info("getUserByName--User not found");
         return null;
