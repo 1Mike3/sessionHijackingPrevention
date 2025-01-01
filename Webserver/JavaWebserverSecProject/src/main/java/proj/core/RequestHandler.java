@@ -35,18 +35,25 @@ public class RequestHandler {
        // app.get("/", ctx -> {
           //  ctx.redirect("/index.html");
        // });
-/*
+
         //Check before or after  request (rem. path for every request)
-        app.before("/path/*", ctx -> {
-            // runs before request to /path/*
+        app.before("/", ctx -> {
+            ;
         });
 
         //app.after("/path/*", ctx -> {
-        app.after( ctx -> {
-            // runs after request to /path/*
-            logger.debug("Request to: " + ctx.path());
-        });
-*/
+        app.after("/*", ctx -> {
+            String sb = "##DEBUG-META-DATA-DUMP##" + "\n" +
+                    "Request to: " + ctx.path() + "\n" +
+                    "IP:" + ctx.ip() + "\n" +
+                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
+                    "User-Agent:" + ctx.userAgent() + "\n" +
+                    "Content-Type:" + ctx.contentType() + "\n" +
+                    "language:" + ctx.header("Accept-Language") + "\n" +
+                    "timezone:" + ctx.header("Time-Zone") + "\n" +
+                    "screen:" + ctx.header("Screen-Resolution") + "\n";
+            logger.info(sb);
+            });
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerLogin.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ LOGOT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,8 +1,8 @@
 package proj.core;
 
 
-import lombok.Getter;
 import org.slf4j.LoggerFactory;
+import proj.entities.FingerprintData;
 import proj.entities.User;
 
 
@@ -16,11 +16,7 @@ import proj.util.DatabaseUtil;
 
 
 /**
- * UserManagementSystem class
- * This class is used to manage the users which can access the website.
- * It contains the methods to load and save the users from and to a JSON file,
- * as well as methods to check if a username is valid, get a user by username,
- * Singleton Pattern
+ * INFO OBSOLETE UPDATE
  */
 public class UserManagementSystem {
 
@@ -32,7 +28,7 @@ public class UserManagementSystem {
     //instance management
     private UserManagementSystem() {
         this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
-        initializeDatabase();
+        dbInitialize();
         //Inside the function check if console enabled in config
         DatabaseUtil.startWebConsole();
     }
@@ -45,15 +41,27 @@ public class UserManagementSystem {
         return instance;
     }
 
-    public void initializeDatabase() {
+    public void dbInitialize() {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String createTableSQL = """
+            CREATE TABLE IF NOT EXISTS monitoringData (
+                  blockid INT PRIMARY KEY,
+                  ip VARCHAR(15),
+                  longitude FLOAT,
+                  latitude FLOAT,
+                  cookiesAccepted BOOLEAN,
+                  user_agent VARCHAR(200),
+                  content_language VARCHAR(20),
+                  timezone VARCHAR(20),
+                  screen VARCHAR(20)
+            );
             CREATE TABLE IF NOT EXISTS users (
-                username VARCHAR(255) PRIMARY KEY,
-                passwordHashed VARCHAR(255),
-                sessionToken VARCHAR(255),
-                IP VARCHAR(255)
-            )
+                 username VARCHAR(255) PRIMARY KEY,
+                 passwordHashed VARCHAR(255),
+                 sessionToken VARCHAR(255),
+                 monitoringData INT,
+                 FOREIGN KEY (monitoringData) REFERENCES monitoringdata(BlockID)
+            );
         """;
             try (var statement = connection.createStatement()) {
                 statement.execute(createTableSQL);
@@ -68,7 +76,7 @@ public class UserManagementSystem {
 
     //Checks if a username exists
     //Returns TRUE if the username exists in the list
-    public boolean isUsernameValid(String username) {
+    public boolean dbIsUserNameValid(String username) {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String checkUsername =
                     """
@@ -94,9 +102,12 @@ public class UserManagementSystem {
 
 
     //Returns a user object by username from the list
-    public User getUserByName(String username) {
+    //
+    public User dbGetUserByName(String username) {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM users WHERE username = ?";
+            String query = """
+SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.username = ?;
+            """;
             try (var preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
                 try (var resultSet = preparedStatement.executeQuery()) {
@@ -105,9 +116,21 @@ public class UserManagementSystem {
                                 resultSet.getString("username"),
                                 resultSet.getString("passwordHashed"),
                                 resultSet.getString("sessionToken"),
-                                resultSet.getString("IP")
+                                new FingerprintData(
+                                        resultSet.getInt("blockid"),
+                                        resultSet.getString("ip"),
+                                        resultSet.getFloat("longitude"),
+                                        resultSet.getFloat("latitude"),
+                                        resultSet.getBoolean("cookiesAccepted"),
+                                        resultSet.getString("user_agent"),
+                                        resultSet.getString("content_language"),
+                                        resultSet.getString("timezone"),
+                                        resultSet.getString("screen")
+                                )
                         );
                     }
+                    //debugprint of whole result set:
+                    System.out.println(resultSet.getStatement().toString());
                 }
             }
         } catch (Exception e) {
@@ -116,6 +139,57 @@ public class UserManagementSystem {
         logger.info("getUserByName--User not found");
         return null;
     }
+
+
+    public boolean dbUpdateUserByName(String username, User user) {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            connection.setAutoCommit(false); // Ensure atomicity for updates
+
+            // Writing Session Monitoring Data
+            String updateMonitoringDataQuery = """
+            UPDATE monitoringData
+            SET ip = ?, longitude = ?, latitude = ?, cookiesAccepted = ?,
+                user_agent = ?, content_language = ?, timezone = ?, screen = ?
+            WHERE blockid = ?;
+        """;
+
+            try (PreparedStatement monitoringDataStmt = connection.prepareStatement(updateMonitoringDataQuery)) {
+                FingerprintData fingerprint = user.getFdt();
+                monitoringDataStmt.setString(1, fingerprint.getIP());
+                monitoringDataStmt.setFloat(2, fingerprint.getLongitude());
+                monitoringDataStmt.setFloat(3, fingerprint.getLatitude());
+                monitoringDataStmt.setBoolean(4, fingerprint.isCookiesAccepted());
+                monitoringDataStmt.setString(5, fingerprint.getUserAgent());
+                monitoringDataStmt.setString(6, fingerprint.getContent_Language());
+                monitoringDataStmt.setString(7, fingerprint.getTimezone());
+                monitoringDataStmt.setString(8, fingerprint.getScreen());
+                monitoringDataStmt.setInt(9, fingerprint.getBlockId());
+                monitoringDataStmt.executeUpdate();
+            }
+
+            // Writing User Table Datas
+            String updateUserQuery = """
+        UPDATE users
+        SET passwordHashed = ?, sessionToken = ?, monitoringData = ?
+        WHERE username = ?;
+        """;
+
+            try (PreparedStatement userStmt = connection.prepareStatement(updateUserQuery)) {
+                userStmt.setString(1, user.getPasswordHashed());
+                userStmt.setString(2, user.getSessionToken());
+                userStmt.setInt(3, user.getFdt().getBlockId());;
+                userStmt.setString(4, username);
+                userStmt.executeUpdate();
+            }
+
+            connection.commit();
+            logger.info("Successfully updated user: " + username);
+            return true;
+        } catch (Exception e) {
+            logger.error("Error updating user in database: " + e.getMessage(), e);
+            return false;
+            }
+        }
 
 
 
@@ -165,7 +239,6 @@ public class UserManagementSystem {
                         returnSring.append("User: ").append(resultSet.getString("username")).append("\n");
                         returnSring.append("Password: ").append(resultSet.getString("passwordHashed")).append("\n");
                         returnSring.append("Token: ").append(resultSet.getString("sessionToken")).append("\n");;
-                        returnSring.append("IP: ").append(resultSet.getString("IP")).append("\n");
                     }
                     return returnSring.toString();
                 }

@@ -37,7 +37,7 @@ public class SessionManagementSystem {
     //Checks if a provided username-token pair is valid and returns a boolean
     public boolean authenticator(String username, String token) {
         try {
-            User user = ums.getUserByName(username);
+            User user = ums.dbGetUserByName(username);
             if (user != null && token.equals(user.getSessionToken())) {
                 return true;
             }

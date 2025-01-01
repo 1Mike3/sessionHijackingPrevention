@@ -5,7 +5,7 @@ import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
 import proj.core.SessionManagementSystem;
 import proj.core.UserManagementSystem;
-import proj.entities.User;
+
 import java.util.HashMap;
 
 /**
@@ -36,7 +36,7 @@ public class HandlerLogout {
             }
 
             //find User in the Stored data and delete the token
-            if(ums.isUsernameValid(username)){
+            if(ums.dbIsUserNameValid(username)){
                 ums.setUserTokenByName(username,""); //Invalidate Token
                 logger.info("Logout successfully, Token deleted");
                 ctx.result("").status(HttpStatus.OK.getCode()); //200

@@ -41,7 +41,7 @@ public class HandlerLogin {
             }else {
 
                 //Check if user exists
-                if ( ! ums.isUsernameValid(username)) {
+                if ( ! ums.dbIsUserNameValid(username)) {
                     logger.warn("Nonexistent User");
                     ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
                     return;
@@ -50,8 +50,8 @@ public class HandlerLogin {
                     //Check if Password Matches Username
                     //not differentiating status code on purpose (best practice) so no guessing usernames
                     logger.debug(CryptoFunc.hashSHA256(password));
-                    logger.debug(ums.getUserByName(username).getPasswordHashed());
-                    if(! CryptoFunc.hashSHA256(password).equals(ums.getUserByName(username).getPasswordHashed())){
+                    logger.debug(ums.dbGetUserByName(username).getPasswordHashed());
+                    if(! CryptoFunc.hashSHA256(password).equals(ums.dbGetUserByName(username).getPasswordHashed())){
                         logger.warn("Password Hash did not match");
                         ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561
                         return;
