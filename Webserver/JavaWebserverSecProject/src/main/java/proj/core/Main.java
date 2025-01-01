@@ -108,7 +108,7 @@ public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
     System.out.println("Current absolute path is: \n" + s);
     logger.info("Working Directory getProperty: \n"+System.getProperty("user.dir"));
     if (ums != null)
-        logger.info("Session Data loaded: \n" + ums.getUsers().toString());
+        logger.info("Session Data loaded: \n" + ums.getAllUsersAsString());
     else
         logger.info("Session Data not loaded so not showing users list \n");
 }

@@ -36,25 +36,15 @@ public class HandlerLogout {
             }
 
             //find User in the Stored data and delete the token
-            User u = ums.getUserByName(username);
-            if(u != null){
-                //Check if token and username match
-                if(u.getSessionToken().equals(token) && u.getUsername().equals(username)) {
-                    u.setLoginToken(""); //delete token
-                    //save updated user data to the list
-                    if (ums.saveUsers()) {
-                        logger.info("Token deleted successfully");
-                        ctx.result("").status(HttpStatus.OK.getCode()); //200
-                        return;
-                    } else {
-                        logger.warn("Error saving User To Database");
-                        ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
-                        return;
-                    }
-
-                }
-                    logger.warn("Token does not exist");
-                    ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
+            if(ums.isUsernameValid(username)){
+                ums.setUserTokenByName(username,""); //Invalidate Token
+                logger.info("Logout successfully, Token deleted");
+                ctx.result("").status(HttpStatus.OK.getCode()); //200
+                return;
+            }else{
+                logger.warn("User does not exist");
+                ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //401
+                return;
             }
 
         });//logout handler

@@ -10,9 +10,10 @@ public class DatabaseUtil {
 
     private static final ConfigManager cfg = ConfigManager.getInstance();
 
-    private static String JDBC_URL = "jdbc:h2:./database/testdb";
+    private static final String JDBC_URL;
     static {
-        if(! cfg.isON_DEVICE()) {
+        assert cfg != null;
+        if( ! cfg.isON_DEVICE()) {
             JDBC_URL = "jdbc:h2:./src/main/resources/persistence/userDB";
         } else {
             JDBC_URL = "jdbc:h2:./target/classes/persistence/userDB";
@@ -24,11 +25,15 @@ public class DatabaseUtil {
     private static Server webServer;
 
     public static void startWebConsole() {
-        try {
-            webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8932").start();
-            System.out.println("H2 Console started at http://localhost:8932");
-        } catch (Exception e) {
-            System.err.println("Error starting H2 Console: " + e.getMessage());
+        assert cfg != null;
+        if(cfg.isDB_WEBSERVER_ENABLED()) {
+            try {
+                webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8932").start();
+                System.out.println("H2 Console started at http://localhost:8932");
+            } catch (Exception e) {
+                System.err.println("Error starting H2 Console: " + e.getMessage());
+            }
+
         }
     }
 
@@ -41,9 +46,6 @@ public class DatabaseUtil {
 
     public static Connection getConnection() throws Exception {
         Class.forName("org.h2.Driver"); // Explicitly load the driver
-        if(cfg.isDB_WEBSERVER_ENABLED()) {
-            startWebConsole();
-        }
         return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
     }
 

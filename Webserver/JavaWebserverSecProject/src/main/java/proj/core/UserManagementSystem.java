@@ -1,22 +1,18 @@
 package proj.core;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+
 import lombok.Getter;
 import org.slf4j.LoggerFactory;
-import proj.config.ConfigManager;
 import proj.entities.User;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+
 import java.sql.Connection;
-import java.util.LinkedList;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.slf4j.Logger;
 import proj.util.DatabaseUtil;
-import proj.util.JSON_Deserialize;
-import proj.util.JSON_Serialize;
+
 
 
 /**
@@ -27,18 +23,8 @@ import proj.util.JSON_Serialize;
  * Singleton Pattern
  */
 public class UserManagementSystem {
-    /*
-    List containing all users.
-    Because user Creation is not the main focus of this project,
-    users are created manually, and stored in the "userDB.json" file.
-    The content of the JSON is loaded into this list on startup.
-     */
-    @Getter
-    private LinkedList<User> users = new LinkedList<>();
-
 
     private final Logger logger;
-    private final ConfigManager cfg;
 
     private static UserManagementSystem instance;
 
@@ -46,9 +32,9 @@ public class UserManagementSystem {
     //instance management
     private UserManagementSystem() {
         this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
-        this.cfg = ConfigManager.getInstance();
         initializeDatabase();
-        loadUsers();
+        //Inside the function check if console enabled in config
+        DatabaseUtil.startWebConsole();
     }
 
     public static synchronized UserManagementSystem getInstance() {
@@ -78,66 +64,34 @@ public class UserManagementSystem {
     }
 
 
-    //Rewritten to use H2 database
-    public void loadUsers() {
-        try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM users";
-            try (var statement = connection.createStatement();
-                 var resultSet = statement.executeQuery(query)) {
-                users.clear();
-                while (resultSet.next()) {
-                    users.add(new User(
-                            resultSet.getString("username"),
-                            resultSet.getString("passwordHashed"),
-                            resultSet.getString("sessionToken"),
-                            resultSet.getString("IP")
-                    ));
-                }
-                logger.debug("User Database loaded successfully from H2!");
-            }
-        } catch (Exception e) {
-            logger.error("Error loading User Database from H2: " + e.getMessage(), e);
-        }
-    }
-
-
-    // Rewritten to use H2 database
-    public boolean saveUsers() {
-        try (Connection connection = DatabaseUtil.getConnection()) {
-            String deleteQuery = "DELETE FROM users";
-            try (var deleteStatement = connection.createStatement()) {
-                deleteStatement.executeUpdate(deleteQuery);
-            }
-
-            String insertQuery = "INSERT INTO users (username, passwordHashed, sessionToken, IP) VALUES (?, ?, ?, ?)";
-            try (var preparedStatement = connection.prepareStatement(insertQuery)) {
-                for (User user : users) {
-                    preparedStatement.setString(1, user.getUsername());
-                    preparedStatement.setString(2, user.getPasswordHashed());
-                    preparedStatement.setString(3, user.getSessionToken());
-                    preparedStatement.setString(4, user.getIP());
-                    preparedStatement.executeUpdate();
-                }
-            }
-            logger.debug("User Database saved successfully to H2!");
-            return true;
-        } catch (Exception e) {
-            logger.error("Error saving User Database to H2: " + e.getMessage(), e);
-            return false;
-        }
-    }
 
 
     //Checks if a username exists
     //Returns TRUE if the username exists in the list
     public boolean isUsernameValid(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                return true;
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String checkUsername =
+                    """
+            SELECT * FROM users WHERE username = ?;
+        """;
+            try (PreparedStatement preparedStatement = connection.prepareStatement(checkUsername)) {
+                preparedStatement.setString(1, username);
+               try(ResultSet resSet = preparedStatement.executeQuery()){
+                   if(resSet.next()){
+                       System.out.println("User Found:" + resSet.getString("username"));
+                       return true;
+                   }else{
+                       System.out.println("User not Found");
+                          return false;
+                   }
+               }
             }
+        } catch (Exception e) {
+            logger.error("Error checking Username " + e.getMessage(), e);
+            return false;
         }
-        return false;
     }
+
 
     //Returns a user object by username from the list
     public User getUserByName(String username) {
@@ -168,26 +122,59 @@ public class UserManagementSystem {
     //Sets the token of a user by username
     //Returns TRUE if the token was set successfully
     public boolean setUserTokenByName(String username, String token) {
-        User user = getUserByName(username);
-        if (user != null) {
-            user.setLoginToken(token);
-         return saveUsers();
-        } else {
-            logger.info("setUserTokenByName--User not found");
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "UPDATE users SET sessionToken = ? WHERE username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, token);
+                preparedStatement.setString(2, username);
+                int rowsUpdated = preparedStatement.executeUpdate();
+                return rowsUpdated > 0; // Return true if at least one row was updated
+            }
+        } catch (Exception e) {
+            logger.error("Error setting token for user " + e.getMessage(), e);
             return false;
         }
     }
 
     public String getUserPasswordByName(String username) {
-        User user = getUserByName(username);
-        if (user != null) {
-            return user.getPasswordHashed();
-        } else {
-            logger.info("getUserPasswordByName--User not found");
-            return null;
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT passwordHashed FROM users WHERE username = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getString("passwordHashed");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching password for user " + e.getMessage(), e);
         }
+        logger.info("getUserPasswordByName--User not found");
+        return null;
     }
 
+    //Method to fetch all users and return them as a String for debugging
+    public String getAllUsersAsString() {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT * FROM users";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    StringBuilder returnSring = new StringBuilder();
+                    while (resultSet.next()) {
+                        returnSring.append("User: ").append(resultSet.getString("username")).append("\n");
+                        returnSring.append("Password: ").append(resultSet.getString("passwordHashed")).append("\n");
+                        returnSring.append("Token: ").append(resultSet.getString("sessionToken")).append("\n");;
+                        returnSring.append("IP: ").append(resultSet.getString("IP")).append("\n");
+                    }
+                    return returnSring.toString();
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching all users: " + e.getMessage(), e);
+            return "Error fetching all users";
+        }
+    }
 
 
 

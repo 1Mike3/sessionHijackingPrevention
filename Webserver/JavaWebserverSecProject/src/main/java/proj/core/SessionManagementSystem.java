@@ -2,9 +2,14 @@ package proj.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proj.entities.User;
 
-import java.util.LinkedList;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import proj.entities.User;
+import proj.util.DatabaseUtil;
 import java.util.UUID;
 
 public class SessionManagementSystem {
@@ -31,36 +36,50 @@ public class SessionManagementSystem {
 
     //Checks if a provided username-token pair is valid and returns a boolean
     public boolean authenticator(String username, String token) {
-        LinkedList<User> users = ums.getUsers();
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.getSessionToken().equals(token)) {
+        try {
+            User user = ums.getUserByName(username);
+            if (user != null && token.equals(user.getSessionToken())) {
                 return true;
             }
-        }
-        logger.error("Username and String did not Match, stored Data for debugging:");
-        for(User u : ums.getUsers()){
-            logger.info(u.getUsername());
-            logger.info(u.getSessionToken());
+            logger.error("Username and token did not match. Debugging information:");
+            if (user != null) {
+                logger.info("Stored token for {}: {}", user.getUsername(), user.getSessionToken());
+            } else {
+                logger.info("User not found: {}", username);
+            }
+        } catch (Exception e) {
+            logger.error("Error during authentication: " + e.getMessage(), e);
         }
         return false;
     }
 
-
-    //does what it says on the tin :)
     public String generateUniqueToken() {
-        String token = UUID.randomUUID().toString();
-        //Do not see a high risk for collisions with three test users ... but still
-        LinkedList<User> users = ums.getUsers();
-        for (User user : users) {
-            if (user.getSessionToken().equals(token)) {
-                logger.warn("Token already exists, generating new one");
-                return generateUniqueToken();
-            }
-        }
+        String token;
+        do {
+            token = UUID.randomUUID().toString();
+        } while (isTokenInUse(token)); // Check if token is in use
         return token;
     }
 
-
+    /**
+     * Checks if a token is already in use by querying the database.
+     */
+    private boolean isTokenInUse(String token) {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "SELECT COUNT(*) FROM users WHERE sessionToken = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, token);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1) > 0; // Return true if the token exists
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error checking if token is in use: " + e.getMessage(), e);
+        }
+        return false; // If there's an error, assume the token is not in use
+    }
 
 
 

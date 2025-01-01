@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class HandlerLogin {
     //Method which is called once to setup the handler of an endpoint
     public static void setHandler(Javalin app, Logger logger, UserManagementSystem ums, SessionManagementSystem sms){
-        //react to recieved login form
+        //react to received login form
         app.post("/login", ctx -> {
             // some code
             logger.info("Login attempt from: " + ctx.ip());
