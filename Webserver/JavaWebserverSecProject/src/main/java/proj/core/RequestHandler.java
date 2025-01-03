@@ -1,5 +1,7 @@
 package proj.core;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
+import io.javalin.http.Context;
 import org.slf4j.LoggerFactory;
 import proj.core.web.HandlerAccessSensitiveContent;
 import proj.core.web.HandlerLogin;
@@ -38,22 +40,13 @@ public class RequestHandler {
 
         //Check before or after  request (rem. path for every request)
         app.before("/", ctx -> {
-            ;
+        analyzeHeader(ctx);
         });
 
         //app.after("/path/*", ctx -> {
         app.after("/*", ctx -> {
-            String sb = "##DEBUG-META-DATA-DUMP##" + "\n" +
-                    "Request to: " + ctx.path() + "\n" +
-                    "IP:" + ctx.ip() + "\n" +
-                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
-                    "User-Agent:" + ctx.userAgent() + "\n" +
-                    "Content-Type:" + ctx.contentType() + "\n" +
-                    "language:" + ctx.header("Accept-Language") + "\n" +
-                    "timezone:" + ctx.header("Time-Zone") + "\n" +
-                    "screen:" + ctx.header("Screen-Resolution") + "\n";
-            logger.info(sb);
-            });
+;;
+        });
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerLogin.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ LOGOT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -61,7 +54,31 @@ public class RequestHandler {
 //++++++++++++++++++++++++++++++++ ACCESS SENSITIVE CONTENT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerAccessSensitiveContent.setHandler(app,logger,ums,sms);
     }//M
+
+    public void analyzeHeader(Context ctx ){
+        try {
+            String headersJson = new ObjectMapper().writeValueAsString(ctx.headerMap());
+            String sb = "##DEBUG-META-DATA-DUMP##" + "\n" +
+                    "Request to: " + ctx.path() + "\n" +
+                    "IP:" + ctx.ip() + "\n" +
+                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
+                    "User-Agent:" + ctx.userAgent() + "\n" +
+                    "Content-Type:" + ctx.contentType() + "\n" +
+                    "Accept:" + ctx.header("Accept") + "\n" +
+                    "language:" + ctx.header("Accept-Language") + "\n" +
+                    "timezone:" + ctx.header("Time-Zone") + "\n" +
+                    "screen:" + ctx.header("Screen-Resolution") + "\n" +
+                    "## UNCURATED HEADERS ##" + "\n" +
+                    "Headers: " + headersJson + "\n\n";
+            logger.info(sb);
+        } catch (Exception e) {
+            logger.error("Error creating Header Debug Information: " + e.getMessage(), e);
+        }
+    }
+
 } //C
+
+
 
 
 
