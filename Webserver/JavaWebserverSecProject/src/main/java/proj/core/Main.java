@@ -25,7 +25,6 @@ public class Main {
         Logger logger = loggerFactory.getLogger(Main.class.getName());
         logger.info("\n\n\n\n###Startup### -- Logger initialized#");
 
-
         //Setup Access to config
         //Config fetched from
         ConfigManager cfg = ConfigManager.getInstance();
@@ -42,7 +41,6 @@ public class Main {
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
         //logger.info().log("#Startup UserManagementSystem initialized#");
-
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
        // logger.info().log("#Startup SessionManagementSystem initialized#");

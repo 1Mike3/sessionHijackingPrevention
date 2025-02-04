@@ -60,8 +60,9 @@ public class RequestHandler {
             String headersJson = new ObjectMapper().writeValueAsString(ctx.headerMap());
             String sb = "##DEBUG-META-DATA-DUMP##" + "\n" +
                     "Request to: " + ctx.path() + "\n" +
-                    "IP:" + ctx.ip() + "\n" +
-                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
+                    "IP:" + ctx.ip() + "\n" + //This is just the IP of the proxy
+                    //Can also be changed to X-Real-IP below
+                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +//This is the real IP inserted by the proxy
                     "User-Agent:" + ctx.userAgent() + "\n" +
                     "Content-Type:" + ctx.contentType() + "\n" +
                     "Accept:" + ctx.header("Accept") + "\n" +

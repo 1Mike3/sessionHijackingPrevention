@@ -9,23 +9,23 @@ const CON_PARAM = Object.freeze({
     //get information on if http or https communication should be used
     PROTOCOL_TYPE: location.protocol,  // ["http:" | "https:"]
     //CONFIGURABLE
-    DNS_NAME: "securitytest-sh.at",
-    //DNS_NAME: "localhost",
-    PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
-    //PORT: ":"+ (location.protocol === "http:" ? "3000" : "443"),
+    //DNS_NAME: "securitytest-sh.at",
+    DNS_NAME: "localhost",
+    //PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
+    PORT: ":"+ (location.protocol === "http:" ? "3000" : "443"),
 });
 
 //saved instance of a session after login used throughout the application
 var session = null;
 
- const buttonLogin = document.getElementById("btn_login");
- const buttonLogout = document.getElementById("btn_logout");
- const buttonTogglePage = document.getElementById("btn_togglePage");
- const buttonCloseLoginForm = document.getElementById("btn_closeLoginForm")
+const buttonLogin = document.getElementById("btn_login");
+const buttonLogout = document.getElementById("btn_logout");
+const buttonTogglePage = document.getElementById("btn_togglePage");
+const buttonCloseLoginForm = document.getElementById("btn_closeLoginForm")
 
-  const loginModal = document.getElementById("loginModal") ;
-  const modalBackdrop = document.getElementById("modalBackdrop");
-  const body = document.body;
+const loginModal = document.getElementById("loginModal") ;
+const modalBackdrop = document.getElementById("modalBackdrop");
+const body = document.body;
 
 
   /*

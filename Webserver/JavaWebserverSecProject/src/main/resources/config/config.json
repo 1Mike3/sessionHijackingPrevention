@@ -1,9 +1,9 @@
 {
-"ON_DEVICE": true,
+"ON_DEVICE": false ,
 "HTTPS":false,
-"ADDRESS":"0.0.0.0",
+"ADDRESS":"localhost",
 "ADDRESS_SECURE":"localhost",
-"PORT":8080,
+"PORT":3000,
 "PORT_SECURE":443,
 "PATH_WS_STATIC":"/static",
 "DB_WEBSERVER_ENABLED":true,
