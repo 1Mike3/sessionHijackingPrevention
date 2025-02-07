@@ -4,12 +4,8 @@ import io.javalin.http.staticfiles.Location;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import proj.config.ConfigManager;
 
-import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import io.javalin.community.ssl.SslPlugin;
@@ -19,7 +15,6 @@ import io.javalin.community.ssl.SslPlugin;
  **/
 public class Main {
     public static void main(String[] args) {
-
         //Setup Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
@@ -36,7 +31,6 @@ public class Main {
             cfg.printActiveConfiguration();
         }
 
-
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
@@ -44,7 +38,6 @@ public class Main {
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
        // logger.info().log("#Startup SessionManagementSystem initialized#");
-
 
         //Get server address and port from Parameters, conditional http/https
         String address;
@@ -88,27 +81,68 @@ public class Main {
             }).start(address, port);
         }
 
-
         //Setup RequestHandler
         RequestHandler requestHandler = new RequestHandler(app);
         requestHandler.handleRequests();
        // logger.info().log("#Startup RequestHandler initialized#");
-        logger.info("---------########## Application Running ##########---------");
-        printDebugOnDevice(logger, ums);
 
+
+        //Creating Geolocation-Management Instance
+        GeolocationProcessing geolocation;
+        if(!cfg.isON_DEVICE()){
+            geolocation = new GeolocationProcessing(cfg.getPATH_DB_API_KEY());
+        }else {
+            geolocation = new GeolocationProcessing(cfg.getPATH_DB_API_KEY_ON_DEVICE());
+        }
+        //Obtaining the API Key
+        try {
+            geolocation.obtainKey();
+        } catch (Exception e) {
+            logger.error("Error obtaining API Key - Geolocation: " + e.getMessage());
+            printDebugOnDevice(logger, ums);
+            System.exit(1);
+        }
+        //Test Request
+        //proj.entities.Location loc = geolocation.getCoordinates("8.8.8.8");
+        //logger.debug(loc.toString());
+
+        //logger.info("---------########## Application Running ##########---------");
+        logger.info(
+                """
+\n
+                          ___                 _  _               _    _                 _____  _                 _              _   _   \s
+                         / _ \\               | |(_)             | |  (_)               /  ___|| |               | |            | | | |  \s
+                        / /_\\ \\ _ __   _ __  | | _   ___   __ _ | |_  _   ___   _ __   \\ `--. | |_   __ _  _ __ | |_   ___   __| | | |  \s
+                        |  _  || '_ \\ | '_ \\ | || | / __| / _` || __|| | / _ \\ | '_ \\   `--. \\| __| / _` || '__|| __| / _ \\ / _` | | |  \s
+                        | | | || |_) || |_) || || || (__ | (_| || |_ | || (_) || | | | /\\__/ /| |_ | (_| || |   | |_ |  __/| (_| | |_|  \s
+                        \\_| |_/| .__/ | .__/ |_||_| \\___| \\__,_| \\__||_| \\___/ |_| |_| \\____/  \\__| \\__,_||_|    \\__| \\___| \\__,_| (_)  \s
+                               | |    | |                                                                                               \s
+                               |_|    |_|                                                                                               \s                                                                                                                                                                                                                         \s                                                               \s
+\n
+                """
+        );
+
+        //printDebugOnDevice(logger, ums);
     }
 
-public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
+
+    /**
+     * Prints debug information for debugging path errors when running on other devices
+     * NO practical function other than debugging
+     * @param logger the loger for printing the debug messages
+     * @param ums instance of UserManagementSystem to be analyzed
+     */
+    public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
     //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
-    logger.info("DEBUG ON DEVICE");
+    logger.debug("DEBUG ON DEVICE");
     Path currentRelativePath = Paths.get("");
     String s = currentRelativePath.toAbsolutePath().toString();
-    System.out.println("Current absolute path is: \n" + s);
-    logger.info("Working Directory getProperty: \n"+System.getProperty("user.dir"));
+    logger.debug("Current absolute path is: \n" + s);
+    logger.debug("Working Directory getProperty: \n"+System.getProperty("user.dir"));
     if (ums != null)
-        logger.info("Session Data loaded: \n" + ums.getAllUsersAsString());
+        logger.debug("Session Data loaded: \n" + ums.getAllUsersAsString());
     else
-        logger.info("Session Data not loaded so not showing users list \n");
+        logger.debug("Session Data not loaded so not showing users list \n");
 }
 }
 

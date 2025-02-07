@@ -6,6 +6,10 @@ target/
 !**/.gitignore
  .\src\main\resources\persistence\userDB.json
  C:\Users\Michi\Documents\_BIC_S5_Workspace\project_implementation\Webserver\JavaWebserverSecProject\src\main\resources\persistence\userDB.json
+C:\Users\Michi\Documents\_BIC_S5_Workspace\project_implementation\Webserver\JavaWebserverSecProject\src\main\resources\config\config.json
+C:\Users\Michi\Documents\_BIC_S5_Workspace\project_implementation\Webserver\JavaWebserverSecProject\src\main\resources\config
+*config.json
+**/config
 **/persistence
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -15,7 +19,8 @@ target/
 *.iws
 *.iml
 *.ipr
-
+*config.json
+**/config
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -40,3 +45,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Custom ###
+API
+certsTest
+sec.test.crt
+sec.test.key

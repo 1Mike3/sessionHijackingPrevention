@@ -49,3 +49,9 @@
 
 "PATH_RELATIVE_USERSPACE_HTML":
 --
+
+"PATH_DB_API_KEY":
+-- Paths to read the API key to access the database from a file
+
+"PATH_DB_API_KEY_ON_DEVICE":
+--

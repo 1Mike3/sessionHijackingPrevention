@@ -17,8 +17,8 @@ public class SessionManagementSystem {
     //Setup Logger for Logging custom Messages
     private final Logger logger;
     private final UserManagementSystem ums;
-
     private static SessionManagementSystem instance;
+    //
 
     //Constructor
     private SessionManagementSystem() {
@@ -53,6 +53,7 @@ public class SessionManagementSystem {
         return false;
     }
 
+
     public String generateUniqueToken() {
         String token;
         do {
@@ -60,6 +61,7 @@ public class SessionManagementSystem {
         } while (isTokenInUse(token)); // Check if token is in use
         return token;
     }
+
 
     /**
      * Checks if a token is already in use by querying the database.

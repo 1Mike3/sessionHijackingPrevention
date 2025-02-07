@@ -40,6 +40,8 @@ public class ConfigManager {
     private String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
     private String PATH_RELATIVE_USERSPACE_HTML;
     private String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE;
+    private String PATH_DB_API_KEY;
+    private String PATH_DB_API_KEY_ON_DEVICE;
     private static ConfigManager instance;
 
     //Fasterxml constructor
@@ -59,7 +61,9 @@ public class ConfigManager {
                          @JsonProperty("PATH_RELATIVE_PRIVATE_KEY") String PATH_RELATIVE_PRIVATE_KEY,
                          @JsonProperty("PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE") String PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_USERSPACE_HTML") String PATH_RELATIVE_USERSPACE_HTML,
-                         @JsonProperty("PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE") String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE)
+                         @JsonProperty("PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE") String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE,
+                        @JsonProperty("PATH_DB_API_KEY") String PATH_DB_API_KEY,
+                        @JsonProperty("PATH_DB_API_KEY_ON_DEVICE") String PATH_DB_API_KEY_ON_DEVICE)
     {
         this.ON_DEVICE = ON_DEVICE;
         this.HTTPS = HTTPS;
@@ -77,6 +81,8 @@ public class ConfigManager {
         this.PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE = PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE;
         this.PATH_RELATIVE_USERSPACE_HTML = PATH_RELATIVE_USERSPACE_HTML;
         this.PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE = PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE;
+        this.PATH_DB_API_KEY = PATH_DB_API_KEY;
+        this.PATH_DB_API_KEY_ON_DEVICE = PATH_DB_API_KEY_ON_DEVICE;
     }
 
 

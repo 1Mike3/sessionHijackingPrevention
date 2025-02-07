@@ -14,5 +14,7 @@
 "PATH_RELATIVE_PRIVATE_KEY": "src/main/resources/certsTest/sec.test.key",
 "PATH_RELATIVE_PRIVATE_KEY_ON_DEVICE": "./target/classes/certsTest/sec.test.key",
 "PATH_RELATIVE_USERSPACE_HTML":"./src/main/resources/static/restricted/userSpace.html",
-"PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE":"./target/classes/static/restricted/userSpace.html"
+"PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE":"./target/classes/static/restricted/userSpace.html",
+"PATH_DB_API_KEY" : "./src/main/resources/API/api.geoip.key",
+"PATH_DB_API_KEY_ON_DEVICE" : "./target/classes/API/api.geoip.key"
 }

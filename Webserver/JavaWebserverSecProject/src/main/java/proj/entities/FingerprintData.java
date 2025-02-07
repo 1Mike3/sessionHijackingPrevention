@@ -12,6 +12,8 @@ import lombok.Setter;
 public class FingerprintData {
     private Integer blockId;
     private String IP;
+    //TODO: Change to Location Class
+    //TODO: Introduce UserAgent Parser
     private float longitude;
     private float latitude;
     private boolean cookiesAccepted;
