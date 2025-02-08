@@ -1,11 +1,11 @@
-package proj.core;
+package proj.core.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.slf4j.LoggerFactory;
-import proj.core.web.HandlerAccessSensitiveContent;
-import proj.core.web.HandlerLogin;
-import proj.core.web.HandlerLogout;
+import proj.core.SessionManagementSystem;
+import proj.core.UserManagementSystem;
+import proj.util.UaParserUtil;
 
 
 /**
@@ -72,6 +72,7 @@ public class RequestHandler {
                     "## UNCURATED HEADERS ##" + "\n" +
                     "Headers: " + headersJson + "\n\n";
             logger.info(sb);
+            UaParserUtil.parse(ctx.userAgent());
         } catch (Exception e) {
             logger.error("Error creating Header Debug Information: " + e.getMessage(), e);
         }

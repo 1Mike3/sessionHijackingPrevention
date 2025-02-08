@@ -72,9 +72,7 @@
         </dependency>
 
         <!-- Geolocation Dependency -->
-        <!--
-        This dependency(Maxmind) is unusable, removed!
-        -->
+        <!-- Maxmind GEOIP is a pain to use, removed! -->
 
         <!-- Geolocation Dependency, API Access -->
         <!-- https://mvnrepository.com/artifact/io.ipgeolocation/ipgeolocation -->
@@ -82,6 +80,13 @@
             <groupId>io.ipgeolocation</groupId>
             <artifactId>ipgeolocation</artifactId>
             <version>1.0.16</version>
+        </dependency>
+
+        <!-- User Agent Parser -->
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+            <version>1.6.1</version>
         </dependency>
 
 

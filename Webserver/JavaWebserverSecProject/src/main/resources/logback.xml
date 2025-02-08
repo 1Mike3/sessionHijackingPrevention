@@ -18,10 +18,15 @@
         </encoder>
     </appender>
 
-    <!-- Root Logger -->
-    <root level="DEBUG">
+    <!-- Suppress Debug Logs from Jetty -->
+    <logger name="org.eclipse.jetty" level="INFO" />
+    <logger name="io.javalin" level="INFO" />
+
+    <!-- Root Logger (Other Libraries) -->
+    <root level="TRACE">
+    <!--root level="INFO"--><!-- For Production Logging -->
+        <!--root level="TRACE"--><!-- For degbugging -->
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
-
 </configuration>

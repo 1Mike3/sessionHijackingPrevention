@@ -49,8 +49,8 @@ public class HandlerLogin {
 
                     //Check if Password Matches Username
                     //not differentiating status code on purpose (best practice) so no guessing usernames
-                    logger.debug(CryptoFunc.hashSHA256(password));
-                    logger.debug(ums.dbGetUserByName(username).getPasswordHashed());
+                    logger.trace(CryptoFunc.hashSHA256(password));
+                    logger.trace(ums.dbGetUserByName(username).getPasswordHashed());
                     if(! CryptoFunc.hashSHA256(password).equals(ums.dbGetUserByName(username).getPasswordHashed())){
                         logger.warn("Password Hash did not match");
                         ctx.result("").status(HttpStatus.UNAUTHORIZED.getCode()); //561

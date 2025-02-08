@@ -9,6 +9,8 @@ import proj.config.ConfigManager;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import io.javalin.community.ssl.SslPlugin;
+import proj.core.web.GeolocationProcessing;
+import proj.core.web.RequestHandler;
 
 /**
  * Main class to start the application
@@ -18,7 +20,7 @@ public class Main {
         //Setup Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
-        logger.info("\n\n\n\n###Startup### -- Logger initialized#");
+        logger.info("\n\n\n\n###Startup### \n -- Logger initialized#");
 
         //Setup Access to config
         //Config fetched from
@@ -27,23 +29,26 @@ public class Main {
             logger.error("Failed to fetch Config Data, SHUTTING DOWN");
             printDebugOnDevice(logger, null);
             System.exit(1);
-        }else {
-            cfg.printActiveConfiguration();
+        } else {
+          //cfg.printActiveConfiguration();
+            logger.trace("#Startup Config Data fetched Successfully");
         }
+
+
 
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
         UserManagementSystem ums = UserManagementSystem.getInstance();
-        //logger.info().log("#Startup UserManagementSystem initialized#");
+        logger.info("#Startup UserManagementSystem initialized");
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
-       // logger.info().log("#Startup SessionManagementSystem initialized#");
+        logger.info("#Startup SessionManagementSystem initialized");
 
         //Get server address and port from Parameters, conditional http/https
         String address;
         int port;
         //NOTE
-        //HTTPS was added previously for testing but is for now handled by nginx
+        //HTTPS was added previously for testing but is for now handled by nginx => "secure" stuff is obsolete
         if(!cfg.isHTTPS()){
         address = cfg.getADDRESS();
         port = cfg.getPORT();
@@ -84,7 +89,7 @@ public class Main {
         //Setup RequestHandler
         RequestHandler requestHandler = new RequestHandler(app);
         requestHandler.handleRequests();
-       // logger.info().log("#Startup RequestHandler initialized#");
+        logger.info("#Startup RequestHandler initialized");
 
 
         //Creating Geolocation-Management Instance
@@ -104,7 +109,7 @@ public class Main {
         }
         //Test Request
         //proj.entities.Location loc = geolocation.getCoordinates("8.8.8.8");
-        //logger.debug(loc.toString());
+        //logger.trace(loc.toString());
 
         //logger.info("---------########## Application Running ##########---------");
         logger.info(
@@ -134,15 +139,15 @@ public class Main {
      */
     public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
     //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
-    logger.debug("DEBUG ON DEVICE");
+    logger.trace("DEBUG ON DEVICE");
     Path currentRelativePath = Paths.get("");
     String s = currentRelativePath.toAbsolutePath().toString();
-    logger.debug("Current absolute path is: \n" + s);
-    logger.debug("Working Directory getProperty: \n"+System.getProperty("user.dir"));
+    logger.trace("Current absolute path is: \n" + s);
+    logger.trace("Working Directory getProperty: \n"+System.getProperty("user.dir"));
     if (ums != null)
-        logger.debug("Session Data loaded: \n" + ums.getAllUsersAsString());
+        logger.trace("Session Data loaded: \n" + ums.getAllUsersAsString());
     else
-        logger.debug("Session Data not loaded so not showing users list \n");
+        logger.trace("Session Data not loaded so not showing users list \n");
 }
 }
 

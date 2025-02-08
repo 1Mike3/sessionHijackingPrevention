@@ -1,4 +1,4 @@
-package proj.core;
+package proj.core.web;
 
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;
@@ -76,10 +76,10 @@ public class GeolocationProcessing {
         //Process Response
         if (geolocation != null) {
             //dbg info
-            logger.debug(geolocation.getLatitude().toString());
-            logger.debug(geolocation.getLongitude().toString());
-            logger.debug(geolocation.getCountryName());
-            logger.debug(geolocation.getCity());
+            logger.trace(geolocation.getLatitude().toString());
+            logger.trace(geolocation.getLongitude().toString());
+            logger.trace(geolocation.getCountryName());
+            logger.trace(geolocation.getCity());
             //return Location val
             return new Location(geolocation.getLongitude(), geolocation.getLatitude());
         } else {
