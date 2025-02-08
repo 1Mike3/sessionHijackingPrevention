@@ -15,13 +15,14 @@ public class UserAgent {
 
     /**
      * Constructor, creates new UserAgent Object from ua-parser
+     * null values are replaced with "Unknown"
      * @param Browser Name of the Browser used
      * @param BrowserVersion Version of the Browser used
      * @param Platform Platform used
      */
     public UserAgent(String Browser, String BrowserVersion, String Platform){
-        this.Browser = Browser;
-        this.BrowserVersion = BrowserVersion;
-        this.Platform = Platform;
+        this.Browser = Browser == null ? "Unknown" : Browser;
+        this.BrowserVersion =  BrowserVersion == null ? "Unknown" : BrowserVersion;
+        this.Platform = Platform == null ? "Unknown" : Platform;
     }
 }

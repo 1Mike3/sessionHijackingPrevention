@@ -16,7 +16,13 @@ import proj.core.web.RequestHandler;
  * Main class to start the application
  **/
 public class Main {
+
+    public static GeolocationProcessing geolocation_instance;
+
     public static void main(String[] args) {
+
+ ;
+
         //Setup Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
@@ -86,11 +92,6 @@ public class Main {
             }).start(address, port);
         }
 
-        //Setup RequestHandler
-        RequestHandler requestHandler = new RequestHandler(app);
-        requestHandler.handleRequests();
-        logger.info("#Startup RequestHandler initialized");
-
 
         //Creating Geolocation-Management Instance
         GeolocationProcessing geolocation;
@@ -99,6 +100,8 @@ public class Main {
         }else {
             geolocation = new GeolocationProcessing(cfg.getPATH_DB_API_KEY_ON_DEVICE());
         }
+        geolocation_instance = geolocation;
+
         //Obtaining the API Key
         try {
             geolocation.obtainKey();
@@ -110,6 +113,12 @@ public class Main {
         //Test Request
         //proj.entities.Location loc = geolocation.getCoordinates("8.8.8.8");
         //logger.trace(loc.toString());
+
+        //Setup RequestHandler
+        RequestHandler requestHandler = new RequestHandler(app);
+        requestHandler.handleRequests();
+        logger.info("#Startup RequestHandler initialized");
+
 
         //logger.info("---------########## Application Running ##########---------");
         logger.info(
