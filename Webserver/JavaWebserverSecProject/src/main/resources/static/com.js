@@ -22,14 +22,21 @@ window.addEventListener('load', function () {
             await loginRequestHandler(username,password)
         }); // End event listender
 
-//setting up event listener for the logout button
-    //Added to the Logout button "onckick" function in appMain.js
 
-//function to handle the process of logging in
+
+//setting up event listener for the logout button
+    //MOVED Added to the Logout button "onckick" function in appMain.js
+
+//function to handle the process of logging in, wh. user clicks submit in login form
         async function loginRequestHandler(username,password) {
             // send login data to server
             console.log(CON_PARAM);
             console.log(session);
+            let header = new Headers({
+                "Content-Type": "application/json"
+            });
+            headerInjector(header);
+
             try {
                 const response = await fetch(
                 CON_PARAM.PROTOCOL_TYPE.valueOf()
@@ -39,11 +46,11 @@ window.addEventListener('load', function () {
                     +"/login",
                     {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: header,
+
                     body: JSON.stringify({username, password}),
                 });
+
 
                 // react "send login data to server"
                 switch (response.status) {
@@ -92,6 +99,10 @@ window.addEventListener('load', function () {
 
 //function to handle communication for logging out to the backend
 async function logoutRequestHandler(){
+    let header = new Headers({
+        "Content-Type": "application/json"
+    });
+    headerInjector(header);
     const response = await fetch(
     CON_PARAM.PROTOCOL_TYPE.valueOf()
         +"//"
@@ -99,9 +110,8 @@ async function logoutRequestHandler(){
         +CON_PARAM.PORT.valueOf()
         +"/logout",{
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: header,
+
         body: JSON.stringify({ token:session.getToken() ,username:session.getUsername()})
     });
     switch (response.status) {
@@ -123,6 +133,12 @@ async function logoutRequestHandler(){
 
 //function to make a request to the server to load the Account-Management page (if valid login)
 async function loadUserPageRequestHandler(){
+    let header = new Headers({
+        "Authorization-Token": "" + session.getToken(),
+        "Authorization-Username": "" + session.getUsername(),
+        "Content-Type": "application/json"
+    });
+    headerInjector(header);
     const response = await fetch(
         CON_PARAM.PROTOCOL_TYPE.valueOf()
         +"//"
@@ -131,11 +147,7 @@ async function loadUserPageRequestHandler(){
         +"/restricted/userSpace.html",
         {
         method: "GET",
-        headers: {
-            "Authorization-Token": "" + session.getToken(),
-            "Authorization-Username": "" + session.getUsername(),
-            "Content-Type": "application/json",
-        },
+        headers: header,
     });
     switch (response.status) {
         case 200:
@@ -156,5 +168,73 @@ async function loadUserPageRequestHandler(){
             break;
         default:
             console.log("UserPage unknown Response:", response.status);
+    }
+}
+
+
+//analytics
+function headerInjector(headers) {
+    headers.append("Screen-Resolution", `${screen.width}x${screen.height}`);
+    headers.append("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+    headers.append("Canvas", getCanvasData());
+    let webGLInfo = getWebGLData();
+    headers.append("WebGL-Vendor", webGLInfo.vendor);
+    headers.append("WebGL-Renderer", webGLInfo.renderer);
+    //According to mozilla web docks limited availability, keep in mind
+    //https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory
+    headers.append("Device-Memory", navigator.deviceMemory ||  "Unknown"); //only in secure context ... !!!
+}
+
+//https://stackoverflow.com/questions/25508970/canvas-fingerprinting-on-chrome
+function getCanvasData() {
+    try {
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+
+        // Set default values for drawing (opt expand further later if not dissimilar enough)
+        ctx.textBaseline = "top";
+        ctx.font = "10px Arial";
+        ctx.fillStyle = "#f60";
+        ctx.filter = "grayscale(1)";
+
+        ctx.fillText("Hello, fingerprint!", 2, 2);
+        let dataURL = canvas.toDataURL();
+        let dataURL_b64 = btoa(dataURL); //to b64 string
+
+        //honestly, just to make it shorter for debugging
+        var hash = 0;
+        if (dataURL_b64.length === 0) return "Not Supported";
+        for (let i = 0; i < dataURL_b64.length; i++) {
+            let char = dataURL_b64.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+        }
+        return hash;
+    } catch (e) {
+        return "Not Supported";
+    }
+
+}
+// Changed becaus Firefox "WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+function getWebGLData() {
+    try {
+        let canvas = document.createElement("canvas");
+        let gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+        if (!gl) return { vendor: "Not Supported", renderer: "Not Supported" };
+
+        let debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        let renderer = "Unknown";
+        let vendor = "Unknown";
+
+        if (debugInfo) {
+            vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+            renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        } else {
+            renderer = gl.getParameter(gl.RENDERER) || "Unknown";
+        }
+
+        return { vendor, renderer };
+    } catch (e) {
+        return { vendor: "Not Supported", renderer: "Not Supported" };
     }
 }

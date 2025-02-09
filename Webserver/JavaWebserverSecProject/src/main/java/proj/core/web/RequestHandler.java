@@ -42,7 +42,7 @@ public class RequestHandler {
        // });
 
         //Check before or after  request (rem. path for every request)
-        app.before("/", ctx -> {
+        app.before("/*", ctx -> {
         analyzeHeader(ctx);
         });
 
@@ -101,7 +101,7 @@ public class RequestHandler {
                     "BC3 Geolocation:" + loc.getLatitude() + " " + loc.getLongitude() + "\n" +
                     "BC4 Screen:" + ctx.header("Screen-Resolution") + "\n" +
                     "BC5 Language:" + ctx.header("Accept-Language") + "\n" +
-                    "BC6 Timezone:" + ctx.header("Time-Zone") + "\n" +
+                    "BC6 Timezone:" + ctx.header("Timezone") + "\n" +
                     "User-Agent:" +  "\n" +
                     "\t BC7 Browser:" + ua.getBrowser() + "\n" +
                     "\t BC8 Browser Version:" + ua.getBrowserVersion() + "\n" +
