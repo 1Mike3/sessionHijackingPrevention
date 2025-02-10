@@ -1,6 +1,7 @@
 package proj.core;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
+import lombok.Getter;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import proj.core.web.RequestHandler;
  * Main class to start the application
  **/
 public class Main {
-
+@Getter
     public static GeolocationProcessing geolocation_instance;
 
     public static void main(String[] args) {
@@ -44,7 +45,7 @@ public class Main {
 
             //These two are not strictly necessary but i want to control where the instance is created
         //Setup UserManagementSystem
-        UserManagementSystem ums = UserManagementSystem.getInstance();
+        DataManagementSystem dms = DataManagementSystem.getInstance();
         logger.info("#Startup UserManagementSystem initialized");
         //Setup SessionManagementSystem
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
@@ -101,13 +102,12 @@ public class Main {
             geolocation = new GeolocationProcessing(cfg.getPATH_DB_API_KEY_ON_DEVICE());
         }
         geolocation_instance = geolocation;
-
         //Obtaining the API Key
         try {
             geolocation.obtainKey();
         } catch (Exception e) {
             logger.error("Error obtaining API Key - Geolocation: " + e.getMessage());
-            printDebugOnDevice(logger, ums);
+            printDebugOnDevice(logger, dms);
             System.exit(1);
         }
         //Test Request
@@ -146,7 +146,7 @@ public class Main {
      * @param logger the loger for printing the debug messages
      * @param ums instance of UserManagementSystem to be analyzed
      */
-    public static void printDebugOnDevice(Logger logger, UserManagementSystem ums){
+    public static void printDebugOnDevice(Logger logger, DataManagementSystem ums){
     //EXTRA LOGGING Data for diagnosing problems when executing jar on other device
     logger.trace("DEBUG ON DEVICE");
     Path currentRelativePath = Paths.get("");

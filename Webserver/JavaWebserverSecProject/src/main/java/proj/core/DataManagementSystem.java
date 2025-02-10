@@ -3,6 +3,7 @@ package proj.core;
 
 import org.slf4j.LoggerFactory;
 import proj.entities.FingerprintData;
+import proj.entities.Location;
 import proj.entities.User;
 
 
@@ -11,57 +12,71 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import org.slf4j.Logger;
+import proj.entities.UserAgent;
 import proj.util.DatabaseUtil;
 
 
-
 /**
- * INFO OBSOLETE UPDATE
+ * - Class to manage the user data
+ * - Singleton class
+ * - Bulk of the database operations are done here, including initialsization
+ * - Because Fingerprint Data is tied to user it is also read out from the database here
+ * - Formally User Management System
  */
-public class UserManagementSystem {
+public class DataManagementSystem {
 
     private final Logger logger;
+    private static DataManagementSystem instance;
 
-    private static UserManagementSystem instance;
-
-
-    //instance management
-    private UserManagementSystem() {
-        this.logger = LoggerFactory.getLogger(UserManagementSystem.class);
+    private DataManagementSystem() {
+        this.logger = LoggerFactory.getLogger(DataManagementSystem.class);
         dbInitialize();
         //Inside the function check if console enabled in config
         DatabaseUtil.startWebConsole();
     }
-
-    public static synchronized UserManagementSystem getInstance() {
+    public static synchronized DataManagementSystem getInstance() {
         if (instance == null) {
-            instance = new UserManagementSystem();
+            instance = new DataManagementSystem();
             return instance;
         }
         return instance;
     }
 
+
+    /**
+     * - Initializes the embeded H2 Database
+     * - (Creates tables if they don't exist)
+     */
     public void dbInitialize() {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String createTableSQL = """
-            CREATE TABLE IF NOT EXISTS monitoringData (
-                  blockid INT PRIMARY KEY,
-                  ip VARCHAR(15),
-                  longitude FLOAT,
-                  latitude FLOAT,
-                  cookiesAccepted BOOLEAN,
-                  user_agent VARCHAR(200),
-                  content_language VARCHAR(20),
-                  timezone VARCHAR(20),
-                  screen VARCHAR(20)
-            );
-            CREATE TABLE IF NOT EXISTS users (
+                CREATE TABLE IF NOT EXISTS monitoringData (
+                blockid INT PRIMARY KEY,
+                ip VARCHAR(45),
+                accept VARCHAR(255),
+                encoding VARCHAR(255),
+                longitude DECIMAL(10,8),
+                latitude DECIMAL(10,8),
+                screen VARCHAR(20),
+                language VARCHAR(10),
+                timezone VARCHAR(50),
+                browser VARCHAR(30),
+                browser_version VARCHAR(20),
+                platform VARCHAR(50),
+                canvas TEXT,
+                webglVendor VARCHAR(50),
+                webglRenderer VARCHAR(100),
+                deviceMemory VARCHAR(10),
+                cookiesAccepted BOOLEAN
+                );
+                
+                CREATE TABLE IF NOT EXISTS users (
                  username VARCHAR(255) PRIMARY KEY,
                  passwordHashed VARCHAR(255),
                  sessionToken VARCHAR(255),
                  monitoringData INT,
-                 FOREIGN KEY (monitoringData) REFERENCES monitoringdata(BlockID)
-            );
+                 FOREIGN KEY (monitoringData) REFERENCES monitoringData(blockid)
+                );
         """;
             try (var statement = connection.createStatement()) {
                 statement.execute(createTableSQL);
@@ -72,10 +87,11 @@ public class UserManagementSystem {
     }
 
 
-
-
-    //Checks if a username exists
-    //Returns TRUE if the username exists in the list
+    /**
+     * - Checks if a username is valid, (exists in the database)
+     * @param username name of the user that will be searched in the Database
+     * @return true if the username exists in the database, false otherwise
+     */
     public boolean dbIsUserNameValid(String username) {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String checkUsername =
@@ -101,8 +117,11 @@ public class UserManagementSystem {
     }
 
 
-    //Returns a user object by username from the list
-    //
+    /**
+     * Returns a user Object including metadata from the Database
+     * @param username name of the user that will be searched in the Database
+     * @return User object with metadata if exists, else null
+     */
     public User dbGetUserByName(String username) {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = """
@@ -119,13 +138,25 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
                                 new FingerprintData(
                                         resultSet.getInt("blockid"),
                                         resultSet.getString("ip"),
-                                        resultSet.getFloat("longitude"),
-                                        resultSet.getFloat("latitude"),
-                                        resultSet.getBoolean("cookiesAccepted"),
-                                        resultSet.getString("user_agent"),
-                                        resultSet.getString("content_language"),
+                                        resultSet.getString("accept"),
+                                        resultSet.getString("encoding"),
+                                        new Location(
+                                                resultSet.getBigDecimal("longitude"),
+                                                resultSet.getBigDecimal("latitude")
+                                        ),
+                                        resultSet.getString("screen"),
+                                        resultSet.getString("language"),
                                         resultSet.getString("timezone"),
-                                        resultSet.getString("screen")
+                                        new UserAgent(
+                                                resultSet.getString("browser"),
+                                                resultSet.getString("browser_Version"),
+                                                resultSet.getString("platform")
+                                        ),
+                                        resultSet.getString("canvas"),
+                                        resultSet.getString("webglVendor"),
+                                        resultSet.getString("webglRenderer"),
+                                        resultSet.getString("deviceMemory"),
+                                        resultSet.getBoolean("cookiesAccepted")
                                 )
                         );
                     }
@@ -135,39 +166,70 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
             }
         } catch (Exception e) {
             logger.error("Error fetching user by name from H2: " + e.getMessage(), e);
+            return null;
         }
-        logger.info("getUserByName--User not found");
+        logger.warn("getUserByName--User not found");
         return null;
     }
 
-
+    /**
+     * - Updates an existing user in the databse
+     * - Includes the FingerPrintData associated with the user (admittedly not the most efficient way)
+     * @param username Name of the user that will be updated
+     * @param user User object with the new data that will be written to the database
+     * @return true if the user was updated successfully, false otherwise
+     */
     public boolean dbUpdateUserByName(String username, User user) {
+        Integer blockId;
         try (Connection connection = DatabaseUtil.getConnection()) {
             connection.setAutoCommit(false); // Ensure atomicity for updates
+          //Get Blockid of the user
+            String getBlockIdQuery = """
+        SELECT monitoringData FROM users WHERE username = ?;
+        """;
+            try(PreparedStatement getBlockIdStmt = connection.prepareStatement(getBlockIdQuery)){
+                getBlockIdStmt.setString(1, username);
+                try(ResultSet resultSet = getBlockIdStmt.executeQuery()){
+                    if(resultSet.next()){
+                        user.getFdt().setBlockId(resultSet.getInt("monitoringData"));
+                    }
+                }
+            }
+
 
             // Writing Session Monitoring Data
             String updateMonitoringDataQuery = """
-            UPDATE monitoringData
-            SET ip = ?, longitude = ?, latitude = ?, cookiesAccepted = ?,
-                user_agent = ?, content_language = ?, timezone = ?, screen = ?
-            WHERE blockid = ?;
+        UPDATE monitoringData
+        SET ip = ?, accept = ?, encoding = ?, longitude = ?, latitude = ?,
+            screen = ?, language = ?, timezone = ?, browser = ?, browser_version = ?,
+            platform = ?, canvas = ?, webglVendor = ?, webglRenderer = ?,
+            deviceMemory = ?, cookiesAccepted = ?
+        WHERE blockid = ?;
         """;
 
             try (PreparedStatement monitoringDataStmt = connection.prepareStatement(updateMonitoringDataQuery)) {
                 FingerprintData fingerprint = user.getFdt();
                 monitoringDataStmt.setString(1, fingerprint.getIP());
-                monitoringDataStmt.setFloat(2, fingerprint.getLongitude());
-                monitoringDataStmt.setFloat(3, fingerprint.getLatitude());
-                monitoringDataStmt.setBoolean(4, fingerprint.isCookiesAccepted());
-                monitoringDataStmt.setString(5, fingerprint.getUserAgent());
-                monitoringDataStmt.setString(6, fingerprint.getContent_Language());
-                monitoringDataStmt.setString(7, fingerprint.getTimezone());
-                monitoringDataStmt.setString(8, fingerprint.getScreen());
-                monitoringDataStmt.setInt(9, fingerprint.getBlockId());
+                monitoringDataStmt.setString(2, fingerprint.getAccept());
+                monitoringDataStmt.setString(3, fingerprint.getEncoding());
+                monitoringDataStmt.setBigDecimal(4, fingerprint.getLocation().getLongitude());
+                monitoringDataStmt.setBigDecimal(5, fingerprint.getLocation().getLatitude());
+                monitoringDataStmt.setString(6, fingerprint.getScreen());
+                monitoringDataStmt.setString(7, fingerprint.getLanguage());
+                monitoringDataStmt.setString(8, fingerprint.getTimezone());
+                monitoringDataStmt.setString(9, fingerprint.getUserAgent().getBrowser());
+                monitoringDataStmt.setString(10, fingerprint.getUserAgent().getBrowserVersion());
+                monitoringDataStmt.setString(11, fingerprint.getUserAgent().getPlatform());
+                monitoringDataStmt.setString(12, fingerprint.getCanvas());
+                monitoringDataStmt.setString(13, fingerprint.getWebglVendor());
+                monitoringDataStmt.setString(14, fingerprint.getWebglRenderer());
+                monitoringDataStmt.setString(15, fingerprint.getDeviceMemory());
+                monitoringDataStmt.setBoolean(16, fingerprint.isCookiesAccepted());
+                monitoringDataStmt.setInt(17, fingerprint.getBlockId());
                 monitoringDataStmt.executeUpdate();
             }
 
-            // Writing User Table Datas
+            // Writing User Table Data
             String updateUserQuery = """
         UPDATE users
         SET passwordHashed = ?, sessionToken = ?, monitoringData = ?
@@ -177,7 +239,7 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
             try (PreparedStatement userStmt = connection.prepareStatement(updateUserQuery)) {
                 userStmt.setString(1, user.getPasswordHashed());
                 userStmt.setString(2, user.getSessionToken());
-                userStmt.setInt(3, user.getFdt().getBlockId());;
+                userStmt.setInt(3, user.getFdt().getBlockId());
                 userStmt.setString(4, username);
                 userStmt.executeUpdate();
             }
@@ -188,8 +250,9 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         } catch (Exception e) {
             logger.error("Error updating user in database: " + e.getMessage(), e);
             return false;
-            }
         }
+    }
+
 
 
 

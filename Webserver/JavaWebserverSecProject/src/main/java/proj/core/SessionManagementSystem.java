@@ -12,20 +12,26 @@ import proj.entities.User;
 import proj.util.DatabaseUtil;
 import java.util.UUID;
 
+/**
+ * - Class to handle basic session management
+ * - Not involved in processing fingerprint data
+ * - Singleton pattern
+ */
 public class SessionManagementSystem {
 
     //Setup Logger for Logging custom Messages
     private final Logger logger;
-    private final UserManagementSystem ums;
+    private final DataManagementSystem dms;
     private static SessionManagementSystem instance;
     //
 
     //Constructor
     private SessionManagementSystem() {
       this.logger =  LoggerFactory.getLogger(SessionManagementSystem.class.getName());
-      this.ums = UserManagementSystem.getInstance();
+      this.dms = DataManagementSystem.getInstance();
     }
-    //Get Instance for Singleton Pattern
+
+    ///Get Singleton Instance
     public static synchronized SessionManagementSystem getInstance() {
         if (instance == null) {
             instance = new SessionManagementSystem();
@@ -37,7 +43,7 @@ public class SessionManagementSystem {
     //Checks if a provided username-token pair is valid and returns a boolean
     public boolean authenticator(String username, String token) {
         try {
-            User user = ums.dbGetUserByName(username);
+            User user = dms.dbGetUserByName(username);
             if (user != null && token.equals(user.getSessionToken())) {
                 return true;
             }

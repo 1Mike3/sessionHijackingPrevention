@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
 import proj.core.SessionManagementSystem;
-import proj.core.UserManagementSystem;
+import proj.core.DataManagementSystem;
 import proj.util.CryptoFunc;
 import java.util.HashMap;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class HandlerLogin {
     //Method which is called once to setup the handler of an endpoint
-    public static void setHandler(Javalin app, Logger logger, UserManagementSystem ums, SessionManagementSystem sms){
+    public static void setHandler(Javalin app, Logger logger, DataManagementSystem ums, SessionManagementSystem sms){
         //react to received login form
         app.post("/login", ctx -> {
             // some code
@@ -63,13 +63,12 @@ public class HandlerLogin {
 
                         //save token, if saving fails abort
                         if ( ! ums.setUserTokenByName(username,token)){
-                            logger.error("Error saving JSON to server");
+                            logger.error("Error updating database with token");
                             ctx.result("").status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()); //500
                             return;
                         }
 
-                        //craft login respone message to the frontend
-                        //usually I would build the json programmatically, but for the limited number of responses this will do
+                        //craft simple login response message to the frontend
                         //ctx.result()
                         ctx.result(String.format("""
                         {

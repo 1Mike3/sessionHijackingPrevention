@@ -25,4 +25,13 @@ public class UserAgent {
         this.BrowserVersion =  BrowserVersion == null ? "Unknown" : BrowserVersion;
         this.Platform = Platform == null ? "Unknown" : Platform;
     }
+
+    @Override
+    public String toString(){
+        return "UserAgent{" +
+                "Browser='" + Browser + '\'' +
+                ", BrowserVersion='" + BrowserVersion + '\'' +
+                ", Platform='" + Platform + '\'' +
+                '}';
+    }
 }

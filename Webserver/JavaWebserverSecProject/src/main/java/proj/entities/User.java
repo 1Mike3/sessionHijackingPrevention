@@ -12,8 +12,8 @@ import lombok.Setter;
  * It contains the attributes username, passwordHashed and loginToken.
  */
 @Getter
-@AllArgsConstructor
 @Setter
+@AllArgsConstructor
 public class User {
     //Attributes
     private String username;

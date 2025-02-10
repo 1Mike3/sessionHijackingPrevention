@@ -5,14 +5,14 @@ import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
 import proj.config.ConfigManager;
 import proj.core.SessionManagementSystem;
-import proj.core.UserManagementSystem;
+import proj.core.DataManagementSystem;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class HandlerAccessSensitiveContent {
     //Method which is called once to setup the handler of an endpoint
-    public static void setHandler(Javalin app, Logger logger, UserManagementSystem ums, SessionManagementSystem sms){
+    public static void setHandler(Javalin app, Logger logger, DataManagementSystem ums, SessionManagementSystem sms){
 
         ConfigManager cfg = ConfigManager.getInstance();
 

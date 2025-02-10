@@ -6,6 +6,10 @@ import org.h2.server.*;
 import org.h2.tools.Server;
 import proj.config.ConfigManager;
 
+/**
+ * Utility class to handle database connections
+ * Utilized Heavily in the UserManagementSystem
+ */
 public class DatabaseUtil {
 
     private static final ConfigManager cfg = ConfigManager.getInstance();

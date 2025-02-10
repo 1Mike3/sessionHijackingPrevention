@@ -4,8 +4,10 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.slf4j.LoggerFactory;
 import proj.core.Main;
+import proj.core.RequestProcessor;
 import proj.core.SessionManagementSystem;
-import proj.core.UserManagementSystem;
+import proj.core.DataManagementSystem;
+import proj.entities.FingerprintData;
 import proj.entities.Location;
 import proj.entities.UserAgent;
 import proj.util.UaParserUtil;
@@ -34,7 +36,7 @@ public class RequestHandler {
     public void handleRequests() {
         //get Instances to handle user and session management
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
-        UserManagementSystem ums = UserManagementSystem.getInstance();
+        DataManagementSystem ums = DataManagementSystem.getInstance();
 
         //Redirect root to starter page
        // app.get("/", ctx -> {
@@ -44,6 +46,9 @@ public class RequestHandler {
         //Check before or after  request (rem. path for every request)
         app.before("/*", ctx -> {
         analyzeHeader(ctx);
+        });
+        app.before("/", ctx -> {
+            analyzeHeader(ctx);
         });
 
         //app.after("/path/*", ctx -> {
@@ -58,6 +63,9 @@ public class RequestHandler {
     HandlerAccessSensitiveContent.setHandler(app,logger,ums,sms);
     }//M
 
+    /**
+     * Just Written for Debugging purposes
+     */
     public void analyzeHeader(Context ctx ){
         try {
             String headersJson = new ObjectMapper().writeValueAsString(ctx.headerMap());
@@ -76,22 +84,6 @@ public class RequestHandler {
             }
             assert ua != null;
             String sb =
-                    /*
-                    Inital Rough attempt
-                         "##DEBUG-META-DATA-DUMP##" + "\n" +
-                    "Request to: " + ctx.path() + "\n" +
-                    "Proxy-IP:" + ctx.ip() + "\n" + //This is just the IP of the proxy
-                    //Can also be changed to X-Real-IP below
-                    "Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +//This is the real IP inserted by the proxy
-                    "User-Agent:" + ctx.userAgent() + "\n" +
-                    "Content-Type:" + ctx.contentType() + "\n" +
-                    "Accept:" + ctx.header("Accept") + "\n" +
-                    "language:" + ctx.header("Accept-Language") + "\n" +
-                    "timezone:" + ctx.header("Time-Zone") + "\n" +
-                    "screen:" + ctx.header("Screen-Resolution") + "\n" +
-                    "## UNCURATED HEADERS ##" + "\n" +
-                    "Headers: " + headersJson + "\n\n";
-                     */
                     "##DEBUG-META-DATA-DUMP##" + "\n" +
                     "Request to: " + ctx.path() + "\n" +
                     "BC1 Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
@@ -114,6 +106,23 @@ public class RequestHandler {
                     "Headers: " + headersJson + "\n\n";
             logger.trace(sb);
             UaParserUtil.parse(ctx.userAgent());
+
+            //Test Request Processor
+            if(
+                    ctx.header("X-Forwarded-For") == null ||
+                            ctx.header("X-Forwarded-For").contains("127.0.0") ||
+                            ctx.header("X-Forwarded-For").contains("localhost")
+            ){
+                ctx.header("X-Forwarded-For", "8.8.8.8"); //Replace with Google DNS for local ip tetsting
+            }
+                FingerprintData fi = RequestProcessor.processRequest(ctx);
+            if(fi != null){
+                logger.trace(fi.toString());
+            }else {
+                logger.error("Error processing request");
+            }
+
+
         } catch (Exception e) {
             logger.error("Error creating Header Debug Information: " + e.getMessage(), e);
         }
