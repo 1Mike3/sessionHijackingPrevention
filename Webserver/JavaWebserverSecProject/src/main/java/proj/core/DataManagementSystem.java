@@ -58,7 +58,7 @@ public class DataManagementSystem {
                 longitude DECIMAL(10,8),
                 latitude DECIMAL(10,8),
                 screen VARCHAR(20),
-                language VARCHAR(10),
+                language VARCHAR(100),
                 timezone VARCHAR(50),
                 browser VARCHAR(30),
                 browser_version VARCHAR(20),
@@ -183,14 +183,17 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         Integer blockId;
         try (Connection connection = DatabaseUtil.getConnection()) {
             connection.setAutoCommit(false); // Ensure atomicity for updates
+
+
           //Get Blockid of the user
             String getBlockIdQuery = """
-        SELECT monitoringData FROM users WHERE username = ?;
-        """;
+            SELECT monitoringData FROM users WHERE username = ?;
+            """;
             try(PreparedStatement getBlockIdStmt = connection.prepareStatement(getBlockIdQuery)){
                 getBlockIdStmt.setString(1, username);
                 try(ResultSet resultSet = getBlockIdStmt.executeQuery()){
                     if(resultSet.next()){
+                        //Setting it directly in fingerprint Data of User
                         user.getFdt().setBlockId(resultSet.getInt("monitoringData"));
                     }
                 }

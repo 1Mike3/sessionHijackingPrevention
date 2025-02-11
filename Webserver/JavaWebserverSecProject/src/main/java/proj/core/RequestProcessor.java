@@ -4,7 +4,6 @@ import proj.core.web.GeolocationProcessing;
 import proj.entities.FingerprintData;
 import proj.entities.Location;
 import proj.util.UaParserUtil;
-
 import java.util.Objects;
 
 
@@ -32,9 +31,11 @@ public class RequestProcessor {
         }
         logger.trace("Begin Processing Request to: " + ctx.path());
         FingerprintData.FingerprintDataBuilder builder = FingerprintData.builder();
+
         builder.IP(ctx.header("X-Forwarded-For"));
         builder.accept(ctx.header("Accept"));
         builder.encoding(ctx.header("Accept-Encoding"));
+
         //Obtaining and assigning Location
             Location locTemp = null;
             try {
@@ -46,7 +47,7 @@ public class RequestProcessor {
                 logger.error("Failed to get coordinates from IP" + e.getMessage());
             }
             builder.location(locTemp);
-        builder.screen(ctx.header("Screen"));
+        builder.screen(ctx.header("Screen-Resolution"));
         builder.language(ctx.header("Accept-Language"));
         builder.timezone(ctx.header("Timezone"));
         //Parsing UserAgent
@@ -56,9 +57,10 @@ public class RequestProcessor {
         builder.webglRenderer(ctx.header("WebGL-Renderer"));
         builder.deviceMemory(ctx.header("Device-Memory"));
         builder.cookiesAccepted(
-            ctx.header("Cookies-Accepted") != null &&
-            Objects.requireNonNull(ctx.header("Cookies-Accepted")).contains("cookiesAccepted=true")
+            ctx.header("Cookie") != null &&
+            Objects.requireNonNull(ctx.header("Cookie")).contains("cookiesAccepted=true")
         );
+        logger.trace("Request processed successfully");
         return builder.build();
     }
 }

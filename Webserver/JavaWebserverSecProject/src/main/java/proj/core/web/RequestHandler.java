@@ -20,11 +20,11 @@ import proj.util.UaParserUtil;
  + * @param logger instance of Logger to log custom messages inherited from Main
  */
 public class RequestHandler {
-
     //instance of Javalin "app" to handle requests
     private final Javalin app;
     //instance of Logger to log custom messages inherited from Main
     private final org.slf4j.Logger logger;
+
 
     //constructor
     public RequestHandler(Javalin app) {
@@ -32,29 +32,32 @@ public class RequestHandler {
         this.logger = LoggerFactory.getLogger(RequestHandler.class);
     }
 
+
     //Method which sets up the request handlers
     public void handleRequests() {
         //get Instances to handle user and session management
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
         DataManagementSystem ums = DataManagementSystem.getInstance();
 
-        //Redirect root to starter page
-       // app.get("/", ctx -> {
-          //  ctx.redirect("/index.html");
-       // });
+            //Redirect root to starter page
+            // app.get("/", ctx -> {
+            // ctx.redirect("/index.html");
+            // });
 
         //Check before or after  request (rem. path for every request)
-        app.before("/*", ctx -> {
-        analyzeHeader(ctx);
-        });
-        app.before("/", ctx -> {
+            app.before("/*", ctx -> {
             analyzeHeader(ctx);
-        });
+            });
+            app.before("/", ctx -> {
+                analyzeHeader(ctx);
+            });
 
         //app.after("/path/*", ctx -> {
         app.after("/*", ctx -> {
 ;;
         });
+
+
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerLogin.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ LOGOT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -82,6 +85,23 @@ public class RequestHandler {
             } else {
                 loc = Main.geolocation_instance.getCoordinates(ctx.header("X-Forwarded-For"));
             }
+            //Test Request Processor
+            if(
+                    ctx.header("X-Forwarded-For") == null ||
+                            ctx.header("X-Forwarded-For").contains("127.0.0") ||
+                            ctx.header("X-Forwarded-For").contains("localhost")
+            ){
+                ctx.header("X-Forwarded-For", "8.8.8.8"); //Replace with Google DNS for local ip tetsting
+            }
+            FingerprintData fi = RequestProcessor.processRequest(ctx);
+            if(fi != null){
+                logger.trace(fi.toString());
+            }else {
+                logger.error("Error processing request");
+            }
+
+
+
             assert ua != null;
             String sb =
                     "##DEBUG-META-DATA-DUMP##" + "\n" +
@@ -107,20 +127,7 @@ public class RequestHandler {
             logger.trace(sb);
             UaParserUtil.parse(ctx.userAgent());
 
-            //Test Request Processor
-            if(
-                    ctx.header("X-Forwarded-For") == null ||
-                            ctx.header("X-Forwarded-For").contains("127.0.0") ||
-                            ctx.header("X-Forwarded-For").contains("localhost")
-            ){
-                ctx.header("X-Forwarded-For", "8.8.8.8"); //Replace with Google DNS for local ip tetsting
-            }
-                FingerprintData fi = RequestProcessor.processRequest(ctx);
-            if(fi != null){
-                logger.trace(fi.toString());
-            }else {
-                logger.error("Error processing request");
-            }
+
 
 
         } catch (Exception e) {

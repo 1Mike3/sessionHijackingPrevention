@@ -86,6 +86,7 @@ function uiOnLoginMainPage(username){
     userLoginText.style.color = "lightgreen";
     userIcon.style.background = "lightgreen";
 }
+
 //***************************** Logout UI ****************************************************
 // Function for changing the ui after login on the main page to visualize the logged in user
 function uiOnLogout(){
@@ -96,8 +97,8 @@ function uiOnLogout(){
     userLoginText.style.color = "darkgrey";
     userIcon.style.background = "white";
 }
-//Modified version for user page with removed login button because it does not exist there
 
+//Modified version for user page with removed login button because it does not exist there
 function uiOnLoginUserPage(username){
     const userLoginText = document.getElementById("txt_loggedInUser");
     const userIcon = document.getElementById("icn_user");
@@ -114,7 +115,6 @@ function buttonLoginFunction(){
     }else{
         alert("You are allready Logged in!")
     }
-
 }
 
 function buttonLogoutFunction(){
@@ -146,7 +146,6 @@ buttonTogglePage.onclick = async function(){
     }else{
         alert("You have to be logged in to access the user Section")
     }
-
 }
 
 //functions to activate or deactivate all buttons
@@ -155,6 +154,7 @@ function deactivateAllButtons(){
     buttonLogout.disabled = true;
     buttonTogglePage.disabled = true;
 }
+
 function activateAllButtons(){
     buttonLogin.disabled = false;
     buttonLogout.disabled = false;
@@ -167,6 +167,7 @@ function uiTurnLoginFormOff(){
     modalBackdrop.style.display = "none";
     body.classList.remove('loginForm-active');
 }
+
 function uiTurnLoginFormOn(){
     loginModal.style.display = "block";
     modalBackdrop.style.display = "block";

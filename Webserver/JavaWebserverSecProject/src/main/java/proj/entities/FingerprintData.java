@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public class FingerprintData {
     //Foreign Key of User to associate the two tables
     //Not really used for anything, value only injected in dbUpdateUserByName method of dms
-    private Integer blockId;
+    private Integer blockId = null;
     //Careful, X-Ip not proxy Ip
     private String IP;
     private String accept;

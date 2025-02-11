@@ -20,7 +20,6 @@ public class User {
     private String passwordHashed;
     private String sessionToken;
     private FingerprintData fdt;
-
     //For debug prints
     @Override
     public String toString(){
@@ -31,5 +30,4 @@ public class User {
                 IP: %s
                 """,username,passwordHashed,sessionToken,fdt.hashCode());
     }
-
 }
