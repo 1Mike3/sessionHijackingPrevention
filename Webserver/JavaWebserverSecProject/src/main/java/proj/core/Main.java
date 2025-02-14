@@ -10,7 +10,7 @@ import proj.config.ConfigManager;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import io.javalin.community.ssl.SslPlugin;
-import proj.core.web.GeolocationProcessing;
+import proj.core.fingerprinting.GeolocationProcessing;
 import proj.core.web.RequestHandler;
 
 /**

@@ -3,7 +3,7 @@ package proj.core.web;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
-import proj.core.RequestProcessor;
+import proj.core.fingerprinting.FpRequestProcessor;
 import proj.core.SessionManagementSystem;
 import proj.core.DataManagementSystem;
 import proj.entities.FingerprintData;
@@ -77,7 +77,7 @@ public class HandlerLogin {
                         //Get the fingerprint data from the request
                         FingerprintData fingerprintData;
                         try {
-                            fingerprintData = RequestProcessor.processRequest(ctx);
+                            fingerprintData = FpRequestProcessor.processRequestFp(ctx);
                             if (fingerprintData == null) {
                                 throw new Exception("Fingerprint Data is null");
                             }

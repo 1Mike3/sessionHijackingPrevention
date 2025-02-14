@@ -1,4 +1,4 @@
-package proj.core.web;
+package proj.core.fingerprinting;
 
 import io.ipgeolocation.api.Geolocation;
 import io.ipgeolocation.api.GeolocationParams;

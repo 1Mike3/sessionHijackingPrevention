@@ -1,9 +1,9 @@
-package proj.core;
+package proj.core.fingerprinting;
 import io.javalin.http.Context;
-import proj.core.web.GeolocationProcessing;
+import proj.core.Main;
 import proj.entities.FingerprintData;
 import proj.entities.Location;
-import proj.util.UaParserUtil;
+
 import java.util.Objects;
 
 
@@ -11,11 +11,11 @@ import java.util.Objects;
     * - Processes metadata from incoming requests
     * - Involved in handling of the fingerprint data
  */
-public class RequestProcessor {
+public class FpRequestProcessor {
 
     //Instance of GeolocationProcessing passed from main
     private static final GeolocationProcessing geolocation_inst = Main.getGeolocation_instance();
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(RequestProcessor.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FpRequestProcessor.class);
     //Ua-Parser is static Method
 
     /**
@@ -24,10 +24,17 @@ public class RequestProcessor {
      * @param ctx http header context is being inserted into the function to be parsed
      * @return FingerprintData on successful processing, null otherwise
      */
-    public static FingerprintData processRequest(Context ctx) {
+    public static FingerprintData processRequestFp(Context ctx) {
+        //Reacting to geolocation instance not being initialized
         if (geolocation_inst == null) {
             logger.error("GeolocationProcessing instance is null, cannot process request, may not be initialized in Main");
             return null;
+        }
+        //Reacting to cookies not beeing accepted
+        //(If they are not accepted this is the only information that is collected and the rest is set to null)
+        if (ctx.header("Cookie") != null && !Objects.requireNonNull(ctx.header("Cookie")).contains("cookiesAccepted=true")) {
+            logger.warn("Cookies not accepted!, only returning object with cookiesAccepted=false");
+            return FingerprintData.builder().cookiesAccepted(false).build();
         }
         logger.trace("Begin Processing Request to: " + ctx.path());
         FingerprintData.FingerprintDataBuilder builder = FingerprintData.builder();

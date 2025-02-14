@@ -1,9 +1,8 @@
-package proj.util;
+package proj.core.fingerprinting;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import proj.core.Main;
 import proj.entities.UserAgent;
 import ua_parser.Client;
 import ua_parser.Parser;

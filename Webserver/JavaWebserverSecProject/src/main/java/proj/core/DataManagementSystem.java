@@ -1,6 +1,5 @@
 package proj.core;
 
-
 import org.slf4j.LoggerFactory;
 import proj.entities.FingerprintData;
 import proj.entities.Location;
@@ -15,13 +14,12 @@ import org.slf4j.Logger;
 import proj.entities.UserAgent;
 import proj.util.DatabaseUtil;
 
-
 /**
  * - Class to manage the user data
  * - Singleton class
- * - Bulk of the database operations are done here, including initialsization
+ * - Bulk of the database operations are done here, including initialization
  * - Because Fingerprint Data is tied to user it is also read out from the database here
- * - Formally User Management System
+ * - Formerly known as User Management System
  */
 public class DataManagementSystem {
 
@@ -172,6 +170,24 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         return null;
     }
 
+
+
+    /**
+     * - Obtains a user's fingerprint data from the database
+     * - Performance wise not the best way to do it, but fine for a Proof of Concept
+     * @param username Name of the user whom's fingerprint data will be fetched
+     * @return FingerprintData object if the user exists, null otherwise
+     */
+    public FingerprintData dbGetUserFingerprintData (String username) {
+        User u  = dbGetUserByName(username);
+        if(u != null){
+            return u.getFdt();
+        }else {
+            return null;
+        }
+    }
+
+
     /**
      * - Updates an existing user in the databse
      * - Includes the FingerPrintData associated with the user (admittedly not the most efficient way)
@@ -276,6 +292,7 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         }
     }
 
+
     public String getUserPasswordByName(String username) {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "SELECT passwordHashed FROM users WHERE username = ?";
@@ -294,7 +311,10 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         return null;
     }
 
-    //Method to fetch all users and return them as a String for debugging
+
+
+    //Method to fetch all users and return them as a String
+    // ONLY for DEBUGGING
     public String getAllUsersAsString() {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "SELECT * FROM users";
@@ -314,9 +334,6 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
             return "Error fetching all users";
         }
     }
-
-
-
 
 }//end of class
 

@@ -4,13 +4,13 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.slf4j.LoggerFactory;
 import proj.core.Main;
-import proj.core.RequestProcessor;
+import proj.core.fingerprinting.FpRequestProcessor;
 import proj.core.SessionManagementSystem;
 import proj.core.DataManagementSystem;
 import proj.entities.FingerprintData;
 import proj.entities.Location;
 import proj.entities.UserAgent;
-import proj.util.UaParserUtil;
+import proj.core.fingerprinting.UaParserUtil;
 
 
 /**
@@ -46,7 +46,8 @@ public class RequestHandler {
 
         //Check before or after  request (rem. path for every request)
             app.before("/*", ctx -> {
-            analyzeHeader(ctx);
+                // analyzeHeader(ctx);
+                ;
             });
             app.before("/", ctx -> {
                 analyzeHeader(ctx);
@@ -93,7 +94,7 @@ public class RequestHandler {
             ){
                 ctx.header("X-Forwarded-For", "8.8.8.8"); //Replace with Google DNS for local ip tetsting
             }
-            FingerprintData fi = RequestProcessor.processRequest(ctx);
+            FingerprintData fi = FpRequestProcessor.processRequestFp(ctx);
             if(fi != null){
                 logger.trace(fi.toString());
             }else {

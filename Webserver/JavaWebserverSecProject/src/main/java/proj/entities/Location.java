@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public final class Location {
+    //BigDecimal is used as this is the RetVal of the API call
     private final BigDecimal longitude;
     private final BigDecimal latitude;
 

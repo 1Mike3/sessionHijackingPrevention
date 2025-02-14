@@ -24,10 +24,11 @@ public class User {
     @Override
     public String toString(){
         return String.format("""
-                username: %s
-                password: %s
-                token: %s
-                IP: %s
+                ~User~
+                Username: %s
+                Password: %s
+                Token: %s
+                FingerprintData: %s
                 """,username,passwordHashed,sessionToken,fdt.hashCode());
     }
 }

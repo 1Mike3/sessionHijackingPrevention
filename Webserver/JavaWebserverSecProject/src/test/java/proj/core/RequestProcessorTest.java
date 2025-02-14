@@ -1,9 +1,8 @@
 package proj.core;
 
-import com.sun.net.httpserver.HttpContext;
 import io.javalin.http.Context;
 import org.junit.jupiter.api.Test;
-import proj.core.RequestProcessor;
+import proj.core.fingerprinting.FpRequestProcessor;
 import proj.entities.FingerprintData;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,8 +12,8 @@ public class RequestProcessorTest {
     // Test to handle null context gracefully
     public void handleNullContext() {
         Context ctx = null;
-        FingerprintData result = RequestProcessor.processRequest(ctx);
-        assertDoesNotThrow(() -> RequestProcessor.processRequest(ctx));
+        FingerprintData result = FpRequestProcessor.processRequestFp(ctx);
+        assertDoesNotThrow(() -> FpRequestProcessor.processRequestFp(ctx));
         assertNull(result);
     }
 
