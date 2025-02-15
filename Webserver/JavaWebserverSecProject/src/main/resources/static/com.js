@@ -166,6 +166,10 @@ async function loadUserPageRequestHandler(){
         case 500:
             console.log("UserPage Server Error");
             break;
+        case 409: //Browser Fingerprint Validation Failed
+            alert("Error 0x5A3, please log in again!");
+            buttonLogout.click();
+            break;
         default:
             console.log("UserPage unknown Response:", response.status);
     }

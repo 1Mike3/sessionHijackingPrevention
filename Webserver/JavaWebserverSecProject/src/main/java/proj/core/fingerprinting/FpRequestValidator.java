@@ -1,21 +1,31 @@
 package proj.core.fingerprinting;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proj.core.fingerprinting.comparators.*;
 import proj.definitions.FpDetectionSensitivityLevels;
 import proj.entities.FingerprintData;
 
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
  * Performs a validation of two metadata objects, to detect unusual patterns
+ * Will only be instantiated once, in HandlerAccessSensitiveContent
+ * It's goal in this project is to detect a invalid request to handle sensitive content
  */
 public class FpRequestValidator {
 
+
     // Read from the configuration File
     private FpDetectionSensitivityLevels sensitivityLevel;
+    //Logger
+    private static final Logger logger = LoggerFactory.getLogger(FpRequestValidator.class);
+
+    public FpRequestValidator() {
+
+    }
+
 
     /**
      * Validates a Fingerprint Data object in relation to an already validated object
@@ -26,11 +36,20 @@ public class FpRequestValidator {
      */
     public boolean validateMetadata(FingerprintData fpNew, FingerprintData fpOld) {
         //comparing all criteria and writing the results to a map
-        HashMap<String,Boolean> map = initialComparision(fpNew, fpOld);
-        return false;
+        HashMap<String,Boolean> map = initialComparison(fpNew, fpOld);
+
+        printComparisonResult(map);   //DEBUG
+        return true;
     }
 
-    private HashMap<String,Boolean> initialComparision(FingerprintData fpNew, FingerprintData fpOld){
+
+    /**
+     * Internally used to run every comparison and return the results in a map for further evaluation
+     * @param fpNew object which is being validated
+     * @param fpOld object which is used as reference for validation
+     * @return HashMap with the results of the comparison
+     */
+    private HashMap<String,Boolean> initialComparison(FingerprintData fpNew, FingerprintData fpOld){
         HashMap<String,Boolean> map = new HashMap<>();
         //int AttributeCount = FingerprintData.class.getFields().length; //Too convoluted, bec. no association between fields and comparators
         map.put("IP", new Cmp1_IP().compare(fpOld.getIP(), fpNew.getIP()));
@@ -51,11 +70,17 @@ public class FpRequestValidator {
         return map;
     }
 
+
     //Print Comparison Result to the console for Debugging
     private void printComparisonResult(HashMap<String,Boolean> map){
+        String dbgStr = "DEBUG FpValidator Comparison Result: " + '\n';
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
+            //System.out.println(entry.getKey() + " : " + entry.getValue());
+            dbgStr += entry.getKey() + " : " + entry.getValue() + '\n';
         }
+        dbgStr += '\n';
+        logger.trace(dbgStr);
     }
+
 
 }
