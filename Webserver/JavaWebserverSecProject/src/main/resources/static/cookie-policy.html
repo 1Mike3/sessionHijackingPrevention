@@ -8,6 +8,18 @@
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
         a { color: #4CAF50; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        button {
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -45,6 +57,10 @@
     <li>Withdraw your consent at any time by clearing your browser cookies.</li>
 </ul>
 <h2>Contact</h2>
-<p>For more information or to exercise your rights, contact us at <a href="mailto:ic22b015@technikum-wien.at">ic22b015@technikum-wien.at</a>.</p>
+<p>For more information or to exercise your rights, contact me at <a href="mailto:ic22b015@technikum-wien.at">ic22b015@technikum-wien.at</a>.</p>
+<!--button id=accept-all onclick="btnFncAcceptCookies()" style="color: forestgreen"> Accept </button-->
+<button onclick="window.location.href = 'https://www.google.com';" style="color: red">Decline</button>
+<button style="" onclick="window.location.href = '/';">Homepage</button>
 </body>
+<script src="cookie-policy.js" defer></script>
 </html>

@@ -6,6 +6,7 @@ import proj.core.fingerprinting.comparators.*;
 import proj.definitions.FpDetectionSensitivityLevels;
 import proj.entities.FingerprintData;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,15 +15,15 @@ import java.util.Map;
  * Will only be instantiated once, in HandlerAccessSensitiveContent
  * It's goal in this project is to detect a invalid request to handle sensitive content
  */
-public class FpRequestValidator {
+public final class FpRequestValidator {
     // Read from the configuration File / FpDetectionSensitivityLevels
     // Percentage of similarity needed to pass the validation
-    private int sensitivityLevel;
+    private final int sensitivityLevel;
+    private int totalCriteriaCount;
     private int passedCriteriaCount;
-
-
-    //Logger
     private static final Logger logger = LoggerFactory.getLogger(FpRequestValidator.class);
+
+
     public FpRequestValidator(
             String sensitivityLevel
     ) {
@@ -50,10 +51,10 @@ public class FpRequestValidator {
             evaluateComparisonResult(map);
         }catch (RuntimeException e){
             logger.error("FpValidator: Evaluation of Comparison Result failed");
-            return false;
+            throw e;
         }
         //Obtaining calculated value needed to pass the check
-        int valueNeededToPass = percentageToValueCount(sensitivityLevel);
+        int valueNeededToPass = percentageToThreshold(sensitivityLevel);
         //DEBUG info print
         printComparisonResult(map);
         //Returning the result of the check
@@ -73,7 +74,7 @@ public class FpRequestValidator {
         map.put("IP", new Cmp1_IP().compare(fpOld.getIP(), fpNew.getIP()));
         map.put("Accept",new Cmp2_Accept().compare(fpOld.getAccept(),fpNew.getAccept()));
         map.put("Encoding",new Cmp2_Encoding().compare(fpOld.getEncoding(),fpNew.getEncoding()));
-        map.put("Geolocation", new Cmp3_Geolocation().compare(fpNew.getLocation(),fpOld.getLocation()));
+        map.put("Geolocation", new Cmp3_Geolocation().compare(fpOld.getLocation(),fpNew.getLocation()));
         map.put("Screen", new Cmp4_ScreenResolution().compare(fpOld.getScreen(),fpNew.getScreen()));
         map.put("Language", new Cmp5_LanguageHeaders().compare(fpOld.getLanguage(),fpNew.getLanguage()));
         map.put("Timezone", new Cmp6_Timezone().compare(fpOld.getTimezone(),fpNew.getTimezone()));
@@ -85,6 +86,7 @@ public class FpRequestValidator {
         map.put("WebglRenderer", new Cmp12_WebGlRenderer().compare(fpOld.getWebglRenderer(),fpNew.getWebglRenderer()));
         map.put("DeviceMemory", new Cmp13_DeviceMemory().compare(fpOld.getDeviceMemory(),fpNew.getDeviceMemory()));
         //map.put("CookiesAccepted", (fpOld.isCookiesAccepted()==fpNew.isCookiesAccepted()));
+        this.totalCriteriaCount = map.size();
         return map;
     }
 
@@ -104,32 +106,39 @@ public class FpRequestValidator {
             }
         }
         this.passedCriteriaCount = passedCriteriaCount;
+        logger.trace("M:evaluateComparisonResult: \n" +
+                "Number of Passed Criteria: " + passedCriteriaCount + '\n' +
+                "Number of Failed Criteria: " + failedCriteriaCount + '\n');
         //If somehting should go wrong:
-        if(totalCriteriaCount != (passedCriteriaCount + failedCriteriaCount)){
+        if(totalCriteriaCount != passedCriteriaCount + failedCriteriaCount){
             logger.error("FpValidator: Evaluation of Comparison Result failed");
             throw new RuntimeException("FpValidator: Evaluation of Comparison Result failed");
         }
     }
 
-    //Returns the num
-    private int percentageToValueCount(int percentage){
+    //Returns the number of criteria that need to be passed to pass the check
+    private int percentageToThreshold(int percentage){
         //number of fields / criteria in FingerprintData
-        //Minus 2 because  blockId and the cookiesAccepted are not valid criteria
-        int AttributeCount = FingerprintData.class.getFields().length - 2;
+        //Minus 2 because  blockId and the cookiesAccepted are not valid criteria;
         //Calculating Percentage to Pass check (Rounded up)
-        return (int) Math.ceil(AttributeCount * (percentage / 100.0));
+        int threshold = (int) Math.ceil(this.totalCriteriaCount * (percentage / 100.0));
+        logger.trace("M:percentageToThreshold: \n" +
+                " Percentage for Calculation: " + percentage + "\n"
+                +"Threshold Calculated: " + threshold + "\n" +
+                "For AttributeCount: " + this.totalCriteriaCount);
+        return threshold;
     }
 
 
     //Print Comparison Result to the console for Debugging
     private void printComparisonResult(HashMap<String,Boolean> map){
-        String dbgStr = "DEBUG FpValidator Comparison Result: " + '\n';
+        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: " + '\n');
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
             //System.out.println(entry.getKey() + " : " + entry.getValue());
-            dbgStr += entry.getKey() + " : " + entry.getValue() + '\n';
+            dbgStr.append(entry.getKey()).append(" : ").append(entry.getValue()).append('\n');
         }
-        dbgStr += '\n';
-        logger.trace(dbgStr);
+        dbgStr.append('\n');
+        logger.trace(dbgStr.toString());
     }
 
 }

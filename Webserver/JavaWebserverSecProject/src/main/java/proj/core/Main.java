@@ -11,18 +11,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import io.javalin.community.ssl.SslPlugin;
 import proj.core.fingerprinting.GeolocationProcessing;
+import proj.core.fingerprinting.comparators.Cmp3_Geolocation;
 import proj.core.web.RequestHandler;
 
 /**
- * Main class to start the application
+ * Main class, instantiation of major classes and starting of javalin app
  **/
 public class Main {
 @Getter
     public static GeolocationProcessing geolocation_instance;
 
     public static void main(String[] args) {
-
- ;
 
         //Setup Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
@@ -40,7 +39,8 @@ public class Main {
           //cfg.printActiveConfiguration();
             logger.trace("#Startup Config Data fetched Successfully");
         }
-
+        // Direct value injection into certain classes after successful instantiation
+        Cmp3_Geolocation.setMAX_ACCEPTABLE_DISTANCE_KM(cfg.getGEOLOCATION_MAX_DISTANCE_KM());
 
 
             //These two are not strictly necessary but i want to control where the instance is created

@@ -27,6 +27,9 @@
 "FINGERPRINT_SENSITIVITY":
 --Can be set to "LOW", "MEDIUM" or "HIGH" to change the sensitivity of the fingerprint detection mechanism
 
+"GEOLOCATION_MAX_DISTANCE_KM":
+--The maximum distance in km for the geolocation disparity to be considered valid
+
 ###
 --(The "ON_DEVICE" paths are used for running the application from a jar file)
 ###

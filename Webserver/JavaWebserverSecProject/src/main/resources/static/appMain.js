@@ -174,5 +174,17 @@ function uiTurnLoginFormOn(){
     body.classList.add('loginForm-active');
 }
 
+//************************************* Testing **************************************************
+//Used for testing purposes, logging in with different users session token
+//Not used in regular code, only triggered manually during application test
+function sessionInjector(username,token) {
+    //inject the session class into the window object
+    session = new Session(SESSION_CONSTRUCTOR_MODI.CREATE_FROM_LOGIN_REQUEST,username,token)
+    session.storeSessionAsCookie(30);
+    uiOnLoginMainPage(username);
+    buttonLogout.onclick = buttonLogoutFunction;
+}
+
+
 
 

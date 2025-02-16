@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Getter;
 import lombok.Setter;
 import proj.core.Main;
+import proj.core.fingerprinting.comparators.Cmp3_Geolocation;
 import proj.util.JSON_Deserialize;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,6 +33,7 @@ public class ConfigManager {
     private String PATH_WS_STATIC;
     private boolean DB_WEBSERVER_ENABLED;
     private String FINGERPRINT_SENSITIVITY;
+    private int GEOLOCATION_MAX_DISTANCE_KM;
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
     private String PATH_RELATIVE_CERTIFICATE;
@@ -56,6 +58,7 @@ public class ConfigManager {
                          @JsonProperty("PATH_WS_STATIC") String PATH_WS_STATIC,
                          @JsonProperty("DB_WEBSERVER_ENABLED") boolean DB_WEBSERVER_ENABLED,
                          @JsonProperty("FINGERPRINT_SENSITIVITY") String FINGERPRINT_SENSITIVITY,
+                         @JsonProperty("GEOLOCATION_MAX_DISTANCE_KM") int GEOLOCATION_MAX_DISTANCE_KM,
                          @JsonProperty("PATH_RELATIVE_USER_DB") String PATH_RELATIVE_USER_DB,
                          @JsonProperty("PATH_RELATIVE_USER_DB_ON_DEVICE") String PATH_RELATIVE_USER_DB_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_CERTIFICATE") String PATH_RELATIVE_CERTIFICATE,
@@ -76,6 +79,7 @@ public class ConfigManager {
         this.PATH_WS_STATIC = PATH_WS_STATIC;
         this.DB_WEBSERVER_ENABLED = DB_WEBSERVER_ENABLED;
         this.FINGERPRINT_SENSITIVITY = FINGERPRINT_SENSITIVITY;
+        this.GEOLOCATION_MAX_DISTANCE_KM = GEOLOCATION_MAX_DISTANCE_KM;
         this.PATH_RELATIVE_USER_DB = PATH_RELATIVE_USER_DB;
         this.PATH_RELATIVE_USER_DB_ON_DEVICE = PATH_RELATIVE_USER_DB_ON_DEVICE;
         this.PATH_RELATIVE_CERTIFICATE = PATH_RELATIVE_CERTIFICATE;
