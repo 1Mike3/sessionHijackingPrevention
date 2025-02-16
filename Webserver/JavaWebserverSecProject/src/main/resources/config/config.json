@@ -7,6 +7,7 @@
 "PORT_SECURE":443,
 "PATH_WS_STATIC":"/static",
 "DB_WEBSERVER_ENABLED":true,
+"FINGERPRINT_SENSITIVITY":"MEDIUM",
 "PATH_RELATIVE_USER_DB":"./src/main/resources/persistence/userDB.json",
 "PATH_RELATIVE_USER_DB_ON_DEVICE":"./target/classes/persistence/userDB.json",
 "PATH_RELATIVE_CERTIFICATE": "src/main/resources/certsTest/sec.test.crt",

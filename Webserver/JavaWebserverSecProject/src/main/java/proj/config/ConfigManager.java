@@ -13,12 +13,11 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
+ * Class to manage the configuration of the application, values that should be changeable without recompiling the code
  * Replaces previous ENUM "Parameters"
- * For a better manageability of the server the configuration data is now loaded into the program on startup from
+ * For a better manageability on the server the configuration data is now loaded into the program on startup from
  * config .json
- * Partly written by a generative AI to make the switch easier
  */
 @Getter
 @Setter
@@ -32,6 +31,7 @@ public class ConfigManager {
     private int PORT_SECURE;
     private String PATH_WS_STATIC;
     private boolean DB_WEBSERVER_ENABLED;
+    private String FINGERPRINT_SENSITIVITY;
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
     private String PATH_RELATIVE_CERTIFICATE;
@@ -42,6 +42,7 @@ public class ConfigManager {
     private String PATH_RELATIVE_USERSPACE_HTML_ON_DEVICE;
     private String PATH_DB_API_KEY;
     private String PATH_DB_API_KEY_ON_DEVICE;
+
     private static ConfigManager instance;
 
     //Fasterxml constructor
@@ -54,6 +55,7 @@ public class ConfigManager {
                          @JsonProperty("PORT_SECURE") int PORT_SECURE,
                          @JsonProperty("PATH_WS_STATIC") String PATH_WS_STATIC,
                          @JsonProperty("DB_WEBSERVER_ENABLED") boolean DB_WEBSERVER_ENABLED,
+                         @JsonProperty("FINGERPRINT_SENSITIVITY") String FINGERPRINT_SENSITIVITY,
                          @JsonProperty("PATH_RELATIVE_USER_DB") String PATH_RELATIVE_USER_DB,
                          @JsonProperty("PATH_RELATIVE_USER_DB_ON_DEVICE") String PATH_RELATIVE_USER_DB_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_CERTIFICATE") String PATH_RELATIVE_CERTIFICATE,
@@ -73,6 +75,7 @@ public class ConfigManager {
         this.PORT_SECURE = PORT_SECURE;
         this.PATH_WS_STATIC = PATH_WS_STATIC;
         this.DB_WEBSERVER_ENABLED = DB_WEBSERVER_ENABLED;
+        this.FINGERPRINT_SENSITIVITY = FINGERPRINT_SENSITIVITY;
         this.PATH_RELATIVE_USER_DB = PATH_RELATIVE_USER_DB;
         this.PATH_RELATIVE_USER_DB_ON_DEVICE = PATH_RELATIVE_USER_DB_ON_DEVICE;
         this.PATH_RELATIVE_CERTIFICATE = PATH_RELATIVE_CERTIFICATE;
@@ -141,13 +144,18 @@ public class ConfigManager {
        }
    }
 
+   //Only used for debugging
    public void printActiveConfiguration(){
          System.out.println("###Active Configuration###");
          System.out.println("ON_DEVICE: "+this.isON_DEVICE());
          System.out.println("HTTPS: "+this.isHTTPS());
          System.out.println("ADDRESS: " + this.getADDRESS());
+         System.out.println("ADDRESS_SEC: " + this.getADDRESS_SECURE());
          System.out.println("PORT: " + this.getPORT());
+         System.out.println("PORT_SEC: " + this.getPORT_SECURE());
          System.out.println("PATH_WS_STATIC: " + this.getPATH_WS_STATIC());
+         System.out.println("DB_WEBSERVER_ENABLED: " + this.isDB_WEBSERVER_ENABLED());
+         System.out.println("FINGERPRINT_SENSITIVITY: " + this.getFINGERPRINT_SENSITIVITY());
          System.out.println("PATH_RELATIVE_USER_DB: " + this.getPATH_RELATIVE_USER_DB());
          System.out.println("PATH_RELATIVE_USER_DB_ON_DEVICE: " + this.getPATH_RELATIVE_USER_DB_ON_DEVICE());
          System.out.println("PATH_RELATIVE_CERTIFICATE: " + this.getPATH_RELATIVE_CERTIFICATE());

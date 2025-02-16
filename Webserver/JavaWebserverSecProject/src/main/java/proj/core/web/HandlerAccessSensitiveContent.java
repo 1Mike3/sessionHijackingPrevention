@@ -2,7 +2,6 @@ package proj.core.web;
 
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
-import org.bouncycastle.math.ec.ECCurve;
 import org.slf4j.Logger;
 import proj.config.ConfigManager;
 import proj.core.SessionManagementSystem;
@@ -13,6 +12,7 @@ import proj.entities.FingerprintData;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class HandlerAccessSensitiveContent {
     //Method which is called once to setup the handler of an endpoint
@@ -21,7 +21,7 @@ public class HandlerAccessSensitiveContent {
         //Generating instances needed to handle the request
         ConfigManager cfg = ConfigManager.getInstance();
         //FpRequestProcessor rp = new FpRequestProcessor(); //Static
-        FpRequestValidator rv = new FpRequestValidator();
+        FpRequestValidator rv = new FpRequestValidator(Objects.requireNonNull(ConfigManager.getInstance()).getFINGERPRINT_SENSITIVITY());
 
 
         app.get("/restricted/userSpace.html", ctx -> {

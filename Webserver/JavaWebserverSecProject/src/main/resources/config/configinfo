@@ -1,6 +1,5 @@
 ! A misconfiguration of config.json may cause the program to crash !
 
-
 "HTTPS":
 --set to true for HTTPS and false for HTTP
 --IMPORTANT
@@ -24,6 +23,9 @@
 
 "DB_WEBSERVER_ENABLED":
 --Changes if a webserver is started to interact with the db from the browser, turn off for production
+
+"FINGERPRINT_SENSITIVITY":
+--Can be set to "LOW", "MEDIUM" or "HIGH" to change the sensitivity of the fingerprint detection mechanism
 
 ###
 --(The "ON_DEVICE" paths are used for running the application from a jar file)

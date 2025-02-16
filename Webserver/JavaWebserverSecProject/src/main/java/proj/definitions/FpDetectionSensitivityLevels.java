@@ -13,6 +13,7 @@ package proj.definitions;
  * The major criteria can be used to quickly change the sensitivity of the entire system without worrying too much about the details.
  */
 public class FpDetectionSensitivityLevels  {
+    //Percentages only configurable inline
     public static final int HIGH = 85;
     public static final int MEDIUM = 70;
     public static final int LOW = 50;
