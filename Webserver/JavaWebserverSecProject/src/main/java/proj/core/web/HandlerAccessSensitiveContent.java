@@ -3,7 +3,9 @@ package proj.core.web;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import proj.config.ConfigManager;
+import proj.core.Main;
 import proj.core.SessionManagementSystem;
 import proj.core.DataManagementSystem;
 import proj.core.fingerprinting.FpRequestProcessor;
@@ -15,8 +17,12 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 public class HandlerAccessSensitiveContent {
+    //used for special log messages
+    public static final Logger analysisLogger = Main.analysisLogger;
+
     //Method which is called once to setup the handler of an endpoint
-    public static void setHandler(Javalin app, Logger logger, DataManagementSystem ums, SessionManagementSystem sms){
+    public static void setHandler(Javalin app, Logger logger, DataManagementSystem dms, SessionManagementSystem sms){
+
 
         //Generating instances needed to handle the request
         ConfigManager cfg = ConfigManager.getInstance();
@@ -26,11 +32,12 @@ public class HandlerAccessSensitiveContent {
 
         app.get("/restricted/userSpace.html", ctx -> {
             logger.info("User Page Request from: " + ctx.ip());
-
             //obtain the username and token from the header to check if the user is allowed to access the page
             String username = ctx.header("Authorization-Username");
             String token = ctx.header("Authorization-Token");
             logger.info("User Page Request :: Token: " + token + " Username: " + username);
+            analysisLogger.info("New Request\n\n\n\n\n\n\n");
+            analysisLogger.info("!#####! User Page Request !#####!\n" + "Username: " + username + "\nToken: " + token  );
 
             //check if the submitted data is valid
             if (username == null || token == null || username.isEmpty() || token.isEmpty()) {
@@ -50,13 +57,16 @@ public class HandlerAccessSensitiveContent {
 
             //Performing fingerprint validation
             FingerprintData fpNew = FpRequestProcessor.processRequestFp(ctx);
-            FingerprintData fpOld = ums.dbGetUserFingerprintData(username);
+            FingerprintData fpOld = dms.dbGetUserFingerprintData(username);
             if( ! rv.validateMetadata(fpNew, fpOld)) { //If Fingerprint Validation fails
                 logger.warn("User Page Request :: Fingerprint Validation Failed");
+                analysisLogger.warn("User Page Request :: Fingerprint Validation Failed");
+                dms.invalidateUserToken(username);
                 ctx.result("").status(HttpStatus.CONFLICT); //409
                 return;
             } else {
                 //Fingerprint validation successful, normal proceeding to return the user page
+                analysisLogger.info("User Page Request :: Fingerprint Validation Passed");
                 try {
                     // Defining the path to HTML file (different for on-device and off-device)
                     String filePath;

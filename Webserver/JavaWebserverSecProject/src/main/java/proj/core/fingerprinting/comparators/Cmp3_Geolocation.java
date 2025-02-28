@@ -21,8 +21,6 @@ public class Cmp3_Geolocation implements FpComparator {
         if (MAX_ACCEPTABLE_DISTANCE_KM == 0 ){
             throw new RuntimeException("Geolocation Comparator: Max Acceptable Distance not set");
         }
-
-
         //Equirectangular Distance Approximation (Earth is perfect sphere)
         Location oldLocation = (Location) oldV;
         Location newLocation = (Location) newV;
@@ -34,5 +32,21 @@ public class Cmp3_Geolocation implements FpComparator {
         double y = (latNewRad - latOldRad);
         double distanceKm = (Math.sqrt(x * x + y * y) * EARTH_RADIUS)/1000;
         return distanceKm <= MAX_ACCEPTABLE_DISTANCE_KM;
+    }
+
+    //Written so Comparision can also be used outside for debugging and evaluation
+    public double compareReturnValue(Object oldV, Object newV){
+        if (MAX_ACCEPTABLE_DISTANCE_KM == 0 ){
+            throw new RuntimeException("Geolocation Comparator: Max Acceptable Distance not set");
+        }
+        Location oldLocation = (Location) oldV;
+        Location newLocation = (Location) newV;
+        double latOldRad = Math.toRadians(oldLocation.getLatitude().doubleValue());
+        double latNewRad = Math.toRadians(newLocation.getLatitude().doubleValue());
+        double lonOldRad = Math.toRadians(oldLocation.getLongitude().doubleValue());
+        double lonNewRad = Math.toRadians(newLocation.getLongitude().doubleValue());
+        double x = (lonNewRad - lonOldRad) * Math.cos((latOldRad + latNewRad) / 2);
+        double y = (latNewRad - latOldRad);
+        return (Math.sqrt(x * x + y * y) * EARTH_RADIUS)/1000;
     }
 }

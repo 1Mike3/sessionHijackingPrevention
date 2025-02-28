@@ -2,6 +2,8 @@ package proj.core.fingerprinting;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import proj.config.ConfigManager;
+import proj.core.Main;
 import proj.core.fingerprinting.comparators.*;
 import proj.definitions.FpDetectionSensitivityLevels;
 import proj.entities.FingerprintData;
@@ -22,11 +24,11 @@ public final class FpRequestValidator {
     private int totalCriteriaCount;
     private int passedCriteriaCount;
     private static final Logger logger = LoggerFactory.getLogger(FpRequestValidator.class);
+    //private static final Logger analysisLogger = LoggerFactory.getLogger("analysisLogger");
+    private static final Logger analysisLogger = Main.analysisLogger;
 
 
-    public FpRequestValidator(
-            String sensitivityLevel
-    ) {
+    public FpRequestValidator(String sensitivityLevel) {
         switch (sensitivityLevel) {
             //Getting Sensitivity Level from Config File as String and Obtaining Percentage from FpDetectionSensitivityLevels
             case "LOW" -> this.sensitivityLevel = FpDetectionSensitivityLevels.LOW;
@@ -57,6 +59,17 @@ public final class FpRequestValidator {
         int valueNeededToPass = percentageToThreshold(sensitivityLevel);
         //DEBUG info print
         printComparisonResult(map);
+        analysisLogger.trace("~~~~~~~~~~~~~~~ BREAKDOWN TRUE-FALSE ~~~~~~~~~~~~~~~");
+        analysisPrintCriteriaTrueFalse(map);
+        analysisLogger.trace("~~~~~~~~~~~~~~~ BREAKDOWN VALUES OLD ~~~~~~~~~~~~~~~");
+        analysisPrintCriteriaValues(fpOld);
+        analysisLogger.trace("~~~~~~~~~~~~~~~ BREAKDOWN VALUES NEW ~~~~~~~~~~~~~~~");
+        analysisPrintCriteriaValues(fpNew);
+        analysisLogger.trace("~~~~~~~~~~~~~~~ Geolocation Breakdown ~~~~~~~~~~~~~~~");
+        analysisLogger.trace("Tolerance:" + ConfigManager.getInstance().getGEOLOCATION_MAX_DISTANCE_KM() + "\n" +
+                "Distance: " + new Cmp3_Geolocation().compareReturnValue(fpOld.getLocation(),fpNew.getLocation()) + "\n"
+                );
+
         //Returning the result of the check
         return passedCriteriaCount >= valueNeededToPass;
     }
@@ -109,6 +122,11 @@ public final class FpRequestValidator {
         logger.trace("M:evaluateComparisonResult: \n" +
                 "Number of Passed Criteria: " + passedCriteriaCount + '\n' +
                 "Number of Failed Criteria: " + failedCriteriaCount + '\n');
+        analysisLogger.trace("~~~~~~~~~~~~~~~ FpValidator Final Count ~~~~~~~~~~~~~~~");
+        analysisLogger.trace("M:evaluateComparisonResult: \n" +
+                "Number of Passed Criteria: " + passedCriteriaCount + '\n' +
+                "Number of Failed Criteria: " + failedCriteriaCount);
+
         //If somehting should go wrong:
         if(totalCriteriaCount != passedCriteriaCount + failedCriteriaCount){
             logger.error("FpValidator: Evaluation of Comparison Result failed");
@@ -139,6 +157,40 @@ public final class FpRequestValidator {
         }
         dbgStr.append('\n');
         logger.trace(dbgStr.toString());
+        //Special printout for analysis during Final application testing
+        analysisLogger.trace("~~~~~~~~~~~~~~~ FpValidator Comparison Result: ~~~~~~~~~~~~~~~");
+        analysisLogger.trace(dbgStr.toString());
     }
+    // #### Special prints for analysis and Data extraction  ####
+    //The functions print the data in a way that it can be easily extracted and analyzed
+
+    //Prints the Values as True-False to be imported into Excel
+    private void analysisPrintCriteriaTrueFalse(HashMap<String,Boolean> map){
+        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: " + '\n');
+        for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+            dbgStr.append(entry.getValue()).append('\n');
+        }
+        dbgStr.append('\n');
+        analysisLogger.trace(dbgStr.toString());
+    }
+    //Prints only the values of the criteria to be imported into Excel
+    private void analysisPrintCriteriaValues(FingerprintData fp){
+        analysisLogger.trace("\n" +
+                        fp.getIP() + "\n" +
+                        fp.getAccept() + "\n" +
+                        fp.getEncoding() + "\n" +
+                        fp.getLocation() + "\n" +
+                        fp.getScreen() + "\n" +
+                        fp.getLanguage() + "\n" +
+                        fp.getTimezone() + "\n" +
+                        fp.getUserAgent().getBrowser() + "\n" +
+                        fp.getUserAgent().getBrowserVersion() + "\n" +
+                        fp.getUserAgent().getPlatform() + "\n" +
+                        fp.getCanvas() + "\n" +
+                        fp.getWebglVendor() + "\n" +
+                        fp.getWebglRenderer() + "\n" +
+                        fp.getDeviceMemory() + "\n" );
+    }
+
 
 }

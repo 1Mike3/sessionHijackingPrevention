@@ -20,13 +20,16 @@ import proj.core.web.RequestHandler;
 public class Main {
 @Getter
     public static GeolocationProcessing geolocation_instance;
+    public static Logger analysisLogger = LoggerFactory.getLogger("analysisLogger");
 
     public static void main(String[] args) {
 
-        //Setup Logger
+        //Setup basic Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
         logger.info("\n\n\n\n###Startup### \n -- Logger initialized#");
+        //Additional Logger for logging of Data relevant to the test result
+        analysisLogger.info("~~~+++### STARTUP ###+++~~~");
 
         //Setup Access to config
         //Config fetched from

@@ -291,6 +291,10 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
             return false;
         }
     }
+    //Syntax Sugar for setting token to null
+    public boolean invalidateUserToken(String username) {
+        return setUserTokenByName(username, "");
+    }
 
 
     public String getUserPasswordByName(String username) {
@@ -310,6 +314,7 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
         logger.info("getUserPasswordByName--User not found");
         return null;
     }
+
 
 
 
