@@ -33,7 +33,7 @@ window.addEventListener('load', function () {
             let header = new Headers({
                 "Content-Type": "application/json"
             });
-            headerInjector(header);
+            await headerInjector(header);
 
             try {
                 const response = await fetch(
@@ -99,7 +99,7 @@ async function logoutRequestHandler(){
     let header = new Headers({
         "Content-Type": "application/json"
     });
-    headerInjector(header);
+    await headerInjector(header);
     const response = await fetch(
     CON_PARAM.PROTOCOL_TYPE.valueOf()
         +"//"
@@ -135,8 +135,8 @@ async function loadUserPageRequestHandler(){
         "Authorization-Username": "" + session.getUsername(),
         "Content-Type": "application/json"
     });
-    headerInjector(header);
-    const response = await fetch(
+    await headerInjector(header)
+        const response = await fetch(
         CON_PARAM.PROTOCOL_TYPE.valueOf()
         +"//"
         +CON_PARAM.DNS_NAME.valueOf()
@@ -174,10 +174,10 @@ async function loadUserPageRequestHandler(){
 
 
 //analytics
-function headerInjector(headers) {
+async function headerInjector(headers) {
     //storedAcceptHeader used instead
-    //const fullAcceptHeader = await captureBrowserAcceptHeader();
-    //headers.append("Full-Accept", fullAcceptHeader);
+    const fullAcceptHeader = await captureBrowserAcceptHeader();
+    headers.append("Full-Accept", fullAcceptHeader);
     headers.append("Screen-Resolution", `${screen.width}x${screen.height}`);
     headers.append("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
     headers.append("Canvas", getCanvasData());

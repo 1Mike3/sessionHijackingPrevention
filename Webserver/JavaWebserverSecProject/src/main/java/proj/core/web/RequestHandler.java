@@ -133,7 +133,7 @@ public class RequestHandler {
                     "BC1 Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
                     "\tProxy-IP:" + ctx.ip() + "\n" +
                     "BC2 Accept Header:" + ctx.header("Accept") + "\n" +
-                    "BC2* Real Accept Header: " + ctx.header("storedAcceptHeader") + "\n" +
+                    "BC2* Real Accept Header: " + ctx.header("Full-Accept") + "\n" +
                     "BC2 Encoding:" + ctx.header("Accept-Encoding") + "\n" +
                     "BC3 Geolocation:" + loc.getLatitude() + " " + loc.getLongitude() + "\n" +
                     "BC4 Screen:" + ctx.header("Screen-Resolution") + "\n" +
