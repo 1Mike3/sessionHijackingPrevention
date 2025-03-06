@@ -6,6 +6,7 @@ package proj.core.fingerprinting.comparators;
 public class Cmp8_BrowserVersion implements FpComparator{
     @Override
     public boolean compare(Object oldV, Object newV) {
+        if (oldV == null && newV == null) {return true;}
         if (oldV == null || newV == null) {return false;}
         //If the content is the same, the comparison is successful either way
         if(new DefaultStringComparator().compare(oldV,newV)){

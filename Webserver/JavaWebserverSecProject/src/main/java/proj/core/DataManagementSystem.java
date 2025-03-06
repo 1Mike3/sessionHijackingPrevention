@@ -48,33 +48,33 @@ public class DataManagementSystem {
     public void dbInitialize() {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS monitoringData (
-                blockid INT PRIMARY KEY,
-                ip VARCHAR(45),
-                accept VARCHAR(255),
-                encoding VARCHAR(255),
-                longitude DECIMAL(10,8),
-                latitude DECIMAL(10,8),
-                screen VARCHAR(20),
-                language VARCHAR(100),
-                timezone VARCHAR(50),
-                browser VARCHAR(30),
-                browser_version VARCHAR(20),
-                platform VARCHAR(50),
-                canvas TEXT,
-                webglVendor VARCHAR(50),
-                webglRenderer VARCHAR(100),
-                deviceMemory VARCHAR(10),
-                cookiesAccepted BOOLEAN
-                );
-                
-                CREATE TABLE IF NOT EXISTS users (
-                 username VARCHAR(255) PRIMARY KEY,
-                 passwordHashed VARCHAR(255),
-                 sessionToken VARCHAR(255),
-                 monitoringData INT,
-                 FOREIGN KEY (monitoringData) REFERENCES monitoringData(blockid)
-                );
+CREATE TABLE IF NOT EXISTS monitoringData (
+blockid INT PRIMARY KEY,
+ip VARCHAR(45),
+accept VARCHAR(255),
+encoding VARCHAR(255),
+longitude DECIMAL(11,8),
+latitude DECIMAL(11,8),
+screen VARCHAR(20),
+language VARCHAR(100),
+timezone VARCHAR(50),
+browser VARCHAR(30),
+browser_version VARCHAR(20),
+platform VARCHAR(50),
+canvas TEXT,
+webglVendor VARCHAR(50),
+webglRenderer VARCHAR(100),
+deviceMemory VARCHAR(10),
+cookiesAccepted BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS users (
+ username VARCHAR(255) PRIMARY KEY,
+ passwordHashed VARCHAR(255),
+ sessionToken VARCHAR(255),
+ monitoringData INT,
+ FOREIGN KEY (monitoringData) REFERENCES monitoringData(blockid)
+);
         """;
             try (var statement = connection.createStatement()) {
                 statement.execute(createTableSQL);

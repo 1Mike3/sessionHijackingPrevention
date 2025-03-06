@@ -8,8 +8,7 @@ import proj.core.fingerprinting.comparators.*;
 import proj.definitions.FpDetectionSensitivityLevels;
 import proj.entities.FingerprintData;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +46,7 @@ public final class FpRequestValidator {
      */
     public boolean validateMetadata(FingerprintData fpNew, FingerprintData fpOld) {
         //comparing all criteria and writing the results to a map
-        HashMap<String,Boolean> map = initialComparison(fpNew, fpOld);
+        LinkedHashMap<String,Boolean> map = initialComparison(fpNew, fpOld);
         //Obtaining the number of passed and failed criteria (written to object fields)
         try {
             evaluateComparisonResult(map);
@@ -79,26 +78,25 @@ public final class FpRequestValidator {
      * Internally used to run every comparison and return the results in a map for further evaluation
      * @param fpNew object which is being validated
      * @param fpOld object which is used as reference for validation
-     * @return HashMap with the results of the comparison
+     * @return LinkedHashMap with the results of the comparison
      */
-    private HashMap<String,Boolean> initialComparison(FingerprintData fpNew, FingerprintData fpOld){
-        HashMap<String,Boolean> map = new HashMap<>();
-        //int AttributeCount = FingerprintData.class.getFields().length; //Too convoluted, bec. no association between fields and comparators
+    private LinkedHashMap<String, Boolean> initialComparison(FingerprintData fpNew, FingerprintData fpOld) {
+        LinkedHashMap<String, Boolean> map = new LinkedHashMap<>(); // Maintain order
         map.put("IP", new Cmp1_IP().compare(fpOld.getIP(), fpNew.getIP()));
-        map.put("Accept",new Cmp2_Accept().compare(fpOld.getAccept(),fpNew.getAccept()));
-        map.put("Encoding",new Cmp2_Encoding().compare(fpOld.getEncoding(),fpNew.getEncoding()));
-        map.put("Geolocation", new Cmp3_Geolocation().compare(fpOld.getLocation(),fpNew.getLocation()));
-        map.put("Screen", new Cmp4_ScreenResolution().compare(fpOld.getScreen(),fpNew.getScreen()));
-        map.put("Language", new Cmp5_LanguageHeaders().compare(fpOld.getLanguage(),fpNew.getLanguage()));
-        map.put("Timezone", new Cmp6_Timezone().compare(fpOld.getTimezone(),fpNew.getTimezone()));
-        map.put("Browser", new Cmp7_Browser().compare(fpOld.getUserAgent().getBrowser(),fpNew.getUserAgent().getBrowser()));
-        map.put("BrowserVersion", new Cmp8_BrowserVersion().compare(fpOld.getUserAgent().getBrowserVersion(),fpNew.getUserAgent().getBrowserVersion()));
-        map.put("OS", new Cmp9_Platform().compare(fpOld.getUserAgent().getPlatform(),fpNew.getUserAgent().getPlatform()));
-        map.put("Canvas", new Cmp10_Canvas().compare(fpOld.getCanvas(),fpNew.getCanvas()));
-        map.put("WebglVendor", new Cmp11_WebGlVendor().compare(fpOld.getWebglVendor(),fpNew.getWebglVendor()));
-        map.put("WebglRenderer", new Cmp12_WebGlRenderer().compare(fpOld.getWebglRenderer(),fpNew.getWebglRenderer()));
-        map.put("DeviceMemory", new Cmp13_DeviceMemory().compare(fpOld.getDeviceMemory(),fpNew.getDeviceMemory()));
-        //map.put("CookiesAccepted", (fpOld.isCookiesAccepted()==fpNew.isCookiesAccepted()));
+        map.put("Accept", new Cmp2_Accept().compare(fpOld.getAccept(), fpNew.getAccept()));
+        map.put("Encoding", new Cmp2_Encoding().compare(fpOld.getEncoding(), fpNew.getEncoding()));
+        map.put("Geolocation", new Cmp3_Geolocation().compare(fpOld.getLocation(), fpNew.getLocation()));
+        map.put("Screen", new Cmp4_ScreenResolution().compare(fpOld.getScreen(), fpNew.getScreen()));
+        map.put("Language", new Cmp5_LanguageHeaders().compare(fpOld.getLanguage(), fpNew.getLanguage()));
+        map.put("Timezone", new Cmp6_Timezone().compare(fpOld.getTimezone(), fpNew.getTimezone()));
+        map.put("Browser", new Cmp7_Browser().compare(fpOld.getUserAgent().getBrowser(), fpNew.getUserAgent().getBrowser()));
+        map.put("BrowserVersion", new Cmp8_BrowserVersion().compare(fpOld.getUserAgent().getBrowserVersion(), fpNew.getUserAgent().getBrowserVersion()));
+        map.put("OS", new Cmp9_Platform().compare(fpOld.getUserAgent().getPlatform(), fpNew.getUserAgent().getPlatform()));
+        map.put("Canvas", new Cmp10_Canvas().compare(fpOld.getCanvas(), fpNew.getCanvas()));
+        map.put("WebglVendor", new Cmp11_WebGlVendor().compare(fpOld.getWebglVendor(), fpNew.getWebglVendor()));
+        map.put("WebglRenderer", new Cmp12_WebGlRenderer().compare(fpOld.getWebglRenderer(), fpNew.getWebglRenderer()));
+        map.put("DeviceMemory", new Cmp13_DeviceMemory().compare(fpOld.getDeviceMemory(), fpNew.getDeviceMemory()));
+
         this.totalCriteriaCount = map.size();
         return map;
     }
@@ -107,7 +105,7 @@ public final class FpRequestValidator {
      * Counts Criteria and wirtes them into the class fields
      * @param map the map generated by the initialComparison method
      */
-    private void evaluateComparisonResult(HashMap<String,Boolean> map) throws RuntimeException{
+    private void evaluateComparisonResult(LinkedHashMap<String,Boolean> map) throws RuntimeException{
         int passedCriteriaCount = 0;
         int failedCriteriaCount = 0;
         int totalCriteriaCount = map.size();
@@ -149,15 +147,14 @@ public final class FpRequestValidator {
 
 
     //Print Comparison Result to the console for Debugging
-    private void printComparisonResult(HashMap<String,Boolean> map){
-        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: " + '\n');
+    // Change parameter type to LinkedHashMap
+    private void printComparisonResult(LinkedHashMap<String, Boolean> map) {
+        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: \n");
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
-            //System.out.println(entry.getKey() + " : " + entry.getValue());
-            dbgStr.append(entry.getKey()).append(" : ").append(entry.getValue()).append('\n');
+            dbgStr.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
         }
-        dbgStr.append('\n');
+        dbgStr.append("\n");
         logger.trace(dbgStr.toString());
-        //Special printout for analysis during Final application testing
         analysisLogger.trace("~~~~~~~~~~~~~~~ FpValidator Comparison Result: ~~~~~~~~~~~~~~~");
         analysisLogger.trace(dbgStr.toString());
     }
@@ -165,32 +162,34 @@ public final class FpRequestValidator {
     //The functions print the data in a way that it can be easily extracted and analyzed
 
     //Prints the Values as True-False to be imported into Excel
-    private void analysisPrintCriteriaTrueFalse(HashMap<String,Boolean> map){
-        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: " + '\n');
+    private void analysisPrintCriteriaTrueFalse(LinkedHashMap<String, Boolean> map) {
+        StringBuilder dbgStr = new StringBuilder("DEBUG FpValidator Comparison Result: \n");
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
-            dbgStr.append(entry.getValue()).append('\n');
+            dbgStr.append(entry.getValue()).append("\n");
         }
-        dbgStr.append('\n');
+        dbgStr.append("\n");
         analysisLogger.trace(dbgStr.toString());
     }
     //Prints only the values of the criteria to be imported into Excel
-    private void analysisPrintCriteriaValues(FingerprintData fp){
+    private void analysisPrintCriteriaValues(FingerprintData fp) {
         analysisLogger.trace("\n" +
-                        fp.getIP() + "\n" +
-                        fp.getAccept() + "\n" +
-                        fp.getEncoding() + "\n" +
-                        fp.getLocation() + "\n" +
-                        fp.getScreen() + "\n" +
-                        fp.getLanguage() + "\n" +
-                        fp.getTimezone() + "\n" +
-                        fp.getUserAgent().getBrowser() + "\n" +
-                        fp.getUserAgent().getBrowserVersion() + "\n" +
-                        fp.getUserAgent().getPlatform() + "\n" +
-                        fp.getCanvas() + "\n" +
-                        fp.getWebglVendor() + "\n" +
-                        fp.getWebglRenderer() + "\n" +
-                        fp.getDeviceMemory() + "\n" );
+                fp.getIP() + "\n" +
+                fp.getAccept() + "\n" +
+                fp.getEncoding() + "\n" +
+                fp.getLocation() + "\n" +
+                fp.getScreen() + "\n" +
+                fp.getLanguage() + "\n" +
+                fp.getTimezone() + "\n" +
+                fp.getUserAgent().getBrowser() + "\n" +
+                fp.getUserAgent().getBrowserVersion() + "\n" +
+                fp.getUserAgent().getPlatform() + "\n" +
+                fp.getCanvas() + "\n" +
+                fp.getWebglVendor() + "\n" +
+                fp.getWebglRenderer() + "\n" +
+                fp.getDeviceMemory() + "\n"
+        );
     }
+
 
 
 }

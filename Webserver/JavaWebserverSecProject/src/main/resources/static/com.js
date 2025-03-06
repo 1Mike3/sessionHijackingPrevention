@@ -182,8 +182,7 @@ function headerInjector(headers) {
     headers.append("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
     headers.append("Canvas", getCanvasData());
     let webGLInfo = getWebGLData();
-    headers.append("WebGL-Vendor", webGLInfo.vendor);
-    headers.append("WebGL-Renderer", webGLInfo.renderer);
+    headers.append("WebGL-Vendor", webGLInfo.vendor); headers.append("WebGL-Renderer", webGLInfo.renderer);
     //According to mozilla web docks limited availability, keep in mind
     //https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory
     headers.append("Device-Memory", navigator.deviceMemory ||  "Unknown"); //only in secure context ... !!!

@@ -17,7 +17,6 @@ public class Cmp3_Geolocation implements FpComparator {
         //https://www.baeldung.com/java-find-distance-between-points
         //Taking the less accurate but faster method as speed is critical for a response to the user, and the
         //ip geolocation in itself is not very accurate anyway
-
         if (MAX_ACCEPTABLE_DISTANCE_KM == 0 ){
             throw new RuntimeException("Geolocation Comparator: Max Acceptable Distance not set");
         }
@@ -30,7 +29,7 @@ public class Cmp3_Geolocation implements FpComparator {
         double lonNewRad = Math.toRadians(newLocation.getLongitude().doubleValue());
         double x = (lonNewRad - lonOldRad) * Math.cos((latOldRad + latNewRad) / 2);
         double y = (latNewRad - latOldRad);
-        double distanceKm = (Math.sqrt(x * x + y * y) * EARTH_RADIUS)/1000;
+        double distanceKm = (Math.sqrt(x * x + y * y) * EARTH_RADIUS);
         return distanceKm <= MAX_ACCEPTABLE_DISTANCE_KM;
     }
 
@@ -47,6 +46,6 @@ public class Cmp3_Geolocation implements FpComparator {
         double lonNewRad = Math.toRadians(newLocation.getLongitude().doubleValue());
         double x = (lonNewRad - lonOldRad) * Math.cos((latOldRad + latNewRad) / 2);
         double y = (latNewRad - latOldRad);
-        return (Math.sqrt(x * x + y * y) * EARTH_RADIUS)/1000;
+        return (Math.sqrt(x * x + y * y) * EARTH_RADIUS);
     }
 }

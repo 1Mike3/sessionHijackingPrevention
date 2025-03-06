@@ -20,7 +20,9 @@ public final class Location {
      * @param longitude longitude
      * @param latitude latitude
      */
-    public Location(BigDecimal longitude, BigDecimal latitude) {
+
+    //Were in wrong order for convention, switched back
+    public Location(BigDecimal latitude,  BigDecimal longitude ) {
         this.longitude = longitude;
         this.latitude = latitude;
     }
