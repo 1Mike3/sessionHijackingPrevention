@@ -40,7 +40,7 @@ public class FpRequestProcessor {
         FingerprintData.FingerprintDataBuilder builder = FingerprintData.builder();
 
         builder.IP(ctx.header("X-Forwarded-For"));
-        builder.accept(ctx.header("Accept"));
+        builder.accept(ctx.header("storedAcceptHeader"));
         builder.encoding(ctx.header("Accept-Encoding"));
 
         //Obtaining and assigning Location

@@ -9,8 +9,6 @@ ABOUT
 // only covers login function
 window.addEventListener('load', function () {
     document.body.classList.add('loaded');
-
-
     const loginFormText = document.getElementById("loginFormOutput");
     const buttonLogout = this.document.getElementById("btn_logout");
 
@@ -47,7 +45,6 @@ window.addEventListener('load', function () {
                     {
                     method: "POST",
                     headers: header,
-
                     body: JSON.stringify({username, password}),
                 });
 
@@ -178,6 +175,9 @@ async function loadUserPageRequestHandler(){
 
 //analytics
 function headerInjector(headers) {
+    //storedAcceptHeader used instead
+    //const fullAcceptHeader = await captureBrowserAcceptHeader();
+    //headers.append("Full-Accept", fullAcceptHeader);
     headers.append("Screen-Resolution", `${screen.width}x${screen.height}`);
     headers.append("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
     headers.append("Canvas", getCanvasData());
@@ -240,4 +240,22 @@ function getWebGLData() {
     } catch (e) {
         return { vendor: "Not Supported", renderer: "Not Supported" };
     }
+}
+
+// to get the real AcceptHeader instead of */*
+function captureBrowserAcceptHeader() {
+    return new Promise((resolve) => {
+        let iframe = document.createElement("iframe");
+        iframe.style.display = "none"; // Hide the iframe
+        iframe.src = "/capture-accept"; // Forces a browser request with the real Accept header
+        iframe.onload = () => {
+            // Now we can fetch the stored Accept header
+            document.body.removeChild(iframe); // Cleanup
+            fetch("/get-stored-accept")
+                .then(response => response.text())
+                .then(header => resolve(header))
+                .catch(() => resolve("*/*")); // Default fallback if error
+        };
+        document.body.appendChild(iframe);
+    });
 }

@@ -33,7 +33,7 @@ public class ConfigManager {
     private String PATH_WS_STATIC;
     private boolean DB_WEBSERVER_ENABLED;
     private String FINGERPRINT_SENSITIVITY;
-    private int GEOLOCATION_MAX_DISTANCE_KM;
+    private double GEOLOCATION_MAX_DISTANCE_KM;
     private String PATH_RELATIVE_USER_DB;
     private String PATH_RELATIVE_USER_DB_ON_DEVICE;
     private String PATH_RELATIVE_CERTIFICATE;
@@ -58,7 +58,7 @@ public class ConfigManager {
                          @JsonProperty("PATH_WS_STATIC") String PATH_WS_STATIC,
                          @JsonProperty("DB_WEBSERVER_ENABLED") boolean DB_WEBSERVER_ENABLED,
                          @JsonProperty("FINGERPRINT_SENSITIVITY") String FINGERPRINT_SENSITIVITY,
-                         @JsonProperty("GEOLOCATION_MAX_DISTANCE_KM") int GEOLOCATION_MAX_DISTANCE_KM,
+                         @JsonProperty("GEOLOCATION_MAX_DISTANCE_KM") double GEOLOCATION_MAX_DISTANCE_KM,
                          @JsonProperty("PATH_RELATIVE_USER_DB") String PATH_RELATIVE_USER_DB,
                          @JsonProperty("PATH_RELATIVE_USER_DB_ON_DEVICE") String PATH_RELATIVE_USER_DB_ON_DEVICE,
                          @JsonProperty("PATH_RELATIVE_CERTIFICATE") String PATH_RELATIVE_CERTIFICATE,

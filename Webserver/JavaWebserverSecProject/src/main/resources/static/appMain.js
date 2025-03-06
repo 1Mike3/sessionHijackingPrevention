@@ -9,10 +9,10 @@ const CON_PARAM = Object.freeze({
     //get information on if http or https communication should be used
     PROTOCOL_TYPE: location.protocol,  // ["http:" | "https:"]
     //CONFIGURABLE
-    DNS_NAME: "securitytest-sh.at",
-    //DNS_NAME: "localhost",
-    PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
-    //PORT: ":"+ (location.protocol === "http:" ? "3000" : "443"),
+    //DNS_NAME: "securitytest-sh.at",
+    DNS_NAME: "localhost",
+    //PORT: ":"+ (location.protocol === "http:" ? "80" : "443"),
+    PORT: ":"+ (location.protocol === "http:" ? "3000" : "443"),
 });
 
 //saved instance of a session after login used throughout the application

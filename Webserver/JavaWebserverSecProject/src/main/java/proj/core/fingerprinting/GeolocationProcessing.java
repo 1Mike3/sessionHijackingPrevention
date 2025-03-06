@@ -48,7 +48,7 @@ public class GeolocationProcessing {
                 if(ApiKey.isEmpty()){
                     throw new FileSystemException("Error reading file");
                 }
-               logger.atDebug().log("API Key obtained: " + ApiKey);
+               //logger.atDebug().log("API Key obtained: " + ApiKey);
               } catch (Exception e){
                 throw new FileSystemException("Error reading file");
            }

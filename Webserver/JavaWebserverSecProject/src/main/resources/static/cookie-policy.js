@@ -9,5 +9,6 @@ function btnFncAcceptCookies(){
     activateAllButtons();
     alert("You have accepted all cookies.");
 }
+
 document.getElementById('accept-all').addEventListener('click', btnFncAcceptCookies);
 

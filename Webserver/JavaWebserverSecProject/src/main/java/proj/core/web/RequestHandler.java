@@ -46,17 +46,39 @@ public class RequestHandler {
 
         //Check before or after  request (rem. path for every request)
             app.before("/*", ctx -> {
-                // analyzeHeader(ctx);
+                analyzeHeader(ctx);
                 ;
             });
             app.before("/", ctx -> {
-                analyzeHeader(ctx);
+                //analyzeHeader(ctx);
             });
 
         //app.after("/path/*", ctx -> {
         app.after("/*", ctx -> {
 ;;
         });
+
+        //Special for accessing the real accept header, because else overwritten ( */* )
+        app.get("/capture-accept", ctx -> {
+            String acceptHeader = ctx.header("Accept");
+            //Bec exception ";" in cookie ... fair enough
+            acceptHeader = acceptHeader.replaceAll(";", "#");
+            if (acceptHeader != null) {
+                // Store the real Accept header in a session or cookie
+                ctx.sessionAttribute("storedAcceptHeader", acceptHeader); //Server side storage
+                ctx.cookie("storedAcceptHeader", acceptHeader);
+            }
+            logger.trace("Captured Accept Header: " + acceptHeader);
+            ctx.result(acceptHeader);
+        });
+        app.get("/get-stored-accept", ctx -> {
+            String acceptHeader = ctx.sessionAttribute("storedAcceptHeader");
+            if (acceptHeader == null) {
+                acceptHeader = "Unknown";
+            }
+            ctx.result(acceptHeader);
+        });
+
 
 
 //++++++++++++++++++++++++++++++++ LOGIN HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -65,6 +87,7 @@ public class RequestHandler {
     HandlerLogout.setHandler(app,logger,ums,sms);
 //++++++++++++++++++++++++++++++++ ACCESS SENSITIVE CONTENT HANDLER ++++++++++++++++++++++++++++++++++++++++++++++++
     HandlerAccessSensitiveContent.setHandler(app,logger,ums,sms);
+
     }//M
 
     /**
@@ -106,10 +129,11 @@ public class RequestHandler {
             assert ua != null;
             String sb =
                     "##DEBUG-META-DATA-DUMP##" + "\n" +
-                    "Request to: " + ctx.path() + "\n" +
+                    "Request (Caution may be set to / only)): " + ctx.path() + "\n" +
                     "BC1 Header-IP:" + ctx.header("X-Forwarded-For") + "\n" +
                     "\tProxy-IP:" + ctx.ip() + "\n" +
                     "BC2 Accept Header:" + ctx.header("Accept") + "\n" +
+                    "BC2* Real Accept Header: " + ctx.header("storedAcceptHeader") + "\n" +
                     "BC2 Encoding:" + ctx.header("Accept-Encoding") + "\n" +
                     "BC3 Geolocation:" + loc.getLatitude() + " " + loc.getLongitude() + "\n" +
                     "BC4 Screen:" + ctx.header("Screen-Resolution") + "\n" +
