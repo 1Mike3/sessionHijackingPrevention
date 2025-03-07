@@ -40,8 +40,16 @@ public class FpRequestProcessor {
         FingerprintData.FingerprintDataBuilder builder = FingerprintData.builder();
 
         builder.IP(ctx.header("X-Forwarded-For"));
-        builder.accept(ctx.header("Full-Accept"));
-        builder.encoding(ctx.header("Accept-Encoding"));
+
+        //Simple Hash code is created for both accept headers to save db space
+        String accept = ctx.header("Full-Accept");
+        logger.trace("Accept Received: " + accept);
+        //.hash code not crypt sec. but for this enough
+        accept = accept == null ? "unknown" : String.valueOf(accept.hashCode());
+        builder.accept(accept);
+        String encoding = ctx.header("Accept-Encoding");
+        encoding = encoding == null ? "unknown" : String.valueOf(encoding.hashCode());
+        builder.encoding(encoding);
 
         //Obtaining and assigning Location
             Location locTemp = null;
