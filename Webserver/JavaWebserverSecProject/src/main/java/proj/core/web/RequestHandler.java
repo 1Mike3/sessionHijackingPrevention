@@ -39,23 +39,16 @@ public class RequestHandler {
         SessionManagementSystem sms = SessionManagementSystem.getInstance();
         DataManagementSystem ums = DataManagementSystem.getInstance();
 
-            //Redirect root to starter page
-            // app.get("/", ctx -> {
-            // ctx.redirect("/index.html");
-            // });
-
         //Check before or after  request (rem. path for every request)
             app.before("/*", ctx -> {
-                analyzeHeader(ctx);
-                ;
+                //analyzeHeader(ctx);
             });
             app.before("/", ctx -> {
-                //analyzeHeader(ctx);
+                analyzeHeader(ctx);
             });
 
         //app.after("/path/*", ctx -> {
         app.after("/*", ctx -> {
-;;
         });
 
         //Special for accessing the real accept header, because else overwritten ( */* )

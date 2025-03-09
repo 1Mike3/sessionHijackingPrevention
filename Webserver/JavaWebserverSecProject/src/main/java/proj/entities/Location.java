@@ -15,10 +15,13 @@ public final class Location {
     private final BigDecimal longitude;
     private final BigDecimal latitude;
 
+
+    //Previously switched order of longitude and latitude, switched back to correct order
     /**
      * Constructor
-     * @param longitude longitude
      * @param latitude latitude
+     * @param longitude longitude
+     *
      */
 
     //Were in wrong order for convention, switched back

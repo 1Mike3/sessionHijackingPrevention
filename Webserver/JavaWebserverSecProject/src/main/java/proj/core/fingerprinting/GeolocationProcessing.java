@@ -76,12 +76,13 @@ public class GeolocationProcessing {
         //Process Response
         if (geolocation != null) {
             //dbg info
-            logger.trace(geolocation.getLatitude().toString());
-            logger.trace(geolocation.getLongitude().toString());
-            logger.trace(geolocation.getCountryName());
-            logger.trace(geolocation.getCity());
+            logger.trace("~~Geolocation RESOLUTION:");
+            logger.trace("~LON: "+geolocation.getLatitude().toString());
+            logger.trace("~LAT" + geolocation.getLongitude().toString());
+            logger.trace("~Country: "+geolocation.getCountryName());
+            logger.trace("~City: "+geolocation.getCity());
             //return Location val
-            return new Location(geolocation.getLongitude(), geolocation.getLatitude());
+            return new Location(geolocation.getLatitude(),geolocation.getLongitude());
         } else {
             logger.error("Error obtaining Geolocation");
             return null;

@@ -139,8 +139,8 @@ SELECT * FROM users join monitoringData where MonitoringData =Blockid and users.
                                         resultSet.getString("accept"),
                                         resultSet.getString("encoding"),
                                         new Location(
-                                                resultSet.getBigDecimal("longitude"),
-                                                resultSet.getBigDecimal("latitude")
+                                                resultSet.getBigDecimal("latitude"),
+                                                resultSet.getBigDecimal("longitude")
                                         ),
                                         resultSet.getString("screen"),
                                         resultSet.getString("language"),
