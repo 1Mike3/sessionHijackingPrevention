@@ -18,12 +18,11 @@ import proj.core.web.RequestHandler;
  * Main class, instantiation of major classes and starting of javalin app
  **/
 public class Main {
-@Getter
-    public static GeolocationProcessing geolocation_instance;
+    @Getter
+    private static GeolocationProcessing geolocation_instance;
     public static Logger analysisLogger = LoggerFactory.getLogger("analysisLogger");
 
     public static void main(String[] args) {
-
         //Setup basic Logger
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Logger logger = loggerFactory.getLogger(Main.class.getName());
